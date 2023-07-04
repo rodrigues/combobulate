@@ -123,9 +123,12 @@ have changed."
   (interactive)
   (if-let* ((lang (car-safe (treesit-parser-list)))
             (parser-lang (treesit-parser-language lang))
+            (msg (message "parser lang `%s'..." parser-lang))
             (setup-fn (alist-get parser-lang combobulate-setup-functions-alist)))
       (progn
         ;; load the production rules
+        (message "Lang `%s'....." lang)
+        (message "parser lang `%s'..." parser-lang)
         (setq combobulate-navigation-rules-overrides nil)
         (setq combobulate-navigation-rules-overrides-inverted nil)
         (setq combobulate-navigation-rules
@@ -186,8 +189,8 @@ Customize `combobulate-setup-functions-alist' to change the language setup alist
 (require 'combobulate-js-ts)
 (require 'combobulate-css)
 (require 'combobulate-yaml)
+(require 'combobulate-elixir)
 ;;; end language support
 
 (provide 'combobulate)
 ;;; combobulate.el ends here
-

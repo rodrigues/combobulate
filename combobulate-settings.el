@@ -393,6 +393,7 @@ Matches all the key-portion of key-value pairs in a dictionary")
     (typescript . combobulate-js-ts-setup)
     (jsx . combobulate-js-ts-setup)
     (css . combobulate-css-setup)
+    (elixir . combobulate-elixir-setup)
     (yaml . combobulate-yaml-setup)
     ;; note: private mode; not yet released.
     (html . combobulate-html-setup))

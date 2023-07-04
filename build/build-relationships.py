@@ -67,6 +67,10 @@ SOURCES = {
         "nodes": "https://raw.githubusercontent.com/tree-sitter/tree-sitter-json/master/src/node-types.json",
         "grammar": "https://raw.githubusercontent.com/tree-sitter/tree-sitter-json/master/src/grammar.json",
     },
+    "elixir": {
+        "nodes": "https://raw.githubusercontent.com/elixir-lang/tree-sitter-elixir/main/src/node-types.json",
+        "grammar": "https://raw.githubusercontent.com/elixir-lang/tree-sitter-elixir/main/src/grammar.json",
+    },
 }
 
 DEFAULT_FIELD_NAME = "*unnamed*"

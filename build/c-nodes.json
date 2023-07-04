@@ -96,6 +96,10 @@
         "named": true
       },
       {
+        "type": "generic_expression",
+        "named": true
+      },
+      {
         "type": "identifier",
         "named": true
       },
@@ -105,6 +109,10 @@
       },
       {
         "type": "number_literal",
+        "named": true
+      },
+      {
+        "type": "offsetof_expression",
         "named": true
       },
       {
@@ -1116,7 +1124,7 @@
       },
       "consequence": {
         "multiple": false,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "_expression",
@@ -1292,6 +1300,16 @@
         "types": [
           {
             "type": "type_identifier",
+            "named": true
+          }
+        ]
+      },
+      "underlying_type": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "primitive_type",
             "named": true
           }
         ]
@@ -1677,6 +1695,25 @@
     }
   },
   {
+    "type": "generic_expression",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "_expression",
+          "named": true
+        },
+        {
+          "type": "type_descriptor",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "goto_statement",
     "named": true,
     "fields": {
@@ -1967,6 +2004,32 @@
     "type": "ms_unaligned_ptr_modifier",
     "named": true,
     "fields": {}
+  },
+  {
+    "type": "offsetof_expression",
+    "named": true,
+    "fields": {
+      "member": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "field_identifier",
+            "named": true
+          }
+        ]
+      },
+      "type": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "type_descriptor",
+            "named": true
+          }
+        ]
+      }
+    }
   },
   {
     "type": "parameter_declaration",
@@ -3390,6 +3453,14 @@
     "named": false
   },
   {
+    "type": "_Generic",
+    "named": false
+  },
+  {
+    "type": "_Noreturn",
+    "named": false
+  },
+  {
     "type": "__attribute__",
     "named": false
   },
@@ -3411,6 +3482,10 @@
   },
   {
     "type": "__fastcall",
+    "named": false
+  },
+  {
+    "type": "__restrict__",
     "named": false
   },
   {
@@ -3536,6 +3611,10 @@
   {
     "type": "number_literal",
     "named": true
+  },
+  {
+    "type": "offsetof",
+    "named": false
   },
   {
     "type": "preproc_arg",
