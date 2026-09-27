@@ -290,6 +290,7 @@ doesn't exist."
                                         ("\\.heex\\'" . heex-ts-mode)
                                         ("\\.erl\\'" . erlang-ts-mode)
                                         ("\\.md\\'" . markdown-ts-mode)
+                                        ("\\.sql\\'" . sql-ts-mode)
                                         ("\\.mli\\'" . tuareg-interface-mode)
                                         ("\\.ml\\'" . tuareg-mode))
                                       auto-mode-alist))

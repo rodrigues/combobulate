@@ -2222,4 +2222,125 @@
     (combobulate-test-go-to-marker 1) (combobulate-navigate-previous)
     (combobulate-test-assert-at-marker 1)))
 
+(ert-deftest
+    combobulate-test-sql-combobulate-navigate-previous--sql-args-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-args.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-args.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-navigate-previous)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-previous)
+    (combobulate-test-assert-at-marker 1)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-previous)
+    (combobulate-test-assert-at-marker 1)))
+
+
+(ert-deftest
+    combobulate-test-sql-combobulate-navigate-previous--sql-columns-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-columns.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-columns.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-navigate-previous)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-previous)
+    (combobulate-test-assert-at-marker 1)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-previous)
+    (combobulate-test-assert-at-marker 1)))
+
+
+(ert-deftest
+    combobulate-test-sql-combobulate-navigate-previous--sql-ctes-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-ctes.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-ctes.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-navigate-previous)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-previous)
+    (combobulate-test-assert-at-marker 1)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-previous)
+    (combobulate-test-assert-at-marker 1)))
+
+
+(ert-deftest
+    combobulate-test-sql-combobulate-navigate-previous--sql-select-list-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-select-list.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-select-list.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-navigate-previous)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-previous)
+    (combobulate-test-assert-at-marker 1)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-previous)
+    (combobulate-test-assert-at-marker 1)))
+
+
+(ert-deftest
+    combobulate-test-sql-combobulate-navigate-previous--sql-set-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-set.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-set.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-navigate-previous)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-previous)
+    (combobulate-test-assert-at-marker 1)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-previous)
+    (combobulate-test-assert-at-marker 1)))
+
+
+(ert-deftest
+    combobulate-test-sql-combobulate-navigate-previous--sql-statements-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-statements.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-statements.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-navigate-previous)
+    (combobulate-test-go-to-marker 3) (combobulate-navigate-previous)
+    (combobulate-test-assert-at-marker 2)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-previous)
+    (combobulate-test-assert-at-marker 1)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-previous)
+    (combobulate-test-assert-at-marker 1)))
+
+
+(ert-deftest
+    combobulate-test-sql-combobulate-navigate-previous--sql-values-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-values.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-values.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-navigate-previous)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-previous)
+    (combobulate-test-assert-at-marker 1)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-previous)
+    (combobulate-test-assert-at-marker 1)))
+
+
+(ert-deftest
+    combobulate-test-sql-combobulate-navigate-previous--sql-where-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-where.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-where.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-navigate-previous)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-previous)
+    (combobulate-test-assert-at-marker 1)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-previous)
+    (combobulate-test-assert-at-marker 1)))
+
 

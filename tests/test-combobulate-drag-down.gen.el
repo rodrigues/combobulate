@@ -6496,4 +6496,351 @@
        (combobulate-compare-action-with-fixture-delta
 	"./fixture-deltas/combobulate-drag-down/markdown-table-rows.md[@3~after].md")))))
 
+(ert-deftest combobulate-test-sql-combobulate-drag-down--sql-args-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-args.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-args.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 1) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/sql-args.sql[@1~after].sql")))
+
+
+(ert-deftest combobulate-test-sql-combobulate-drag-down--sql-args-2
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-args.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-args.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 2) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/sql-args.sql[@2~after].sql")))
+
+
+(ert-deftest combobulate-test-sql-combobulate-drag-down--sql-args-3
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-args.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-args.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-drag-down)
+    (should-error
+     (progn
+       (combobulate-test-go-to-marker 3) (combobulate-drag-down)
+       (combobulate-compare-action-with-fixture-delta
+	"./fixture-deltas/combobulate-drag-down/sql-args.sql[@3~after].sql")))))
+
+
+(ert-deftest combobulate-test-sql-combobulate-drag-down--sql-columns-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-columns.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-columns.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 1) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/sql-columns.sql[@1~after].sql")))
+
+
+(ert-deftest combobulate-test-sql-combobulate-drag-down--sql-columns-2
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-columns.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-columns.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 2) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/sql-columns.sql[@2~after].sql")))
+
+
+(ert-deftest combobulate-test-sql-combobulate-drag-down--sql-columns-3
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-columns.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-columns.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-drag-down)
+    (should-error
+     (progn
+       (combobulate-test-go-to-marker 3) (combobulate-drag-down)
+       (combobulate-compare-action-with-fixture-delta
+	"./fixture-deltas/combobulate-drag-down/sql-columns.sql[@3~after].sql")))))
+
+
+(ert-deftest combobulate-test-sql-combobulate-drag-down--sql-ctes-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-ctes.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-ctes.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 1) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/sql-ctes.sql[@1~after].sql")))
+
+
+(ert-deftest combobulate-test-sql-combobulate-drag-down--sql-ctes-2
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-ctes.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-ctes.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 2) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/sql-ctes.sql[@2~after].sql")))
+
+
+(ert-deftest combobulate-test-sql-combobulate-drag-down--sql-ctes-3
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-ctes.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-ctes.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-drag-down)
+    (should-error
+     (progn
+       (combobulate-test-go-to-marker 3) (combobulate-drag-down)
+       (combobulate-compare-action-with-fixture-delta
+	"./fixture-deltas/combobulate-drag-down/sql-ctes.sql[@3~after].sql")))))
+
+
+(ert-deftest
+    combobulate-test-sql-combobulate-drag-down--sql-select-list-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-select-list.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-select-list.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 1) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/sql-select-list.sql[@1~after].sql")))
+
+
+(ert-deftest
+    combobulate-test-sql-combobulate-drag-down--sql-select-list-2
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-select-list.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-select-list.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 2) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/sql-select-list.sql[@2~after].sql")))
+
+
+(ert-deftest
+    combobulate-test-sql-combobulate-drag-down--sql-select-list-3
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-select-list.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-select-list.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-drag-down)
+    (should-error
+     (progn
+       (combobulate-test-go-to-marker 3) (combobulate-drag-down)
+       (combobulate-compare-action-with-fixture-delta
+	"./fixture-deltas/combobulate-drag-down/sql-select-list.sql[@3~after].sql")))))
+
+
+(ert-deftest combobulate-test-sql-combobulate-drag-down--sql-set-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-set.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-set.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 1) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/sql-set.sql[@1~after].sql")))
+
+
+(ert-deftest combobulate-test-sql-combobulate-drag-down--sql-set-2
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-set.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-set.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 2) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/sql-set.sql[@2~after].sql")))
+
+
+(ert-deftest combobulate-test-sql-combobulate-drag-down--sql-set-3
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-set.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-set.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-drag-down)
+    (should-error
+     (progn
+       (combobulate-test-go-to-marker 3) (combobulate-drag-down)
+       (combobulate-compare-action-with-fixture-delta
+	"./fixture-deltas/combobulate-drag-down/sql-set.sql[@3~after].sql")))))
+
+
+(ert-deftest
+    combobulate-test-sql-combobulate-drag-down--sql-statements-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-statements.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-statements.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 1) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/sql-statements.sql[@1~after].sql")))
+
+
+(ert-deftest
+    combobulate-test-sql-combobulate-drag-down--sql-statements-2
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-statements.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-statements.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 2) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/sql-statements.sql[@2~after].sql")))
+
+
+(ert-deftest
+    combobulate-test-sql-combobulate-drag-down--sql-statements-3
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-statements.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-statements.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 3) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/sql-statements.sql[@3~after].sql")))
+
+
+(ert-deftest
+    combobulate-test-sql-combobulate-drag-down--sql-statements-4
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-statements.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-statements.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-drag-down)
+    (should-error
+     (progn
+       (combobulate-test-go-to-marker 4) (combobulate-drag-down)
+       (combobulate-compare-action-with-fixture-delta
+	"./fixture-deltas/combobulate-drag-down/sql-statements.sql[@4~after].sql")))))
+
+
+(ert-deftest combobulate-test-sql-combobulate-drag-down--sql-values-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-values.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-values.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 1) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/sql-values.sql[@1~after].sql")))
+
+
+(ert-deftest combobulate-test-sql-combobulate-drag-down--sql-values-2
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-values.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-values.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 2) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/sql-values.sql[@2~after].sql")))
+
+
+(ert-deftest combobulate-test-sql-combobulate-drag-down--sql-values-3
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-values.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-values.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-drag-down)
+    (should-error
+     (progn
+       (combobulate-test-go-to-marker 3) (combobulate-drag-down)
+       (combobulate-compare-action-with-fixture-delta
+	"./fixture-deltas/combobulate-drag-down/sql-values.sql[@3~after].sql")))))
+
+
+(ert-deftest combobulate-test-sql-combobulate-drag-down--sql-where-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-where.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-where.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 1) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/sql-where.sql[@1~after].sql")))
+
+
+(ert-deftest combobulate-test-sql-combobulate-drag-down--sql-where-2
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-where.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-where.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 2) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/sql-where.sql[@2~after].sql")))
+
+
+(ert-deftest combobulate-test-sql-combobulate-drag-down--sql-where-3
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-where.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-where.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-drag-down)
+    (should-error
+     (progn
+       (combobulate-test-go-to-marker 3) (combobulate-drag-down)
+       (combobulate-compare-action-with-fixture-delta
+	"./fixture-deltas/combobulate-drag-down/sql-where.sql[@3~after].sql")))))
+
 

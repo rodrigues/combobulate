@@ -44,6 +44,8 @@
 (require 'markdown-ts-mode nil t)
 ;; From MELPA; tests using it are skipped when it is not installed.
 (require 'erlang-ts nil t)
+;; Not bundled with Emacs; tests using it are skipped when it is not on the load path.
+(require 'sql-ts-mode nil t)
 
 ;;; Helpers for writing procedures
 

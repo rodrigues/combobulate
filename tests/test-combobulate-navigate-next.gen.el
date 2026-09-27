@@ -2215,4 +2215,121 @@
     (combobulate-test-go-to-marker 2) (combobulate-navigate-next)
     (combobulate-test-assert-at-marker 3)))
 
+(ert-deftest
+    combobulate-test-sql-combobulate-navigate-next--sql-args-3 ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-args.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-args.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-navigate-next)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 2)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 3)))
+
+
+(ert-deftest
+    combobulate-test-sql-combobulate-navigate-next--sql-columns-3
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-columns.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-columns.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-navigate-next)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 2)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 3)))
+
+
+(ert-deftest
+    combobulate-test-sql-combobulate-navigate-next--sql-ctes-3 ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-ctes.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-ctes.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-navigate-next)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 2)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 3)))
+
+
+(ert-deftest
+    combobulate-test-sql-combobulate-navigate-next--sql-select-list-3
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-select-list.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-select-list.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-navigate-next)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 2)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 3)))
+
+
+(ert-deftest combobulate-test-sql-combobulate-navigate-next--sql-set-3
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-set.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-set.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-navigate-next)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 2)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 3)))
+
+
+(ert-deftest
+    combobulate-test-sql-combobulate-navigate-next--sql-statements-4
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-statements.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-statements.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-navigate-next)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 2)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 3)
+    (combobulate-test-go-to-marker 3) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 4)))
+
+
+(ert-deftest
+    combobulate-test-sql-combobulate-navigate-next--sql-values-3
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-values.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-values.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-navigate-next)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 2)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 3)))
+
+
+(ert-deftest
+    combobulate-test-sql-combobulate-navigate-next--sql-where-3 ()
+
+  "Test `combobulate' with `fixtures/sibling/sql-where.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/sibling/sql-where.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-navigate-next)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 2)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 3)))
+
 

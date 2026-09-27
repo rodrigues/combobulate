@@ -772,4 +772,59 @@
     (combobulate-test-go-to-marker 2) (combobulate-navigate-down)
     (combobulate-test-assert-at-marker 3)))
 
+(ert-deftest
+    combobulate-test-sql-combobulate-navigate-down--sql-create-table-2
+    ()
+
+  "Test `combobulate' with `fixtures/down/sql-create-table.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/down/sql-create-table.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-navigate-down)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-down)
+    (combobulate-test-assert-at-marker 2)))
+
+
+(ert-deftest
+    combobulate-test-sql-combobulate-navigate-down--sql-from-2 ()
+
+  "Test `combobulate' with `fixtures/down/sql-from.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/down/sql-from.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-navigate-down)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-down)
+    (combobulate-test-assert-at-marker 2)))
+
+
+(ert-deftest
+    combobulate-test-sql-combobulate-navigate-down--sql-subquery-3
+    ()
+
+  "Test `combobulate' with `fixtures/down/sql-subquery.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/down/sql-subquery.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-navigate-down)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-down)
+    (combobulate-test-assert-at-marker 2)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-down)
+    (combobulate-test-assert-at-marker 3)))
+
+
+(ert-deftest
+    combobulate-test-sql-combobulate-navigate-down--sql-with-4 ()
+
+  "Test `combobulate' with `fixtures/down/sql-with.sql' in `sql-ts-mode' mode."
+  (combobulate-test
+      (:language sql :mode sql-ts-mode :fixture
+		 "fixtures/down/sql-with.sql")
+    :tags '(combobulate sql sql-ts-mode combobulate-navigate-down)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-down)
+    (combobulate-test-assert-at-marker 2)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-down)
+    (combobulate-test-assert-at-marker 3)
+    (combobulate-test-go-to-marker 3) (combobulate-navigate-down)
+    (combobulate-test-assert-at-marker 4)))
+
 
