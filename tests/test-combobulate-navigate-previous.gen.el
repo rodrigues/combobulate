@@ -2134,3 +2134,92 @@
     (combobulate-test-assert-at-marker 1)))
 
 
+(ert-deftest
+    combobulate-test-markdown-combobulate-navigate-previous--markdown-blocks-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/markdown-blocks.md' in `markdown-ts-mode' mode."
+  (combobulate-test
+      (:language markdown :mode markdown-ts-mode :fixture
+		 "fixtures/sibling/markdown-blocks.md")
+    :tags
+    '(combobulate markdown markdown-ts-mode
+		  combobulate-navigate-previous)
+    (combobulate-test-go-to-marker 4) (combobulate-navigate-previous)
+    (combobulate-test-assert-at-marker 3)
+    (combobulate-test-go-to-marker 3) (combobulate-navigate-previous)
+    (combobulate-test-assert-at-marker 2)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-previous)
+    (combobulate-test-assert-at-marker 1)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-previous)
+    (combobulate-test-assert-at-marker 1)))
+
+
+(ert-deftest
+    combobulate-test-markdown-combobulate-navigate-previous--markdown-list-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/markdown-list.md' in `markdown-ts-mode' mode."
+  (combobulate-test
+      (:language markdown :mode markdown-ts-mode :fixture
+		 "fixtures/sibling/markdown-list.md")
+    :tags
+    '(combobulate markdown markdown-ts-mode
+		  combobulate-navigate-previous)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-previous)
+    (combobulate-test-assert-at-marker 1)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-previous)
+    (combobulate-test-assert-at-marker 1)))
+
+
+(ert-deftest
+    combobulate-test-markdown-combobulate-navigate-previous--markdown-sections-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/markdown-sections.md' in `markdown-ts-mode' mode."
+  (combobulate-test
+      (:language markdown :mode markdown-ts-mode :fixture
+		 "fixtures/sibling/markdown-sections.md")
+    :tags
+    '(combobulate markdown markdown-ts-mode
+		  combobulate-navigate-previous)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-previous)
+    (combobulate-test-assert-at-marker 1)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-previous)
+    (combobulate-test-assert-at-marker 1)))
+
+
+(ert-deftest
+    combobulate-test-markdown-combobulate-navigate-previous--markdown-table-cells-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/markdown-table-cells.md' in `markdown-ts-mode' mode."
+  (combobulate-test
+      (:language markdown :mode markdown-ts-mode :fixture
+		 "fixtures/sibling/markdown-table-cells.md")
+    :tags
+    '(combobulate markdown markdown-ts-mode
+		  combobulate-navigate-previous)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-previous)
+    (combobulate-test-assert-at-marker 1)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-previous)
+    (combobulate-test-assert-at-marker 1)))
+
+
+(ert-deftest
+    combobulate-test-markdown-combobulate-navigate-previous--markdown-table-rows-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/markdown-table-rows.md' in `markdown-ts-mode' mode."
+  (combobulate-test
+      (:language markdown :mode markdown-ts-mode :fixture
+		 "fixtures/sibling/markdown-table-rows.md")
+    :tags
+    '(combobulate markdown markdown-ts-mode
+		  combobulate-navigate-previous)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-previous)
+    (combobulate-test-assert-at-marker 1)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-previous)
+    (combobulate-test-assert-at-marker 1)))
+
+

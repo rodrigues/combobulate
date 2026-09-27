@@ -2132,3 +2132,87 @@
     (combobulate-test-assert-at-marker 3)))
 
 
+(ert-deftest
+    combobulate-test-markdown-combobulate-navigate-next--markdown-blocks-5
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/markdown-blocks.md' in `markdown-ts-mode' mode."
+  (combobulate-test
+      (:language markdown :mode markdown-ts-mode :fixture
+		 "fixtures/sibling/markdown-blocks.md")
+    :tags
+    '(combobulate markdown markdown-ts-mode combobulate-navigate-next)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 2)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 3)
+    (combobulate-test-go-to-marker 3) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 4)
+    (combobulate-test-go-to-marker 4) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 5)))
+
+
+(ert-deftest
+    combobulate-test-markdown-combobulate-navigate-next--markdown-list-3
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/markdown-list.md' in `markdown-ts-mode' mode."
+  (combobulate-test
+      (:language markdown :mode markdown-ts-mode :fixture
+		 "fixtures/sibling/markdown-list.md")
+    :tags
+    '(combobulate markdown markdown-ts-mode combobulate-navigate-next)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 2)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 3)))
+
+
+(ert-deftest
+    combobulate-test-markdown-combobulate-navigate-next--markdown-sections-3
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/markdown-sections.md' in `markdown-ts-mode' mode."
+  (combobulate-test
+      (:language markdown :mode markdown-ts-mode :fixture
+		 "fixtures/sibling/markdown-sections.md")
+    :tags
+    '(combobulate markdown markdown-ts-mode combobulate-navigate-next)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 2)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 3)))
+
+
+(ert-deftest
+    combobulate-test-markdown-combobulate-navigate-next--markdown-table-cells-3
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/markdown-table-cells.md' in `markdown-ts-mode' mode."
+  (combobulate-test
+      (:language markdown :mode markdown-ts-mode :fixture
+		 "fixtures/sibling/markdown-table-cells.md")
+    :tags
+    '(combobulate markdown markdown-ts-mode combobulate-navigate-next)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 2)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 3)))
+
+
+(ert-deftest
+    combobulate-test-markdown-combobulate-navigate-next--markdown-table-rows-3
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/markdown-table-rows.md' in `markdown-ts-mode' mode."
+  (combobulate-test
+      (:language markdown :mode markdown-ts-mode :fixture
+		 "fixtures/sibling/markdown-table-rows.md")
+    :tags
+    '(combobulate markdown markdown-ts-mode combobulate-navigate-next)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 2)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 3)))
+
+

@@ -741,3 +741,35 @@
     (combobulate-test-assert-at-marker 4)))
 
 
+(ert-deftest
+    combobulate-test-markdown-combobulate-navigate-down--markdown-section-3
+    ()
+
+  "Test `combobulate' with `fixtures/down/markdown-section.md' in `markdown-ts-mode' mode."
+  (combobulate-test
+      (:language markdown :mode markdown-ts-mode :fixture
+		 "fixtures/down/markdown-section.md")
+    :tags
+    '(combobulate markdown markdown-ts-mode combobulate-navigate-down)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-down)
+    (combobulate-test-assert-at-marker 2)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-down)
+    (combobulate-test-assert-at-marker 3)))
+
+
+(ert-deftest
+    combobulate-test-markdown-combobulate-navigate-down--markdown-table-3
+    ()
+
+  "Test `combobulate' with `fixtures/down/markdown-table.md' in `markdown-ts-mode' mode."
+  (combobulate-test
+      (:language markdown :mode markdown-ts-mode :fixture
+		 "fixtures/down/markdown-table.md")
+    :tags
+    '(combobulate markdown markdown-ts-mode combobulate-navigate-down)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-down)
+    (combobulate-test-assert-at-marker 2)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-down)
+    (combobulate-test-assert-at-marker 3)))
+
+

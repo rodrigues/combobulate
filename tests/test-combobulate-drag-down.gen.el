@@ -6232,3 +6232,268 @@
 	"./fixture-deltas/combobulate-drag-down/erlang-map.erl[@3~after].erl")))))
 
 
+(ert-deftest
+    combobulate-test-markdown-combobulate-drag-down--markdown-blocks-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/markdown-blocks.md' in `markdown-ts-mode' mode."
+  (combobulate-test
+      (:language markdown :mode markdown-ts-mode :fixture
+		 "fixtures/sibling/markdown-blocks.md")
+    :tags
+    '(combobulate markdown markdown-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 1) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/markdown-blocks.md[@1~after].md")))
+
+
+(ert-deftest
+    combobulate-test-markdown-combobulate-drag-down--markdown-blocks-2
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/markdown-blocks.md' in `markdown-ts-mode' mode."
+  (combobulate-test
+      (:language markdown :mode markdown-ts-mode :fixture
+		 "fixtures/sibling/markdown-blocks.md")
+    :tags
+    '(combobulate markdown markdown-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 2) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/markdown-blocks.md[@2~after].md")))
+
+
+(ert-deftest
+    combobulate-test-markdown-combobulate-drag-down--markdown-blocks-3
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/markdown-blocks.md' in `markdown-ts-mode' mode."
+  (combobulate-test
+      (:language markdown :mode markdown-ts-mode :fixture
+		 "fixtures/sibling/markdown-blocks.md")
+    :tags
+    '(combobulate markdown markdown-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 3) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/markdown-blocks.md[@3~after].md")))
+
+
+(ert-deftest
+    combobulate-test-markdown-combobulate-drag-down--markdown-blocks-4
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/markdown-blocks.md' in `markdown-ts-mode' mode."
+  (combobulate-test
+      (:language markdown :mode markdown-ts-mode :fixture
+		 "fixtures/sibling/markdown-blocks.md")
+    :tags
+    '(combobulate markdown markdown-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 4) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/markdown-blocks.md[@4~after].md")))
+
+
+(ert-deftest
+    combobulate-test-markdown-combobulate-drag-down--markdown-blocks-5
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/markdown-blocks.md' in `markdown-ts-mode' mode."
+  (combobulate-test
+      (:language markdown :mode markdown-ts-mode :fixture
+		 "fixtures/sibling/markdown-blocks.md")
+    :tags
+    '(combobulate markdown markdown-ts-mode combobulate-drag-down)
+    (should-error
+     (progn
+       (combobulate-test-go-to-marker 5) (combobulate-drag-down)
+       (combobulate-compare-action-with-fixture-delta
+	"./fixture-deltas/combobulate-drag-down/markdown-blocks.md[@5~after].md")))))
+
+
+(ert-deftest
+    combobulate-test-markdown-combobulate-drag-down--markdown-list-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/markdown-list.md' in `markdown-ts-mode' mode."
+  (combobulate-test
+      (:language markdown :mode markdown-ts-mode :fixture
+		 "fixtures/sibling/markdown-list.md")
+    :tags
+    '(combobulate markdown markdown-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 1) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/markdown-list.md[@1~after].md")))
+
+
+(ert-deftest
+    combobulate-test-markdown-combobulate-drag-down--markdown-list-2
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/markdown-list.md' in `markdown-ts-mode' mode."
+  (combobulate-test
+      (:language markdown :mode markdown-ts-mode :fixture
+		 "fixtures/sibling/markdown-list.md")
+    :tags
+    '(combobulate markdown markdown-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 2) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/markdown-list.md[@2~after].md")))
+
+
+(ert-deftest
+    combobulate-test-markdown-combobulate-drag-down--markdown-list-3
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/markdown-list.md' in `markdown-ts-mode' mode."
+  (combobulate-test
+      (:language markdown :mode markdown-ts-mode :fixture
+		 "fixtures/sibling/markdown-list.md")
+    :tags
+    '(combobulate markdown markdown-ts-mode combobulate-drag-down)
+    (should-error
+     (progn
+       (combobulate-test-go-to-marker 3) (combobulate-drag-down)
+       (combobulate-compare-action-with-fixture-delta
+	"./fixture-deltas/combobulate-drag-down/markdown-list.md[@3~after].md")))))
+
+
+(ert-deftest
+    combobulate-test-markdown-combobulate-drag-down--markdown-sections-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/markdown-sections.md' in `markdown-ts-mode' mode."
+  (combobulate-test
+      (:language markdown :mode markdown-ts-mode :fixture
+		 "fixtures/sibling/markdown-sections.md")
+    :tags
+    '(combobulate markdown markdown-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 1) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/markdown-sections.md[@1~after].md")))
+
+
+(ert-deftest
+    combobulate-test-markdown-combobulate-drag-down--markdown-sections-2
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/markdown-sections.md' in `markdown-ts-mode' mode."
+  (combobulate-test
+      (:language markdown :mode markdown-ts-mode :fixture
+		 "fixtures/sibling/markdown-sections.md")
+    :tags
+    '(combobulate markdown markdown-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 2) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/markdown-sections.md[@2~after].md")))
+
+
+(ert-deftest
+    combobulate-test-markdown-combobulate-drag-down--markdown-sections-3
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/markdown-sections.md' in `markdown-ts-mode' mode."
+  (combobulate-test
+      (:language markdown :mode markdown-ts-mode :fixture
+		 "fixtures/sibling/markdown-sections.md")
+    :tags
+    '(combobulate markdown markdown-ts-mode combobulate-drag-down)
+    (should-error
+     (progn
+       (combobulate-test-go-to-marker 3) (combobulate-drag-down)
+       (combobulate-compare-action-with-fixture-delta
+	"./fixture-deltas/combobulate-drag-down/markdown-sections.md[@3~after].md")))))
+
+
+(ert-deftest
+    combobulate-test-markdown-combobulate-drag-down--markdown-table-cells-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/markdown-table-cells.md' in `markdown-ts-mode' mode."
+  (combobulate-test
+      (:language markdown :mode markdown-ts-mode :fixture
+		 "fixtures/sibling/markdown-table-cells.md")
+    :tags
+    '(combobulate markdown markdown-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 1) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/markdown-table-cells.md[@1~after].md")))
+
+
+(ert-deftest
+    combobulate-test-markdown-combobulate-drag-down--markdown-table-cells-2
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/markdown-table-cells.md' in `markdown-ts-mode' mode."
+  (combobulate-test
+      (:language markdown :mode markdown-ts-mode :fixture
+		 "fixtures/sibling/markdown-table-cells.md")
+    :tags
+    '(combobulate markdown markdown-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 2) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/markdown-table-cells.md[@2~after].md")))
+
+
+(ert-deftest
+    combobulate-test-markdown-combobulate-drag-down--markdown-table-cells-3
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/markdown-table-cells.md' in `markdown-ts-mode' mode."
+  (combobulate-test
+      (:language markdown :mode markdown-ts-mode :fixture
+		 "fixtures/sibling/markdown-table-cells.md")
+    :tags
+    '(combobulate markdown markdown-ts-mode combobulate-drag-down)
+    (should-error
+     (progn
+       (combobulate-test-go-to-marker 3) (combobulate-drag-down)
+       (combobulate-compare-action-with-fixture-delta
+	"./fixture-deltas/combobulate-drag-down/markdown-table-cells.md[@3~after].md")))))
+
+
+(ert-deftest
+    combobulate-test-markdown-combobulate-drag-down--markdown-table-rows-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/markdown-table-rows.md' in `markdown-ts-mode' mode."
+  (combobulate-test
+      (:language markdown :mode markdown-ts-mode :fixture
+		 "fixtures/sibling/markdown-table-rows.md")
+    :tags
+    '(combobulate markdown markdown-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 1) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/markdown-table-rows.md[@1~after].md")))
+
+
+(ert-deftest
+    combobulate-test-markdown-combobulate-drag-down--markdown-table-rows-2
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/markdown-table-rows.md' in `markdown-ts-mode' mode."
+  (combobulate-test
+      (:language markdown :mode markdown-ts-mode :fixture
+		 "fixtures/sibling/markdown-table-rows.md")
+    :tags
+    '(combobulate markdown markdown-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 2) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/markdown-table-rows.md[@2~after].md")))
+
+
+(ert-deftest
+    combobulate-test-markdown-combobulate-drag-down--markdown-table-rows-3
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/markdown-table-rows.md' in `markdown-ts-mode' mode."
+  (combobulate-test
+      (:language markdown :mode markdown-ts-mode :fixture
+		 "fixtures/sibling/markdown-table-rows.md")
+    :tags
+    '(combobulate markdown markdown-ts-mode combobulate-drag-down)
+    (should-error
+     (progn
+       (combobulate-test-go-to-marker 3) (combobulate-drag-down)
+       (combobulate-compare-action-with-fixture-delta
+	"./fixture-deltas/combobulate-drag-down/markdown-table-rows.md[@3~after].md")))))
+
+
