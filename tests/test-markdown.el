@@ -217,11 +217,44 @@
 (defun combobulate-test-markdown--triple-quoted-p (node)
   (string-match-p "\\`\\(?:~[sS]\\)?\"\"\"" (treesit-node-text node t)))
 
+(defun combobulate-test-markdown--iex-block-p (node)
+  (string-match-p "\\`[ \t]*iex\\(?:([^)]*)[0-9]*\\)?>" (treesit-node-text node t)))
+
+(defun combobulate-test-markdown--code-block-p (node)
+  (not (combobulate-test-markdown--iex-block-p node)))
+
+(defun combobulate-test-markdown--iex-expression-ranges (node _offset)
+  "Return the ranges of the expressions in the evaluation block NODE."
+  (or (mapcan (lambda (line)
+                (when-let* ((expression (seq-find (lambda (child)
+                                                    (equal (treesit-node-type child) "expression"))
+                                                  (treesit-node-children line t))))
+                  (list (cons (treesit-node-start expression) (treesit-node-end expression)))))
+              (seq-filter (lambda (child) (equal (treesit-node-type child) "prompt_line"))
+                          (treesit-node-children node t)))
+      (cons (treesit-node-end node) (treesit-node-end node))))
+
+(defun combobulate-test-markdown--iex-range-rules ()
+  "Return rules embedding `iex' in doctests, and Elixir in their expressions and results.
+
+The expressions of an evaluation block share one parser, so an
+expression continued on `...>' lines parses as one."
+  (when (treesit-language-available-p 'iex)
+    (treesit-range-rules
+     :embed 'iex :host 'markdown :local t
+     '(((indented_code_block) @iex (:pred combobulate-test-markdown--iex-block-p @iex)))
+     :embed 'elixir :host 'iex :local t
+     :range-fn #'combobulate-test-markdown--iex-expression-ranges
+     '((evaluation_block) @elixir)
+     :embed 'elixir :host 'iex :local t
+     '((result) @elixir))))
+
 (defun combobulate-test-markdown--doc-range-rules (host query fence-language)
   "Return rules embedding Markdown in the HOST nodes QUERY captures.
 
 Fenced FENCE-LANGUAGE blocks and indented code blocks in the Markdown
-embed HOST again, as ExDoc treats indented code as Elixir."
+embed HOST again, as ExDoc treats indented code as Elixir, except for
+doctests, which start with `iex>'."
   (treesit-range-rules
    ;; A function rather than `markdown', which `markdown-mode' defines as a command.
    :embed (lambda (_node) 'markdown) :host host :local t
@@ -231,7 +264,7 @@ embed HOST again, as ExDoc treats indented code as Elixir."
    `((fenced_code_block (info_string (language) @_lang)
                         (code_fence_content) @content
                         (:equal ,fence-language @_lang))
-     (indented_code_block) @content)))
+     ((indented_code_block) @content (:pred combobulate-test-markdown--code-block-p @content)))))
 
 (defmacro combobulate-test-markdown-doc (mode source &rest body)
   "Run BODY in a MODE buffer holding SOURCE, with Markdown in its doc strings."
@@ -249,14 +282,16 @@ embed HOST again, as ExDoc treats indented code as Elixir."
                    (append treesit-range-settings
                            (pcase ',mode
                              ('elixir-ts-mode
-                              (combobulate-test-markdown--doc-range-rules
-                               'elixir
-                               '((unary_operator
-                                  operand: (call target: (identifier) @_name
-                                                 (arguments [(string) (sigil)] @markdown))
-                                  (:pred combobulate-test-markdown--doc-attribute-p @_name)
-                                  (:pred combobulate-test-markdown--triple-quoted-p @markdown)))
-                               "elixir"))
+                              (append
+                               (combobulate-test-markdown--doc-range-rules
+                                'elixir
+                                '((unary_operator
+                                   operand: (call target: (identifier) @_name
+                                                  (arguments [(string) (sigil)] @markdown))
+                                   (:pred combobulate-test-markdown--doc-attribute-p @_name)
+                                   (:pred combobulate-test-markdown--triple-quoted-p @markdown)))
+                                "elixir")
+                               (combobulate-test-markdown--iex-range-rules)))
                              ('erlang-ts-mode
                               (combobulate-test-markdown--doc-range-rules
                                'erlang
@@ -341,6 +376,58 @@ embed HOST again, as ExDoc treats indented code as Elixir."
   (combobulate-test-markdown-doc erlang-ts-mode
       (string-replace "One line" "‸One line" combobulate-test-markdown-erlang-source)
     (should (eq (combobulate-primary-language) 'erlang))))
+
+;;; Doctests in Elixir doc strings
+
+(defconst combobulate-test-iex-source
+  "defmodule M do\n  @doc \"\"\"\n  Adds.\n\n      iex> M.add(1, 2)\n      3\n\n      iex> M.add(\n      ...>   1,\n      ...>   2\n      ...> )\n      3\n  \"\"\"\n  def add(a, b), do: a + b\nend\n")
+
+(defmacro combobulate-test-iex (marker &rest body)
+  "Run BODY on `combobulate-test-iex-source' with point before the Nth MARKER.
+
+MARKER is a string, or a list of the string and N."
+  (declare (indent 1))
+  `(progn
+     (skip-unless (treesit-language-available-p 'iex))
+     (combobulate-test-markdown-doc elixir-ts-mode
+         (let* ((marker ,marker)
+                (text (if (consp marker) (car marker) marker))
+                (count (if (consp marker) (cadr marker) 1))
+                (pos -1))
+           (dotimes (_ count)
+             (setq pos (string-search text combobulate-test-iex-source (1+ pos))))
+           (concat (substring combobulate-test-iex-source 0 pos) "‸"
+                   (substring combobulate-test-iex-source pos)))
+       ,@body)))
+
+(ert-deftest combobulate-test-iex-prompt-is-iex ()
+  (combobulate-test-iex "iex>"
+    (should (eq (combobulate-primary-language) 'iex))))
+
+(ert-deftest combobulate-test-iex-expression-and-result-are-elixir ()
+  (combobulate-test-iex "M.add(1"
+    (should (eq (combobulate-primary-language) 'elixir)))
+  (combobulate-test-iex "3\n\n"
+    (should (eq (combobulate-primary-language) 'elixir))))
+
+(ert-deftest combobulate-test-iex-next-doctest ()
+  (combobulate-test-iex "iex>"
+    (combobulate-elixir-navigate-next)
+    (should (looking-at-p "iex> M.add(\n"))
+    (combobulate-elixir-navigate-previous)
+    (should (looking-at-p "iex> M.add(1, 2)"))))
+
+(ert-deftest combobulate-test-iex-drag-doctest-down ()
+  (combobulate-test-iex "iex>"
+    (combobulate-elixir-drag-down)
+    (should (string-search
+             "  Adds.\n\n      iex> M.add(\n      ...>   1,\n      ...>   2\n      ...> )\n      3\n\n      iex> M.add(1, 2)\n      3\n  \"\"\""
+             (buffer-string)))))
+
+(ert-deftest combobulate-test-iex-multi-line-expression-parses-as-one ()
+  (combobulate-test-iex "1,"
+    (should (equal (treesit-node-type (treesit-node-parent (combobulate-node-at (point) 'elixir t)))
+                   "arguments"))))
 
 (provide 'test-markdown)
 ;;; test-markdown.el ends here
