@@ -140,7 +140,7 @@ are worth navigating between."
 (defun combobulate-elixir--node-at (pos)
   "Return the smallest named node at POS, skipping leading indentation."
   (let ((pos (combobulate-elixir--point-at pos)))
-    (treesit-node-descendant-for-range (treesit-buffer-root-node 'elixir) pos pos t)))
+    (treesit-node-descendant-for-range (combobulate-buffer-root-node 'elixir) pos pos t)))
 
 (defun combobulate-elixir--outermost-at (node)
   "Return the largest node that starts where NODE starts and is not a wrapper."
@@ -289,7 +289,7 @@ ignores them because they do not start after point."
 
 (defun combobulate-elixir--sexp-at (pos backward)
   "Return the expression that starts at POS, or ends at POS if BACKWARD."
-  (let* ((root (treesit-buffer-root-node 'elixir))
+  (let* ((root (combobulate-buffer-root-node 'elixir))
          (node (if backward
                    (and (> pos (point-min))
                         (treesit-node-descendant-for-range root (1- pos) pos t))
@@ -303,21 +303,15 @@ ignores them because they do not start after point."
         (setq node parent))
       node)))
 
-(defun combobulate-elixir--in-heex-p ()
-  "Return non-nil if point is inside a `~H' sigil."
-  ;; Emacs only sets the HEEx parser's ranges on redisplay.
-  (treesit-update-ranges (point) (min (point-max) (1+ (point))))
-  (eq (treesit-language-at (point)) 'heex))
-
 (defun combobulate-elixir-forward-sexp (&optional arg)
   "Move forward over ARG Elixir expressions, or backward if ARG is negative.
 
 From `def' this moves over the whole definition, and from
 `Keyword.get' over the whole call.  Where no expression starts,
-fall back to `forward-sexp-default-function'.  Inside a `~H' sigil,
-use Combobulate's HEEx navigation."
+fall back to `forward-sexp-default-function'.  Inside an embedded
+language, such as a `~H' sigil, use Combobulate's navigation for it."
   (setq arg (or arg 1))
-  (if (combobulate-elixir--in-heex-p)
+  (if (combobulate-embedded-language 'elixir)
       (combobulate-forward-sexp-function arg)
     (let ((backward (< arg 0)))
       (dotimes (_ (abs arg))
@@ -348,14 +342,13 @@ because they are siblings of the statements before them."
     (if node (treesit-node-start node) (point))))
 
 (defun combobulate-elixir--navigate (arg fallback find)
-  "Move ARG times to the node FIND returns, or run FALLBACK inside HEEx.
+  "Move ARG times to the node FIND returns, or run FALLBACK if point is embedded.
 
 The commands below compute their targets directly instead of going
 through the procedure queries, which walk the whole enclosing block
 and get slow in large modules."
   (combobulate-elixir--skip-indentation)
-  (if (combobulate-elixir--in-heex-p)
-      (funcall fallback arg)
+  (unless (combobulate-run-embedded-command 'elixir fallback arg)
     (dotimes (_ (or arg 1))
       (combobulate-visual-move-to-node (funcall find)))))
 
@@ -420,6 +413,14 @@ name and binary operators by operator."
           (seq-find (lambda (node) (> (treesit-node-start node) anchor)) same)
         (car (last (seq-filter (lambda (node) (< (treesit-node-start node) anchor)) same)))))))
 
+(defun combobulate-elixir--same-kind-fallback (heex-command command)
+  "Return HEEX-COMMAND if point is in HEEx, else COMMAND.
+
+Only HEEx has same-kind navigation, so the other embedded languages
+get plain sibling navigation."
+  (combobulate-elixir--skip-indentation)
+  (if (eq (combobulate-embedded-language 'elixir) 'heex) heex-command command))
+
 (defun combobulate-elixir-navigate-next-same-kind (&optional arg)
   "Move to the next sibling of the same kind ARG times.
 
@@ -427,7 +428,8 @@ From `def' this skips `@doc', `@spec' and other statements to reach
 the next `def' or `defp'; from `@doc' it reaches the next `@doc'."
   (interactive "^p")
   (combobulate-elixir--navigate
-   arg #'combobulate-heex-navigate-next-same-kind
+   arg (combobulate-elixir--same-kind-fallback #'combobulate-heex-navigate-next-same-kind
+                                              #'combobulate-navigate-next)
    (lambda ()
      (skip-chars-forward combobulate-skip-prefix-regexp)
      (combobulate-elixir--same-kind-target 'next))))
@@ -436,7 +438,8 @@ the next `def' or `defp'; from `@doc' it reaches the next `@doc'."
   "Move to the previous sibling of the same kind ARG times."
   (interactive "^p")
   (combobulate-elixir--navigate
-   arg #'combobulate-heex-navigate-previous-same-kind
+   arg (combobulate-elixir--same-kind-fallback #'combobulate-heex-navigate-previous-same-kind
+                                              #'combobulate-navigate-previous)
    (lambda () (combobulate-elixir--same-kind-target 'previous))))
 
 (defun combobulate-elixir--trimmed-range (node)
@@ -499,8 +502,7 @@ Uses the same siblings as \\[combobulate-elixir-navigate-next]."
 
 (defun combobulate-elixir--drag-command (arg direction fallback)
   (combobulate-elixir--skip-indentation)
-  (if (combobulate-elixir--in-heex-p)
-      (funcall fallback arg)
+  (unless (combobulate-run-embedded-command 'elixir fallback arg)
     (dotimes (_ (or arg 1))
       (let ((start (combobulate-elixir--drag direction)))
         (combobulate-visual-move-to-node
@@ -512,8 +514,7 @@ Uses the same siblings as \\[combobulate-elixir-navigate-next]."
 The last clause of a `case' or `fn' includes the newline before
 `end', and killing it would pull `end' onto the previous line."
   (interactive "p")
-  (if (combobulate-elixir--in-heex-p)
-      (combobulate-kill-node-dwim arg)
+  (unless (combobulate-run-embedded-command 'elixir #'combobulate-kill-node-dwim arg)
     (dotimes (_ (or arg 1))
       (with-navigation-nodes (:procedures (combobulate-read procedures-sibling))
         (when-let* ((nearest (save-excursion
@@ -622,7 +623,7 @@ anonymous function they are `fn' and `end'."
 
 (defun combobulate-elixir--sequence-target (direction)
   "Return the next keyword position in DIRECTION among the constructs around point."
-  (let ((node (treesit-node-at (point) 'elixir))
+  (let ((node (combobulate-node-at (point) 'elixir))
         (target))
     (while (and node (not target))
       (let ((positions (combobulate-elixir--keywords node)))
@@ -640,7 +641,7 @@ Outside any construct, fall back to `combobulate-navigate-sequence-next'."
   (interactive "^p")
   (combobulate-elixir--skip-indentation)
   (dotimes (_ (or arg 1))
-    (let ((target (and (not (combobulate-elixir--in-heex-p))
+    (let ((target (and (not (combobulate-embedded-language 'elixir))
                        (combobulate-elixir--sequence-target 'next))))
       (if target
           (goto-char target)
@@ -654,7 +655,7 @@ Outside any construct, fall back to `combobulate-navigate-sequence-previous'."
   (interactive "^p")
   (combobulate-elixir--skip-indentation)
   (dotimes (_ (or arg 1))
-    (let ((target (and (not (combobulate-elixir--in-heex-p))
+    (let ((target (and (not (combobulate-embedded-language 'elixir))
                        (combobulate-elixir--sequence-target 'previous))))
       (if target
           (goto-char target)

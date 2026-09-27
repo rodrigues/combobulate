@@ -32,6 +32,7 @@
 (declare-function combobulate-node-at-point "combobulate-navigation")
 (declare-function combobulate--goto-node "combobulate-navigation")
 (declare-function combobulate-get-registered-language "combobulate-setup")
+(defvar combobulate-registered-languages-alist)
 
 (defsubst combobulate-language-available-p (language)
   (treesit-language-available-p language))
@@ -42,14 +43,29 @@
 (defsubst combobulate-node-p (node)
   (treesit-node-p node))
 
+(defun combobulate--parser-at-point (language)
+  "Return the parser for LANGUAGE that covers point, or LANGUAGE if there is none.
+
+`markdown-ts-mode' gives each code block its own local parser, which
+looking a parser up by language alone does not find."
+  (or (and (symbolp language)
+           (fboundp 'treesit-parsers-at)
+           (car (treesit-parsers-at (point) language)))
+      language))
+
 (defsubst combobulate-buffer-root-node (&optional language)
-  (treesit-buffer-root-node (or language (combobulate-primary-language))))
+  (let ((parser (combobulate--parser-at-point (or language (combobulate-primary-language)))))
+    (if (treesit-parser-p parser)
+        (treesit-parser-root-node parser)
+      (treesit-buffer-root-node parser))))
 
 (defsubst combobulate-node-on (beg end &optional parser-or-lang named)
-  (treesit-node-on beg end (or parser-or-lang (combobulate-primary-language)) named))
+  (treesit-node-on beg end (combobulate--parser-at-point (or parser-or-lang (combobulate-primary-language)))
+                   named))
 
 (defsubst combobulate-node-at (pos &optional parser-or-lang named)
-  (treesit-node-at pos (or parser-or-lang (combobulate-primary-language)) named))
+  (treesit-node-at pos (combobulate--parser-at-point (or parser-or-lang (combobulate-primary-language)))
+                   named))
 
 (defsubst combobulate-induce-sparse-tree (root predicate &optional process-fn limit)
   (treesit-induce-sparse-tree root predicate process-fn limit))
@@ -69,9 +85,23 @@
 (defsubst combobulate-parser-node (node)
   (treesit-node-parser node))
 
+(defun combobulate--registered-language-at (pos)
+  "Return the innermost language at POS that Combobulate supports.
+
+Markdown text, for instance, belongs to `markdown-inline', so this
+returns `markdown' there.  A major mode's own idea of the language at
+point is not used, because it can name the host language inside a
+supported embedded one."
+  (if (fboundp 'treesit-parsers-at)
+      (seq-some (lambda (parser)
+                  (car (assq (treesit-parser-language parser)
+                             combobulate-registered-languages-alist)))
+                (treesit-parsers-at pos))
+    (treesit-language-at pos)))
+
 (defun combobulate-primary-language (&optional quiet)
   (or
-   (treesit-language-at (point))
+   (combobulate--registered-language-at (point))
    (car (combobulate-get-registered-language major-mode))
    (when-let ((first-language (car (combobulate-parser-list))))
      (combobulate-parser-language first-language))
@@ -149,8 +179,7 @@
     (eq node1 node2)))
 
 (defsubst combobulate-root-node ()
-  (treesit-buffer-root-node
-   (combobulate-primary-language)))
+  (combobulate-buffer-root-node))
 
 (defsubst combobulate-node-descendant-for-range (node beg end &optional all)
   (treesit-node-descendant-for-range node beg end (not all)))

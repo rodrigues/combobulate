@@ -172,7 +172,7 @@ attribute name."
   "Return the tag, component, slot, attribute or other element at POS."
   ;; Inside a `~H' sigil the HEEx parser only sees ranges that were updated.
   (treesit-update-ranges pos (min (point-max) (1+ pos)))
-  (let ((node (treesit-node-at pos 'heex)))
+  (let ((node (combobulate-node-at pos 'heex)))
     (while (and node
                 (not (member (treesit-node-type node) '("attribute" "special_attribute")))
                 (not (member (treesit-node-type (treesit-node-parent node))

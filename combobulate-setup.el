@@ -447,6 +447,26 @@ A complete list of known shorthands are found in
   (dolist (envelope (combobulate-read envelope-list))
     (apply #'combobulate-define-envelope envelope)))
 
+(defun combobulate-embedded-language (host)
+  "Return the language at point if it is a language embedded in HOST, else nil."
+  ;; Emacs only sets an embedded parser's ranges on redisplay.
+  (treesit-update-ranges (point) (min (point-max) (1+ (point))))
+  (let ((language (combobulate-primary-language)))
+    (unless (eq language host)
+      language)))
+
+(defun combobulate-run-embedded-command (host command arg)
+  "Run COMMAND with ARG for the language at point, unless point is in HOST.
+
+Run what the embedded language's map binds in place of COMMAND, so
+its own variant of a command wins.  Return non-nil if point was in an
+embedded language."
+  (when-let* ((language (combobulate-embedded-language host)))
+    (funcall (or (command-remapping command nil (list (combobulate-read map language)))
+                 command)
+             arg)
+    t))
+
 (defun combobulate-get-registered-language (mm)
   "Get the registered language for a major mode MM.
 

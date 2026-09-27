@@ -156,7 +156,7 @@ The `after' of `try' and `receive' sits one level down, in its own
 
 (defun combobulate-erlang--sequence-target (direction)
   "Return the next keyword position in DIRECTION among the constructs around point."
-  (let ((node (treesit-node-at (point) 'erlang))
+  (let ((node (combobulate-node-at (point) 'erlang))
         (target))
     (while (and node (not target))
       (let ((positions (combobulate-erlang--keywords node)))
@@ -172,16 +172,18 @@ The `after' of `try' and `receive' sits one level down, in its own
 From `case' this visits `of', then `end'; from `try' also `catch'
 and `after'."
   (interactive "^p")
-  (dotimes (_ (or arg 1))
-    (when-let* ((target (combobulate-erlang--sequence-target 'next)))
-      (goto-char target))))
+  (unless (combobulate-run-embedded-command 'erlang #'combobulate-navigate-sequence-next arg)
+    (dotimes (_ (or arg 1))
+      (when-let* ((target (combobulate-erlang--sequence-target 'next)))
+        (goto-char target)))))
 
 (defun combobulate-erlang-navigate-sequence-previous (&optional arg)
   "Move to the previous keyword of the construct at point ARG times."
   (interactive "^p")
-  (dotimes (_ (or arg 1))
-    (when-let* ((target (combobulate-erlang--sequence-target 'previous)))
-      (goto-char target))))
+  (unless (combobulate-run-embedded-command 'erlang #'combobulate-navigate-sequence-previous arg)
+    (dotimes (_ (or arg 1))
+      (when-let* ((target (combobulate-erlang--sequence-target 'previous)))
+        (goto-char target)))))
 
 (defun combobulate-erlang-setup (_)
   (let ((map (combobulate-read map)))
@@ -252,14 +254,16 @@ previous function, so the other clauses of the current one are skipped."
 From a function clause this reaches the next function; from `-spec'
 the next `-spec'; from a call to `io:format' the next such call."
   (interactive "^p")
-  (dotimes (_ (or arg 1))
-    (combobulate-visual-move-to-node (combobulate-erlang--same-kind-target 'next))))
+  (unless (combobulate-run-embedded-command 'erlang #'combobulate-navigate-next arg)
+    (dotimes (_ (or arg 1))
+      (combobulate-visual-move-to-node (combobulate-erlang--same-kind-target 'next)))))
 
 (defun combobulate-erlang-navigate-previous-same-kind (&optional arg)
   "Move to the previous sibling of the same kind ARG times."
   (interactive "^p")
-  (dotimes (_ (or arg 1))
-    (combobulate-visual-move-to-node (combobulate-erlang--same-kind-target 'previous))))
+  (unless (combobulate-run-embedded-command 'erlang #'combobulate-navigate-previous arg)
+    (dotimes (_ (or arg 1))
+      (combobulate-visual-move-to-node (combobulate-erlang--same-kind-target 'previous)))))
 
 (defun combobulate-erlang--separator-p (node)
   (and node
@@ -311,7 +315,7 @@ lines of its own, the region covers those whole lines."
 (defun combobulate-erlang--forms ()
   "Return the top-level forms, without comments."
   (seq-remove (lambda (node) (equal (treesit-node-type node) "comment"))
-              (treesit-node-children (treesit-buffer-root-node 'erlang) t)))
+              (treesit-node-children (combobulate-buffer-root-node 'erlang) t)))
 
 (defun combobulate-erlang--clause-key (form)
   "Return the name and arity of the function that FORM is a clause of."
@@ -358,6 +362,10 @@ terminator, so moving or removing one can leave the wrong one."
 Takes one `,' or `;' along with the node, and fixes the `;' and `.'
 of the surrounding function clauses when killing a clause."
   (interactive "p")
+  (unless (combobulate-run-embedded-command 'erlang #'combobulate-kill-node-dwim arg)
+    (combobulate-erlang--kill-node-dwim arg)))
+
+(defun combobulate-erlang--kill-node-dwim (arg)
   (dotimes (_ (or arg 1))
     (with-navigation-nodes (:procedures (combobulate-read procedures-sibling))
       (when-let* ((nearest (save-excursion
@@ -390,6 +398,10 @@ of the surrounding function clauses when killing a clause."
 
 Refuse to swap two clauses of different kinds, such as a `receive'
 clause with its `after', which would move code into the wrong section."
+  (unless (combobulate-run-embedded-command 'erlang command arg)
+    (combobulate-erlang--drag command arg direction)))
+
+(defun combobulate-erlang--drag (command arg direction)
   (let* ((pos (save-excursion (skip-chars-forward " \t") (point)))
          (clause (seq-find (lambda (node)
                              (and (member (treesit-node-type node) combobulate-erlang--clause-types)
@@ -417,7 +429,7 @@ clause with its `after', which would move code into the wrong section."
 
 (defun combobulate-erlang--statement-at-point ()
   "Return the body statement at point and the node whose statements it is among."
-  (let ((node (treesit-node-at (save-excursion (skip-chars-forward " \t\n") (point)) 'erlang)))
+  (let ((node (combobulate-node-at (save-excursion (skip-chars-forward " \t\n") (point)) 'erlang)))
     (while (and node
                 (not (member (treesit-node-type (treesit-node-parent node))
                              '("clause_body" "block_expr" "try_after" "try_expr"))))
@@ -469,25 +481,29 @@ point: `self', `before' and `after'."
     (goto-char start)
     (combobulate-message (format "Spliced %d of %d statements" (length kept) (length statements)))))
 
-(defun combobulate-erlang-splice-up (&optional _arg)
+(defun combobulate-erlang-splice-up (&optional arg)
   "Replace the construct around point with this statement and the ones after it."
   (interactive "^p")
-  (combobulate-erlang--splice '(self after)))
+  (unless (combobulate-run-embedded-command 'erlang #'combobulate-splice-up arg)
+    (combobulate-erlang--splice '(self after))))
 
-(defun combobulate-erlang-splice-down (&optional _arg)
+(defun combobulate-erlang-splice-down (&optional arg)
   "Replace the construct around point with this statement and the ones before it."
   (interactive "^p")
-  (combobulate-erlang--splice '(self before)))
+  (unless (combobulate-run-embedded-command 'erlang #'combobulate-splice-down arg)
+    (combobulate-erlang--splice '(self before))))
 
-(defun combobulate-erlang-splice-self (&optional _arg)
+(defun combobulate-erlang-splice-self (&optional arg)
   "Replace the construct around point with the statement at point."
   (interactive "^p")
-  (combobulate-erlang--splice '(self)))
+  (unless (combobulate-run-embedded-command 'erlang #'combobulate-splice-self arg)
+    (combobulate-erlang--splice '(self))))
 
-(defun combobulate-erlang-splice-parent (&optional _arg)
+(defun combobulate-erlang-splice-parent (&optional arg)
   "Replace the construct around point with all the statements of this body."
   (interactive "^p")
-  (combobulate-erlang--splice '(before self after)))
+  (unless (combobulate-run-embedded-command 'erlang #'combobulate-splice-parent arg)
+    (combobulate-erlang--splice '(before self after))))
 
 (provide 'combobulate-erlang)
 ;;; combobulate-erlang.el ends here
