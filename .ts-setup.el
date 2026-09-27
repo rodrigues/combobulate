@@ -9,6 +9,8 @@
          (javascript . ("https://github.com/tree-sitter/tree-sitter-javascript" "v0.20.1" "src"))
          (json . ("https://github.com/tree-sitter/tree-sitter-json" "v0.20.2"))
          (go . ("https://github.com/tree-sitter/tree-sitter-go" "v0.20.0"))
+         (markdown . ("https://github.com/tree-sitter-grammars/tree-sitter-markdown" "v0.5.3" "tree-sitter-markdown/src"))
+         (markdown-inline . ("https://github.com/tree-sitter-grammars/tree-sitter-markdown" "v0.5.3" "tree-sitter-markdown-inline/src"))
          (ocaml . ("https://github.com/tree-sitter/tree-sitter-ocaml" "v0.26.0" "grammars/ocaml/src"))
          (ocaml-interface . ("https://github.com/tree-sitter/tree-sitter-ocaml" "v0.26.0" "grammars/interface/src"))
          (ocaml_type . ("https://github.com/tree-sitter/tree-sitter-ocaml" "v0.26.0" "grammars/type/src"))

@@ -92,6 +92,8 @@
 (require 'combobulate-heex)
 ;;;###autoload
 (require 'combobulate-erlang)
+;;;###autoload
+(require 'combobulate-markdown)
 ;;; end language support
 
 (provide 'combobulate)
