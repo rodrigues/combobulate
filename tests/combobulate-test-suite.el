@@ -288,6 +288,7 @@ doesn't exist."
       (let* ((auto-mode-alist (append '(("\\.go\\'" . go-ts-mode)
                                         ("\\.exs?\\'" . elixir-ts-mode)
                                         ("\\.heex\\'" . heex-ts-mode)
+                                        ("\\.erl\\'" . erlang-ts-mode)
                                         ("\\.mli\\'" . tuareg-interface-mode)
                                         ("\\.ml\\'" . tuareg-mode))
                                       auto-mode-alist))

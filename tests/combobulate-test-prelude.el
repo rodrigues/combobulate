@@ -40,6 +40,8 @@
 ;; Bundled with Emacs 30 and later; tests using them are skipped otherwise.
 (require 'elixir-ts-mode nil t)
 (require 'heex-ts-mode nil t)
+;; From MELPA; tests using it are skipped when it is not installed.
+(require 'erlang-ts nil t)
 
 ;;; Helpers for writing procedures
 
