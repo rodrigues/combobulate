@@ -3628,9 +3628,40 @@
 )
 ;; END All supertypes in markdown
 
+;; START Production rules for iex
+(defconst combobulate-rules-iex 
+ '(("evaluation_block" (:*unnamed* ("prompt_line" "result"))) 
+ ("expression" (:*unnamed* nil)) 
+ ("prompt" (:*unnamed* nil)) 
+ ("prompt_line" (:*unnamed* ("prompt" "expression"))) 
+ ("result" (:*unnamed* nil)) 
+ ("source" (:*unnamed* ("evaluation_block"))) 
+))
+;; END Production rules for iex
+;; START Inverse production rules for iex
+(defconst combobulate-rules-iex-inverse 
+ '(("evaluation_block" ("source"))
+   ("expression" ("prompt_line"))
+   ("prompt" ("prompt_line"))
+   ("prompt_line" ("evaluation_block"))
+   ("result" ("evaluation_block"))
+  ) 
+)
+;; END Inverse production rules for iex
+;; START All node types in iex
+(defconst combobulate-rules-iex-types 
+ '("evaluation_block" "expression" "prompt" "prompt_line" "result" "source") 
+)
+;; END All node types in iex
+;; START All supertypes in iex
+(defconst combobulate-rules-iex-supertypes 
+ nil 
+)
+;; END All supertypes in iex
+
 ;; START Auto-generated list of all languages
 (defconst combobulate-rules-languages 
- '(css elixir erlang go heex html javascript json markdown ocaml ocaml-interface python toml tsx typescript yaml) 
+ '(css elixir erlang go heex html iex javascript json markdown ocaml ocaml-interface python toml tsx typescript yaml) 
  "A list of all the languages that have production rules.")
 ;; END Auto-generated list of all languages
 (defconst combobulate-rules-alist 
@@ -3640,6 +3671,7 @@
  (go ,combobulate-rules-go)
  (heex ,combobulate-rules-heex)
  (html ,combobulate-rules-html)
+ (iex ,combobulate-rules-iex)
  (javascript ,combobulate-rules-javascript)
  (json ,combobulate-rules-json)
  (markdown ,combobulate-rules-markdown)
@@ -3659,6 +3691,7 @@
  (go ,combobulate-rules-go-inverse)
  (heex ,combobulate-rules-heex-inverse)
  (html ,combobulate-rules-html-inverse)
+ (iex ,combobulate-rules-iex-inverse)
  (javascript ,combobulate-rules-javascript-inverse)
  (json ,combobulate-rules-json-inverse)
  (markdown ,combobulate-rules-markdown-inverse)
@@ -3678,6 +3711,7 @@
  (go ,combobulate-rules-go-types)
  (heex ,combobulate-rules-heex-types)
  (html ,combobulate-rules-html-types)
+ (iex ,combobulate-rules-iex-types)
  (javascript ,combobulate-rules-javascript-types)
  (json ,combobulate-rules-json-types)
  (markdown ,combobulate-rules-markdown-types)
@@ -3697,6 +3731,7 @@
  (go ,combobulate-rules-go-supertypes)
  (heex ,combobulate-rules-heex-supertypes)
  (html ,combobulate-rules-html-supertypes)
+ (iex ,combobulate-rules-iex-supertypes)
  (javascript ,combobulate-rules-javascript-supertypes)
  (json ,combobulate-rules-json-supertypes)
  (markdown ,combobulate-rules-markdown-supertypes)
