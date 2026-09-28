@@ -117,6 +117,15 @@ stubbed proffer returns the last node it was given, not the chosen one."
                            "    test \"a\" do\n      :ok\n    end\n\n"
                            "    test \"b\" do\n      :ok\n    end\n  end\nend\n")))))
 
+(ert-deftest combobulate-test-elixir-envelope-for-iterates-over-the-expression ()
+  (combobulate-test-elixir "def f(users) do\n  ‸users\nend\n"
+    (let ((combobulate-envelope-prompt-actions '("user")))
+      (combobulate-with-stubbed-envelope-prompt
+        (combobulate-with-stubbed-proffer-choices (:choices '(0))
+          (combobulate-execute-envelope "for" (combobulate-test-elixir--expression-at-point)))))
+    (should (equal (buffer-string) "def f(users) do\n  for user <- users do\n    \n  end\nend\n"))
+    (should (equal (buffer-substring (line-beginning-position) (point)) "    "))))
+
 (ert-deftest combobulate-test-elixir-envelope-if-wraps-the-statement ()
   (combobulate-test-elixir "def f(x) do\n  ‸foo(x)\n  :ok\nend\n"
     (let ((combobulate-envelope-prompt-actions '("x > 0")))

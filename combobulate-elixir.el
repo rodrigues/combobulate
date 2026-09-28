@@ -812,6 +812,16 @@ Outside any construct, fall back to `combobulate-navigate-sequence-previous'."
           :shorthand statements
           :name "describe"
           :template ((save-column "describe \"" (p description "Description") "\" do" n> r> n)
+                     "end"))
+         (:description
+          "for ... <- ... do ... end"
+          :key "F"
+          :mark-node t
+          :shorthand expressions
+          :name "for"
+          :template ((save-column "for " (p variable "Variable") " <- " r " do" n)
+                     ;; The unfilled head does not parse, so indent the body by hand.
+                     (save-column "  " @ n)
                      "end"))))
       (procedures-sibling
        '(;; Statements, definitions and clauses when point is at their start.
