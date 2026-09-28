@@ -66,6 +66,20 @@ stubbed proffer returns the last node it was given, not the chosen one."
       (combobulate-execute-envelope "ok-tuple"))
     (should (equal (buffer-string) "def f(x) do\n  {:ok, %{x: x}}\nend\n"))))
 
+(ert-deftest combobulate-test-elixir-envelope-if-wraps-the-statement ()
+  (combobulate-test-elixir "def f(x) do\n  ‸foo(x)\n  :ok\nend\n"
+    (let ((combobulate-envelope-prompt-actions '("x > 0")))
+      (combobulate-with-stubbed-envelope-prompt
+        (combobulate-with-stubbed-proffer-choices (:choices '(0))
+          (combobulate-execute-envelope "if"))))
+    (should (equal (buffer-string) "def f(x) do\n  if x > 0 do\n    foo(x)\n  end\n  :ok\nend\n"))))
+
+(ert-deftest combobulate-test-elixir-envelope-if-offers-statements-only ()
+  (combobulate-test-elixir "def f(x) do\n  y = foo(‸x)\nend\n"
+    (let ((types (mapcar #'combobulate-node-type
+                         (combobulate-envelope-get-applicable-nodes (combobulate-get-envelope-by-name "if")))))
+      (should (equal types '("binary_operator" "call"))))))
+
 (ert-deftest combobulate-test-elixir-dbg-pipe-appends-to-a-multiline-pipeline ()
   (combobulate-test-elixir "def f(x) do\n  x\n  |> ‸foo()\n  |> bar()\nend\n"
     (combobulate-elixir-dbg-pipe)

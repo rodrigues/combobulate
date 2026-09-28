@@ -711,7 +711,12 @@ Outside any construct, fall back to `combobulate-navigate-sequence-previous'."
       (envelope-indent-region-function #'indent-region)
       (envelope-procedure-shorthand-alist
        '((expressions
-          . ((:activation-nodes ((:nodes ((exclude (rule "arguments") "keywords")))))))))
+          . ((:activation-nodes ((:nodes ((exclude (rule "arguments") "keywords")))))))
+         (statements
+          . ((:activation-nodes
+              ((:nodes ((exclude (rule "arguments") "keywords"))
+                       :has-parent ("source" "do_block" "else_block" "rescue_block" "catch_block"
+                                    "after_block" "body" "block"))))))))
       (envelope-list
        '((:description
           "dbg(...)"
@@ -740,7 +745,14 @@ Outside any construct, fall back to `combobulate-navigate-sequence-previous'."
           :mark-node t
           :shorthand expressions
           :name "ok-tuple"
-          :template ("{:ok, " r "}"))))
+          :template ("{:ok, " r "}"))
+         (:description
+          "if ... do ... end"
+          :key "i"
+          :mark-node t
+          :shorthand statements
+          :name "if"
+          :template ("if " (p condition "Condition") " do" n> r> n "end" >))))
       (procedures-sibling
        '(;; Statements, definitions and clauses when point is at their start.
          (:activation-nodes
