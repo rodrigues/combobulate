@@ -88,6 +88,12 @@ stubbed proffer returns the last node it was given, not the chosen one."
           (combobulate-execute-envelope "assert"))))
     (should (equal (buffer-string) "test \"shows\" do\n  assert has_element?(view, \"#x\")\nend\n"))))
 
+(ert-deftest combobulate-test-elixir-envelope-noreply-wraps-the-expression ()
+  (combobulate-test-elixir "def handle_event(_, _, socket) do\n  ‸assign(socket, a: 1)\nend\n"
+    (combobulate-with-stubbed-proffer-choices (:choices '(0))
+      (combobulate-execute-envelope "noreply"))
+    (should (equal (buffer-string) "def handle_event(_, _, socket) do\n  {:noreply, assign(socket, a: 1)}\nend\n"))))
+
 (ert-deftest combobulate-test-elixir-envelope-if-wraps-the-statement ()
   (combobulate-test-elixir "def f(x) do\n  ‸foo(x)\n  :ok\nend\n"
     (let ((combobulate-envelope-prompt-actions '("x > 0")))

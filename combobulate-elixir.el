@@ -765,6 +765,13 @@ Outside any construct, fall back to `combobulate-navigate-sequence-previous'."
                         (lambda (text) (if (equal text "PATTERN") "" (concat text " = "))))
                      r))
          (:description
+          "{:noreply, ...}"
+          :key "n"
+          :mark-node t
+          :shorthand expressions
+          :name "noreply"
+          :template ("{:noreply, " r "}"))
+         (:description
           "if ... do ... end"
           :key "i"
           :mark-node t
