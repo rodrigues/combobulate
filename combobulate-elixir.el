@@ -770,6 +770,15 @@ Outside any construct, fall back to `combobulate-navigate-sequence-previous'."
                       (choice* :name "def" :rest ("def"))
                       (choice* :name "defp" :rest ("defp"))
                       " " (p name "Name") "(" @ ") do" n> r> n)
+                     "end"))
+         (:description
+          "try do ... rescue ... end"
+          :key "t"
+          :mark-node t
+          :shorthand statements
+          :name "try"
+          :template ((save-column "try do" n> r> n)
+                     (save-column "rescue" n> "e -> " @ n)
                      "end"))))
       (procedures-sibling
        '(;; Statements, definitions and clauses when point is at their start.

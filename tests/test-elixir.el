@@ -96,6 +96,13 @@ stubbed proffer returns the last node it was given, not the chosen one."
     (should (equal (buffer-string) "defmodule A do\n  defp helper() do\n    IO.puts(1)\n  end\nend\n"))
     (should (looking-at-p ")"))))
 
+(ert-deftest combobulate-test-elixir-envelope-try-wraps-the-statement ()
+  (combobulate-test-elixir "def f(x) do\n  ‸foo(x)\nend\n"
+    (combobulate-with-stubbed-proffer-choices (:choices '(0))
+      (combobulate-execute-envelope "try" (combobulate-test-elixir--expression-at-point)))
+    (should (equal (buffer-string) "def f(x) do\n  try do\n    foo(x)\n  rescue\n    e -> \n  end\nend\n"))
+    (should (looking-back "e -> " (line-beginning-position)))))
+
 (ert-deftest combobulate-test-elixir-dbg-pipe-appends-to-a-multiline-pipeline ()
   (combobulate-test-elixir "def f(x) do\n  x\n  |> ‸foo()\n  |> bar()\nend\n"
     (combobulate-elixir-dbg-pipe)
