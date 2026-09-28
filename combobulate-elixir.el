@@ -733,7 +733,14 @@ Outside any construct, fall back to `combobulate-navigate-sequence-previous'."
           :mark-node t
           :shorthand expressions
           :name "with"
-          :template ("with {:ok, " (p result "Result") "} <- " r " do" n> (f result) @ n "end" >))))
+          :template ("with {:ok, " (p result "Result") "} <- " r " do" n> (f result) @ n "end" >))
+         (:description
+          "{:ok, ...}"
+          :key "o"
+          :mark-node t
+          :shorthand expressions
+          :name "ok-tuple"
+          :template ("{:ok, " r "}"))))
       (procedures-sibling
        '(;; Statements, definitions and clauses when point is at their start.
          (:activation-nodes

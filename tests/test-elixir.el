@@ -60,6 +60,12 @@ stubbed proffer returns the last node it was given, not the chosen one."
           (combobulate-execute-envelope "with" (combobulate-test-elixir--expression-at-point)))))
     (should (equal (buffer-string) "def f(id) do\n  with {:ok, user} <- fetch(id) do\n    user\n  end\nend\n"))))
 
+(ert-deftest combobulate-test-elixir-envelope-ok-tuple-wraps-the-expression ()
+  (combobulate-test-elixir "def f(x) do\n  ‸%{x: x}\nend\n"
+    (combobulate-with-stubbed-proffer-choices (:choices '(0))
+      (combobulate-execute-envelope "ok-tuple"))
+    (should (equal (buffer-string) "def f(x) do\n  {:ok, %{x: x}}\nend\n"))))
+
 (ert-deftest combobulate-test-elixir-dbg-pipe-appends-to-a-multiline-pipeline ()
   (combobulate-test-elixir "def f(x) do\n  x\n  |> ‸foo()\n  |> bar()\nend\n"
     (combobulate-elixir-dbg-pipe)
