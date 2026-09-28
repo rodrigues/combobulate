@@ -72,6 +72,22 @@ stubbed proffer returns the last node it was given, not the chosen one."
       (combobulate-execute-envelope "error-tuple"))
     (should (equal (buffer-string) "def f(x) do\n  {:error, :not_found}\nend\n"))))
 
+(ert-deftest combobulate-test-elixir-envelope-assert-matches-the-expression-against-the-pattern ()
+  (combobulate-test-elixir "test \"creates\" do\n  ‸create(attrs)\nend\n"
+    (let ((combobulate-envelope-prompt-actions '("{:ok, user}")))
+      (combobulate-with-stubbed-envelope-prompt
+        (combobulate-with-stubbed-proffer-choices (:choices '(0))
+          (combobulate-execute-envelope "assert"))))
+    (should (equal (buffer-string) "test \"creates\" do\n  assert {:ok, user} = create(attrs)\nend\n"))))
+
+(ert-deftest combobulate-test-elixir-envelope-assert-without-a-pattern-asserts-the-expression ()
+  (combobulate-test-elixir "test \"shows\" do\n  ‸has_element?(view, \"#x\")\nend\n"
+    (let ((combobulate-envelope-prompt-actions '("")))
+      (combobulate-with-stubbed-envelope-prompt
+        (combobulate-with-stubbed-proffer-choices (:choices '(0))
+          (combobulate-execute-envelope "assert"))))
+    (should (equal (buffer-string) "test \"shows\" do\n  assert has_element?(view, \"#x\")\nend\n"))))
+
 (ert-deftest combobulate-test-elixir-envelope-if-wraps-the-statement ()
   (combobulate-test-elixir "def f(x) do\n  ‸foo(x)\n  :ok\nend\n"
     (let ((combobulate-envelope-prompt-actions '("x > 0")))

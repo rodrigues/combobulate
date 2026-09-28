@@ -754,6 +754,17 @@ Outside any construct, fall back to `combobulate-navigate-sequence-previous'."
           :name "error-tuple"
           :template ("{:error, " r "}"))
          (:description
+          "assert [... =] ..."
+          :key "a"
+          :mark-node t
+          :shorthand expressions
+          :name "assert"
+          :template ("assert "
+                     ;; An empty answer arrives as the tag name, which is never a valid pattern.
+                     (p PATTERN "Pattern (empty for none)"
+                        (lambda (text) (if (equal text "PATTERN") "" (concat text " = "))))
+                     r))
+         (:description
           "if ... do ... end"
           :key "i"
           :mark-node t
