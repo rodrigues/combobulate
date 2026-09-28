@@ -38,6 +38,13 @@
     (combobulate-execute-envelope "dbg")
     (should (equal (buffer-string) "def f(x) do\n  y = dbg(x + 1)\nend\n"))))
 
+(ert-deftest combobulate-test-elixir-envelope-case-uses-the-expression-as-subject ()
+  (combobulate-test-elixir "def f(x) do\n  ‸fetch(x)\nend\n"
+    (combobulate-with-stubbed-proffer-choices (:choices '(0))
+      (combobulate-execute-envelope "case" (combobulate-elixir--outermost-at (combobulate-elixir--node-at (point)))))
+    (should (equal (buffer-string) "def f(x) do\n  case fetch(x) do\n    \n  end\nend\n"))
+    (should (equal (buffer-substring (line-beginning-position) (point)) "    "))))
+
 (ert-deftest combobulate-test-elixir-dbg-pipe-appends-to-a-multiline-pipeline ()
   (combobulate-test-elixir "def f(x) do\n  x\n  |> ‸foo()\n  |> bar()\nend\n"
     (combobulate-elixir-dbg-pipe)

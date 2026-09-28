@@ -719,7 +719,14 @@ Outside any construct, fall back to `combobulate-navigate-sequence-previous'."
           :mark-node t
           :shorthand expressions
           :name "dbg"
-          :template ("dbg(" r ")"))))
+          :template ("dbg(" r ")"))
+         (:description
+          "case ... do ... end"
+          :key "c"
+          :mark-node t
+          :shorthand expressions
+          :name "case"
+          :template ("case " r " do" n> @ n "end" >))))
       (procedures-sibling
        '(;; Statements, definitions and clauses when point is at their start.
          (:activation-nodes
