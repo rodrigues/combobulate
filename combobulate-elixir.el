@@ -752,7 +752,14 @@ Outside any construct, fall back to `combobulate-navigate-sequence-previous'."
           :mark-node t
           :shorthand statements
           :name "if"
-          :template ("if " (p condition "Condition") " do" n> r> n "end" >))))
+          :template ("if " (p condition "Condition") " do" n> r> n "end" >))
+         (:description
+          "fn -> ... end"
+          :key "f"
+          :mark-node t
+          :shorthand statements
+          :name "fn"
+          :template ("fn " @ "->" n> r> n "end" >))))
       (procedures-sibling
        '(;; Statements, definitions and clauses when point is at their start.
          (:activation-nodes

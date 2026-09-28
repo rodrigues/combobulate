@@ -80,6 +80,13 @@ stubbed proffer returns the last node it was given, not the chosen one."
                          (combobulate-envelope-get-applicable-nodes (combobulate-get-envelope-by-name "if")))))
       (should (equal types '("binary_operator" "call"))))))
 
+(ert-deftest combobulate-test-elixir-envelope-fn-wraps-the-statement ()
+  (combobulate-test-elixir "def f(x) do\n  ‸foo(x)\nend\n"
+    (combobulate-with-stubbed-proffer-choices (:choices '(0))
+      (combobulate-execute-envelope "fn" (combobulate-test-elixir--expression-at-point)))
+    (should (equal (buffer-string) "def f(x) do\n  fn ->\n    foo(x)\n  end\nend\n"))
+    (should (looking-at-p "->"))))
+
 (ert-deftest combobulate-test-elixir-dbg-pipe-appends-to-a-multiline-pipeline ()
   (combobulate-test-elixir "def f(x) do\n  x\n  |> ‸foo()\n  |> bar()\nend\n"
     (combobulate-elixir-dbg-pipe)
