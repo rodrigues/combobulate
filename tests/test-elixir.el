@@ -18,6 +18,13 @@
        (let ((combobulate-flash-node nil))
          ,@body))))
 
+(defun combobulate-test-elixir--expression-at-point ()
+  "Return the largest expression starting at point.
+
+Envelope tests with a point placement pass it explicitly, because the
+stubbed proffer returns the last node it was given, not the chosen one."
+  (combobulate-elixir--outermost-at (combobulate-elixir--node-at (point))))
+
 (ert-deftest combobulate-test-elixir-envelope-dbg-wraps-the-call-at-point ()
   (combobulate-test-elixir "def f(x) do\n  ‸foo(x)\n  :ok\nend\n"
     (combobulate-with-stubbed-proffer-choices (:choices '(0))
@@ -41,9 +48,17 @@
 (ert-deftest combobulate-test-elixir-envelope-case-uses-the-expression-as-subject ()
   (combobulate-test-elixir "def f(x) do\n  ‸fetch(x)\nend\n"
     (combobulate-with-stubbed-proffer-choices (:choices '(0))
-      (combobulate-execute-envelope "case" (combobulate-elixir--outermost-at (combobulate-elixir--node-at (point)))))
+      (combobulate-execute-envelope "case" (combobulate-test-elixir--expression-at-point)))
     (should (equal (buffer-string) "def f(x) do\n  case fetch(x) do\n    \n  end\nend\n"))
     (should (equal (buffer-substring (line-beginning-position) (point)) "    "))))
+
+(ert-deftest combobulate-test-elixir-envelope-with-binds-the-expression ()
+  (combobulate-test-elixir "def f(id) do\n  ‸fetch(id)\nend\n"
+    (let ((combobulate-envelope-prompt-actions '("user")))
+      (combobulate-with-stubbed-envelope-prompt
+        (combobulate-with-stubbed-proffer-choices (:choices '(0))
+          (combobulate-execute-envelope "with" (combobulate-test-elixir--expression-at-point)))))
+    (should (equal (buffer-string) "def f(id) do\n  with {:ok, user} <- fetch(id) do\n    user\n  end\nend\n"))))
 
 (ert-deftest combobulate-test-elixir-dbg-pipe-appends-to-a-multiline-pipeline ()
   (combobulate-test-elixir "def f(x) do\n  x\n  |> ‸foo()\n  |> bar()\nend\n"
