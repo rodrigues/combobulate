@@ -759,7 +759,18 @@ Outside any construct, fall back to `combobulate-navigate-sequence-previous'."
           :mark-node t
           :shorthand statements
           :name "fn"
-          :template ("fn " @ "->" n> r> n "end" >))))
+          :template ("fn " @ "->" n> r> n "end" >))
+         (:description
+          "def ...() do ... end"
+          :key "D"
+          :mark-node t
+          :shorthand statements
+          :name "def"
+          :template ((save-column
+                      (choice* :name "def" :rest ("def"))
+                      (choice* :name "defp" :rest ("defp"))
+                      " " (p name "Name") "(" @ ") do" n> r> n)
+                     "end"))))
       (procedures-sibling
        '(;; Statements, definitions and clauses when point is at their start.
          (:activation-nodes
