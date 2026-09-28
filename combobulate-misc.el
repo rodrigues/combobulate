@@ -53,7 +53,7 @@
 
 (defun combobulate-message (message &rest args)
   "Display MESSAGE and pretty print NODE"
-  (message (concat
+  (message "%s" (concat
             combobulate-sigil " " message " "
             (mapconcat
              (lambda (a)

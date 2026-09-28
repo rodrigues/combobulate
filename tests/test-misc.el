@@ -117,6 +117,10 @@
         (error nil))
       (should-not (alist-get 'test combobulate-refactor--active-sessions)))))
 
+(ert-deftest combobulate-test-combobulate-message-keeps-percent-signs ()
+  :tags '(combobulate)
+  (should (string-suffix-p "Enveloping %{a: 1}" (combobulate-message "Enveloping" "%{a: 1}"))))
+
 
 (provide 'test-misc)
 ;;; test-misc.el ends here
