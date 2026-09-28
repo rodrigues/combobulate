@@ -747,6 +747,13 @@ Outside any construct, fall back to `combobulate-navigate-sequence-previous'."
           :name "ok-tuple"
           :template ("{:ok, " r "}"))
          (:description
+          "{:error, ...}"
+          :key "e"
+          :mark-node t
+          :shorthand expressions
+          :name "error-tuple"
+          :template ("{:error, " r "}"))
+         (:description
           "if ... do ... end"
           :key "i"
           :mark-node t

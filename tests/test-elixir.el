@@ -66,6 +66,12 @@ stubbed proffer returns the last node it was given, not the chosen one."
       (combobulate-execute-envelope "ok-tuple"))
     (should (equal (buffer-string) "def f(x) do\n  {:ok, %{x: x}}\nend\n"))))
 
+(ert-deftest combobulate-test-elixir-envelope-error-tuple-wraps-the-expression ()
+  (combobulate-test-elixir "def f(x) do\n  ‸:not_found\nend\n"
+    (combobulate-with-stubbed-proffer-choices (:choices '(0))
+      (combobulate-execute-envelope "error-tuple"))
+    (should (equal (buffer-string) "def f(x) do\n  {:error, :not_found}\nend\n"))))
+
 (ert-deftest combobulate-test-elixir-envelope-if-wraps-the-statement ()
   (combobulate-test-elixir "def f(x) do\n  ‸foo(x)\n  :ok\nend\n"
     (let ((combobulate-envelope-prompt-actions '("x > 0")))
