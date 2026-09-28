@@ -94,6 +94,14 @@
       (setq node (treesit-node-child-by-field-name node "left")))
     (cons node stages)))
 
+(defun combobulate-elixir--pipeline-at (pos)
+  "Return the whole `|>' chain of the pipeline nearest to POS."
+  (when-let* ((node (treesit-parent-until (combobulate-elixir--node-at pos)
+                                          #'combobulate-elixir--pipe-p t)))
+    (while (combobulate-elixir--pipe-p (treesit-node-parent node))
+      (setq node (treesit-node-parent node)))
+    node))
+
 (defun combobulate-elixir--elements (node)
   "Return the named children of NODE, with `keywords' replaced by its pairs.
 
@@ -662,6 +670,19 @@ Outside any construct, fall back to `combobulate-navigate-sequence-previous'."
         (setq this-command 'combobulate-navigate-sequence-previous)
         (combobulate-navigate-sequence-previous)))))
 
+(defun combobulate-elixir-dbg-pipe ()
+  "Append `|> dbg()' to the pipeline at point."
+  (interactive)
+  (let ((pipeline (or (combobulate-elixir--pipeline-at (point))
+                      (user-error "No pipeline at point"))))
+    (save-excursion
+      (goto-char (treesit-node-end pipeline))
+      (if (string-search "\n" (treesit-node-text pipeline t))
+          (progn (newline)
+                 (insert "|> dbg()")
+                 (indent-according-to-mode))
+        (insert " |> dbg()")))))
+
 (defun combobulate-elixir-pretty-print-node-name (node _default-name)
   "Pretty printer for Elixir nodes"
   (combobulate-string-truncate
@@ -687,6 +708,18 @@ Outside any construct, fall back to `combobulate-navigate-sequence-previous'."
       (plausible-separators '("," "\n"))
       (pretty-print-node-name-function #'combobulate-elixir-pretty-print-node-name)
       (navigate-down-into-lists nil)
+      (envelope-indent-region-function #'indent-region)
+      (envelope-procedure-shorthand-alist
+       '((expressions
+          . ((:activation-nodes ((:nodes ((exclude (rule "arguments") "keywords")))))))))
+      (envelope-list
+       '((:description
+          "dbg(...)"
+          :key "d"
+          :mark-node t
+          :shorthand expressions
+          :name "dbg"
+          :template ("dbg(" r ")"))))
       (procedures-sibling
        '(;; Statements, definitions and clauses when point is at their start.
          (:activation-nodes
@@ -745,6 +778,7 @@ Outside any construct, fall back to `combobulate-navigate-sequence-previous'."
 
 (defun combobulate-elixir-setup (_)
   (setq-local forward-sexp-function #'combobulate-elixir-forward-sexp)
+  (define-key (combobulate-read envelope-map) "|" #'combobulate-elixir-dbg-pipe)
   (let ((map (combobulate-read map)))
     (define-key map [remap combobulate-navigate-beginning-of-defun] #'treesit-beginning-of-defun)
     (define-key map [remap combobulate-navigate-end-of-defun] #'treesit-end-of-defun)
