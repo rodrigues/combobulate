@@ -94,6 +94,29 @@ stubbed proffer returns the last node it was given, not the chosen one."
       (combobulate-execute-envelope "noreply"))
     (should (equal (buffer-string) "def handle_event(_, _, socket) do\n  {:noreply, assign(socket, a: 1)}\nend\n"))))
 
+(ert-deftest combobulate-test-elixir-envelope-describe-wraps-the-test ()
+  (combobulate-test-elixir "defmodule ATest do\n  ‸test \"a\" do\n    :ok\n  end\nend\n"
+    (let ((combobulate-envelope-prompt-actions '("things")))
+      (combobulate-with-stubbed-envelope-prompt
+        (combobulate-with-stubbed-proffer-choices (:choices '(0))
+          (combobulate-execute-envelope "describe"))))
+    (should (equal (buffer-string)
+                   "defmodule ATest do\n  describe \"things\" do\n    test \"a\" do\n      :ok\n    end\n  end\nend\n"))))
+
+(ert-deftest combobulate-test-elixir-envelope-describe-wraps-the-tests-in-the-region ()
+  (combobulate-test-elixir "defmodule ATest do\n  ‸test \"a\" do\n    :ok\n  end\n\n  test \"b\" do\n    :ok\n  end\nend\n"
+    (set-mark (point))
+    (goto-char (point-max))
+    (search-backward "\nend")
+    (activate-mark)
+    (let ((combobulate-envelope-prompt-actions '("things")))
+      (combobulate-with-stubbed-envelope-prompt
+        (combobulate-execute-envelope "describe")))
+    (should (equal (buffer-string)
+                   (concat "defmodule ATest do\n  describe \"things\" do\n"
+                           "    test \"a\" do\n      :ok\n    end\n\n"
+                           "    test \"b\" do\n      :ok\n    end\n  end\nend\n")))))
+
 (ert-deftest combobulate-test-elixir-envelope-if-wraps-the-statement ()
   (combobulate-test-elixir "def f(x) do\n  ‸foo(x)\n  :ok\nend\n"
     (let ((combobulate-envelope-prompt-actions '("x > 0")))

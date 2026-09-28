@@ -804,6 +804,14 @@ Outside any construct, fall back to `combobulate-navigate-sequence-previous'."
           :name "try"
           :template ((save-column "try do" n> r> n)
                      (save-column "rescue" n> "e -> " @ n)
+                     "end"))
+         (:description
+          "describe \"...\" do ... end"
+          :key "T"
+          :mark-node t
+          :shorthand statements
+          :name "describe"
+          :template ((save-column "describe \"" (p description "Description") "\" do" n> r> n)
                      "end"))))
       (procedures-sibling
        '(;; Statements, definitions and clauses when point is at their start.
