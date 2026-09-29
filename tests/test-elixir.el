@@ -239,3 +239,16 @@ end
     (let ((start (point)))
       (combobulate-elixir-navigate-next-occurrence)
       (should (= (point) start)))))
+
+(ert-deftest combobulate-test-elixir-highlights-debugging-calls ()
+  (combobulate-test-elixir "def f(x) do\n  ‸dbg(x)\n  x |> IO.inspect()\n  IEx.pry()\n  Other.inspect(x)\n  x\nend\n"
+    (font-lock-ensure)
+    (cl-flet ((fiery-p (text)
+                (goto-char (point-min))
+                (search-forward text)
+                (eq (get-text-property (match-beginning 0) 'face)
+                    'combobulate-query-highlight-fiery-flames-face)))
+      (should (fiery-p "dbg"))
+      (should (fiery-p "IO.inspect"))
+      (should (fiery-p "IEx.pry"))
+      (should-not (fiery-p "Other.inspect")))))

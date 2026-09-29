@@ -861,6 +861,13 @@ Outside any construct, fall back to `combobulate-navigate-sequence-previous'."
                      ;; The unfilled head does not parse, so indent the body by hand.
                      (save-column "  " @ n)
                      "end"))))
+      (highlight-queries-default
+       '(;; highlight debugging calls left in the code
+         (((call target: (identifier) @hl.fiery) (:match "^dbg$" @hl.fiery)))
+         (((call target: (dot left: (alias) @_module right: (identifier) @_function) @hl.fiery)
+           (:match "^IO$" @_module) (:match "^inspect$" @_function)))
+         (((call target: (dot left: (alias) @_module right: (identifier) @_function) @hl.fiery)
+           (:match "^IEx$" @_module) (:match "^pry$" @_function)))))
       (procedures-sibling
        '(;; Statements, definitions and clauses when point is at their start.
          (:activation-nodes
