@@ -394,3 +394,23 @@ end
     (combobulate-test-elixir source
       (should-error (combobulate-elixir-toggle-pipe) :type 'user-error)
       (should (equal (buffer-string) (string-replace "‸" "" source))))))
+
+(ert-deftest combobulate-test-elixir-toggle-multi-alias-splits ()
+  (combobulate-test-elixir "defmodule M do\n  alias A.B.{C, ‸D.E}\n  x\nend\n"
+    (combobulate-elixir-toggle-multi-alias)
+    (should (equal (buffer-string) "defmodule M do\n  alias A.B.C\n  alias A.B.D.E\n  x\nend\n")))
+  (combobulate-test-elixir "‸alias __MODULE__.{\n  X,\n  Y\n}\n"
+    (combobulate-elixir-toggle-multi-alias)
+    (should (equal (buffer-string) "alias __MODULE__.X\nalias __MODULE__.Y\n"))))
+
+(ert-deftest combobulate-test-elixir-toggle-multi-alias-merges-the-aliases-around-point ()
+  (combobulate-test-elixir "defmodule M do\n  alias A.B.C\n  alias X.Y\n  alias ‸A.B.D\n  import Z\n\n  alias A.B.F\nend\n"
+    (combobulate-elixir-toggle-multi-alias)
+    (should (equal (buffer-string) "defmodule M do\n  alias A.B.{C, D}\n  alias X.Y\n  import Z\n\n  alias A.B.F\nend\n"))
+    (should (looking-at-p "alias A.B.{C, D}"))))
+
+(ert-deftest combobulate-test-elixir-toggle-multi-alias-refuses-what-it-cannot-merge ()
+  (dolist (source '("alias ‸A.B.C\nalias X.Y\n" "alias ‸A.B.C, as: D\nalias A.B.E\n" "alias ‸A\nalias B\n"))
+    (combobulate-test-elixir source
+      (should-error (combobulate-elixir-toggle-multi-alias) :type 'user-error)
+      (should (equal (buffer-string) (string-replace "‸" "" source))))))

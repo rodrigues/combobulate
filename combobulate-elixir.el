@@ -967,6 +967,91 @@ Elsewhere, the innermost call with arguments pipes in its first one."
       (indent-region start (point))
       (goto-char start))))
 
+(defun combobulate-elixir--alias-parts (node)
+  "Return (PREFIX NAMES MULTI) if NODE aliases modules and has no options.
+
+For `alias A.B.C' this is (\"A.B\" (\"C\") nil), and for
+`alias A.B.{C, D}' it is (\"A.B\" (\"C\" \"D\") t)."
+  (when-let* (((equal (treesit-node-type node) "call"))
+              ((equal (treesit-node-text (treesit-node-child-by-field-name node "target") t) "alias"))
+              (arguments (treesit-node-children (combobulate-elixir--child-of-type node "arguments") t))
+              ((= (length arguments) 1))
+              (module (car arguments)))
+    (pcase (treesit-node-type module)
+      ("alias"
+       (let ((name (treesit-node-text module t)))
+         (when (string-match (rx bos (group (+ anychar)) "." (group (+ (not (any ".")))) eos) name)
+           (list (match-string 1 name) (list (match-string 2 name)) nil))))
+      ("dot"
+       (let* ((tuple (treesit-node-child-by-field-name module "right"))
+              (elements (treesit-node-children tuple t)))
+         (when (and (equal (treesit-node-type tuple) "tuple")
+                    (not (seq-some (lambda (element) (equal (treesit-node-type element) "comment"))
+                                   elements)))
+           (list (treesit-node-text (treesit-node-child-by-field-name module "left") t)
+                 (mapcar (lambda (element) (treesit-node-text element t)) elements)
+                 t)))))))
+
+(defun combobulate-elixir--statement-range (node)
+  "Return the range of NODE, with its whole line if nothing else is on it."
+  (save-excursion
+    (let ((start (treesit-node-start node))
+          (end (treesit-node-end node)))
+      (goto-char start)
+      (when (and (looking-back "^[ \t]*" (line-beginning-position))
+                 (progn (goto-char end) (looking-at-p "[ \t]*$")))
+        (setq start (progn (goto-char start) (line-beginning-position))
+              end (progn (goto-char end) (min (point-max) (1+ (line-end-position))))))
+      (cons start end))))
+
+(defun combobulate-elixir-toggle-multi-alias ()
+  "Split `alias A.{B, C}' into one alias per module, or merge into that form.
+
+On a single alias, the aliases around it that share its prefix merge
+into the first of them.  Only the unbroken run of `alias' statements
+around point is searched."
+  (interactive)
+  (let* ((node (or (treesit-parent-until (combobulate-elixir--node-at (point))
+                                         #'combobulate-elixir--alias-parts t)
+                   (user-error "No alias with a module prefix at point")))
+         (start (treesit-node-start node)))
+    (pcase-let ((`(,prefix ,names ,multi) (combobulate-elixir--alias-parts node)))
+      (if multi
+          (let ((indentation (make-string (save-excursion (goto-char start) (current-column)) ?\s)))
+            (delete-region start (treesit-node-end node))
+            (goto-char start)
+            (insert (mapconcat (lambda (name) (concat "alias " prefix "." name)) names
+                               (concat "\n" indentation))))
+        (let* ((siblings (seq-remove (lambda (sibling) (equal (treesit-node-type sibling) "comment"))
+                                     (treesit-node-children (treesit-node-parent node) t)))
+               (index (seq-position siblings node #'treesit-node-eq))
+               (first index)
+               (last index))
+          (while (and (> first 0) (combobulate-elixir--alias-parts (nth (1- first) siblings)))
+            (setq first (1- first)))
+          (while (and (< (1+ last) (length siblings))
+                      (combobulate-elixir--alias-parts (nth (1+ last) siblings)))
+            (setq last (1+ last)))
+          (let* ((same (seq-filter (lambda (sibling)
+                                     (equal (car (combobulate-elixir--alias-parts sibling)) prefix))
+                                   (seq-subseq siblings first (1+ last))))
+                 (merged (concat "alias " prefix ".{"
+                                 (mapconcat (lambda (sibling)
+                                              (string-join (cadr (combobulate-elixir--alias-parts sibling)) ", "))
+                                            same ", ")
+                                 "}"))
+                 (first-range (cons (treesit-node-start (car same)) (treesit-node-end (car same))))
+                 (other-ranges (mapcar #'combobulate-elixir--statement-range (cdr same))))
+            (when (< (length same) 2)
+              (user-error "No other alias of %s next to this one" prefix))
+            (dolist (range (reverse other-ranges))
+              (delete-region (car range) (cdr range)))
+            (delete-region (car first-range) (cdr first-range))
+            (goto-char (car first-range))
+            (insert merged)
+            (setq start (car first-range)))))
+      (goto-char start))))
+
 (defun combobulate-elixir-pretty-print-node-name (node _default-name)
   "Pretty printer for Elixir nodes"
   (combobulate-string-truncate
