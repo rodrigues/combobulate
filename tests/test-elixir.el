@@ -261,3 +261,20 @@ end
     (should (combobulate-test-elixir--fiery-p "@moduletag :skip"))
     (should (combobulate-test-elixir--fiery-p "@tag :focus"))
     (should-not (combobulate-test-elixir--fiery-p "@tag :slow"))))
+
+(ert-deftest combobulate-test-elixir-toggle-private-flips-every-clause ()
+  (combobulate-test-elixir "defmodule M do\n  def f(nil), do: nil\n  def g(x), do: x\n  def f(x) do\n    ‸x\n  end\n  def f(x, y), do: x + y\nend\n"
+    (combobulate-elixir-toggle-private)
+    (should (equal (buffer-string) "defmodule M do\n  defp f(nil), do: nil\n  def g(x), do: x\n  defp f(x) do\n    x\n  end\n  def f(x, y), do: x + y\nend\n"))
+    (should (looking-at-p "x\n  end"))))
+
+(ert-deftest combobulate-test-elixir-toggle-private-handles-guards-and-macros ()
+  (combobulate-test-elixir "defmodule M do\n  defmacrop ‸m(x) when is_atom(x), do: x\n  defp f do\n    :ok\n  end\nend\n"
+    (combobulate-elixir-toggle-private)
+    (search-forward "defp f")
+    (combobulate-elixir-toggle-private)
+    (should (equal (buffer-string) "defmodule M do\n  defmacro m(x) when is_atom(x), do: x\n  def f do\n    :ok\n  end\nend\n"))))
+
+(ert-deftest combobulate-test-elixir-toggle-private-refuses-outside-a-definition ()
+  (combobulate-test-elixir "defmodule M do\n  ‸@x 1\nend\n"
+    (should-error (combobulate-elixir-toggle-private) :type 'user-error)))

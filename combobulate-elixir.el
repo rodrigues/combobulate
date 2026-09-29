@@ -721,6 +721,45 @@ Outside any construct, fall back to `combobulate-navigate-sequence-previous'."
                  (indent-according-to-mode))
         (insert " |> dbg()")))))
 
+(defun combobulate-elixir--signature (node)
+  "Return (KEYWORD NAME ARITY) if NODE defines a function, macro or guard."
+  (when-let* (((equal (treesit-node-type node) "call"))
+              (keyword (treesit-node-text (treesit-node-child-by-field-name node "target") t))
+              ((member keyword '("def" "defp" "defmacro" "defmacrop" "defguard" "defguardp")))
+              (head (treesit-node-child (combobulate-elixir--child-of-type node "arguments") 0 t)))
+    (when (and (equal (treesit-node-type head) "binary_operator")
+               (equal (treesit-node-text (treesit-node-child-by-field-name head "operator") t) "when"))
+      (setq head (treesit-node-child-by-field-name head "left")))
+    (pcase (treesit-node-type head)
+      ("call"
+       (let ((arguments (combobulate-elixir--child-of-type head "arguments")))
+         (list keyword
+               (treesit-node-text (treesit-node-child-by-field-name head "target") t)
+               (seq-count (lambda (child) (not (equal (treesit-node-type child) "comment")))
+                          (and arguments (treesit-node-children arguments t))))))
+      ("identifier" (list keyword (treesit-node-text head t) 0)))))
+
+(defun combobulate-elixir-toggle-private ()
+  "Switch the function at point between `def' and `defp', in every clause.
+
+Macros switch between `defmacro' and `defmacrop', and guards between
+`defguard' and `defguardp'."
+  (interactive)
+  (let* ((definition (or (treesit-parent-until (combobulate-elixir--node-at (point))
+                                               #'combobulate-elixir--signature t)
+                         (user-error "No function definition at point")))
+         (name-and-arity (cdr (combobulate-elixir--signature definition)))
+         (clauses (seq-filter (lambda (node)
+                                (equal (cdr (combobulate-elixir--signature node)) name-and-arity))
+                              (treesit-node-children (treesit-node-parent definition) t))))
+    (save-excursion
+      (dolist (clause (reverse clauses))
+        (let* ((target (treesit-node-child-by-field-name clause "target"))
+               (keyword (treesit-node-text target t)))
+          (goto-char (treesit-node-start target))
+          (delete-region (treesit-node-start target) (treesit-node-end target))
+          (insert (if (string-suffix-p "p" keyword) (substring keyword 0 -1) (concat keyword "p"))))))))
+
 (defun combobulate-elixir-pretty-print-node-name (node _default-name)
   "Pretty printer for Elixir nodes"
   (combobulate-string-truncate
