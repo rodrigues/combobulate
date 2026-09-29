@@ -240,15 +240,24 @@ end
       (combobulate-elixir-navigate-next-occurrence)
       (should (= (point) start)))))
 
+(defun combobulate-test-elixir--fiery-p (text)
+  "Return non-nil if the first TEXT in the buffer has the fiery highlight."
+  (goto-char (point-min))
+  (search-forward text)
+  (eq (get-text-property (match-beginning 0) 'face)
+      'combobulate-query-highlight-fiery-flames-face))
+
 (ert-deftest combobulate-test-elixir-highlights-debugging-calls ()
   (combobulate-test-elixir "def f(x) do\n  ‸dbg(x)\n  x |> IO.inspect()\n  IEx.pry()\n  Other.inspect(x)\n  x\nend\n"
     (font-lock-ensure)
-    (cl-flet ((fiery-p (text)
-                (goto-char (point-min))
-                (search-forward text)
-                (eq (get-text-property (match-beginning 0) 'face)
-                    'combobulate-query-highlight-fiery-flames-face)))
-      (should (fiery-p "dbg"))
-      (should (fiery-p "IO.inspect"))
-      (should (fiery-p "IEx.pry"))
-      (should-not (fiery-p "Other.inspect")))))
+    (should (combobulate-test-elixir--fiery-p "dbg"))
+    (should (combobulate-test-elixir--fiery-p "IO.inspect"))
+    (should (combobulate-test-elixir--fiery-p "IEx.pry"))
+    (should-not (combobulate-test-elixir--fiery-p "Other.inspect"))))
+
+(ert-deftest combobulate-test-elixir-highlights-focus-and-skip-tags ()
+  (combobulate-test-elixir "defmodule MTest do\n  @moduletag :skip\n\n  @tag :focus\n  test \"a\" do\n  end\n\n  @tag :slow\n  ‸test \"b\" do\n  end\nend\n"
+    (font-lock-ensure)
+    (should (combobulate-test-elixir--fiery-p "@moduletag :skip"))
+    (should (combobulate-test-elixir--fiery-p "@tag :focus"))
+    (should-not (combobulate-test-elixir--fiery-p "@tag :slow"))))

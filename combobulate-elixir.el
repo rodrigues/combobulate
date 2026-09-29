@@ -867,7 +867,10 @@ Outside any construct, fall back to `combobulate-navigate-sequence-previous'."
          (((call target: (dot left: (alias) @_module right: (identifier) @_function) @hl.fiery)
            (:match "^IO$" @_module) (:match "^inspect$" @_function)))
          (((call target: (dot left: (alias) @_module right: (identifier) @_function) @hl.fiery)
-           (:match "^IEx$" @_module) (:match "^pry$" @_function)))))
+           (:match "^IEx$" @_module) (:match "^pry$" @_function)))
+         ;; and test tags that focus or skip tests
+         (((unary_operator operand: (call target: (identifier) @_name (arguments (atom) @_value))) @hl.fiery
+           (:match "^\\(tag\\|describetag\\|moduletag\\)$" @_name) (:match "^:\\(focus\\|skip\\)$" @_value)))))
       (procedures-sibling
        '(;; Statements, definitions and clauses when point is at their start.
          (:activation-nodes
