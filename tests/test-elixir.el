@@ -472,3 +472,60 @@ end
     (combobulate-test-elixir source
       (should-error (combobulate-elixir-toggle-capture) :type 'user-error)
       (should (equal (buffer-string) (string-replace "‸" "" source))))))
+
+(defconst combobulate-test-elixir--functions
+  "defmodule M do
+  use GenServer
+
+  # Section
+
+  # sobelow_skip [\"SQL.Query\"]
+  @doc \"F\"
+  @spec f(integer) :: integer
+  def f(0), do: 0
+
+  def f(x) do
+    x
+  end
+
+  def g, do: 1
+end
+"
+  "A module with a commented, documented function of two clauses.")
+
+(defconst combobulate-test-elixir--function-f
+  "  # sobelow_skip [\"SQL.Query\"]
+  @doc \"F\"
+  @spec f(integer) :: integer
+  def f(0), do: 0
+
+  def f(x) do
+    x
+  end
+"
+  "The whole of `f' in `combobulate-test-elixir--functions'.")
+
+(defun combobulate-test-elixir--functions-at (text)
+  "Return `combobulate-test-elixir--functions' with `‸' before TEXT."
+  (string-replace text (concat "‸" text) combobulate-test-elixir--functions))
+
+(ert-deftest combobulate-test-elixir-mark-function-marks-clauses-attributes-and-comments ()
+  (dolist (at '("x\n  end" "@spec" "# sobelow" "def f(0)"))
+    (combobulate-test-elixir (combobulate-test-elixir--functions-at at)
+      (combobulate-elixir-mark-function)
+      (should mark-active)
+      (should (equal (buffer-substring (region-beginning) (region-end)) combobulate-test-elixir--function-f)))))
+
+(ert-deftest combobulate-test-elixir-mark-function-marks-a-lone-clause ()
+  (combobulate-test-elixir (combobulate-test-elixir--functions-at "g, do")
+    (combobulate-elixir-mark-function)
+    (should (equal (buffer-substring (region-beginning) (region-end)) "  def g, do: 1\n"))))
+
+(ert-deftest combobulate-test-elixir-mark-function-refuses-outside-a-function ()
+  (combobulate-test-elixir (combobulate-test-elixir--functions-at "use")
+    (should-error (combobulate-elixir-mark-function) :type 'user-error)))
+
+(ert-deftest combobulate-test-elixir-mark-function-from-a-comment-in-its-body ()
+  (combobulate-test-elixir "defmodule M do\n  def f(x) do\n    ‸# why\n    x\n  end\nend\n"
+    (combobulate-elixir-mark-function)
+    (should (equal (buffer-substring (region-beginning) (region-end)) "  def f(x) do\n    # why\n    x\n  end\n"))))

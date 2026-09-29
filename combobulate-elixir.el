@@ -540,6 +540,72 @@ one of those attributes it moves to the function they describe."
                  first-attribute (nth index siblings)))
          (or first-attribute (user-error "No `@doc' or `@spec' above this function")))))))
 
+(defun combobulate-elixir--function-extra-p (node)
+  "Return non-nil if NODE is a comment or attribute that can sit above a function."
+  (or (equal (treesit-node-type node) "comment")
+      (combobulate-elixir--function-attribute-p node)))
+
+(defun combobulate-elixir--function-after (node)
+  "Return the first sibling from NODE on that is not a comment or attribute."
+  (let ((node node))
+    (while (and node (combobulate-elixir--function-extra-p node))
+      (setq node (treesit-node-next-sibling node t)))
+    node))
+
+(defun combobulate-elixir--blank-line-between-p (above below)
+  (> (line-number-at-pos (treesit-node-start below))
+     (1+ (line-number-at-pos (max (treesit-node-start above) (1- (treesit-node-end above)))))))
+
+(defun combobulate-elixir--function-group-at (pos)
+  "Return the nodes that make up the function at POS.
+
+These are its clauses and the `@doc', `@spec', `@impl', `@deprecated'
+and comments above them.  A comment with a blank line below it heads
+a section rather than the function, so it is left out."
+  (let* ((at (combobulate-elixir--node-at pos))
+         (node (or (and (equal (treesit-node-type at) "comment")
+                        (combobulate-elixir--signature (combobulate-elixir--function-after at))
+                        at)
+                   (treesit-parent-until at (lambda (node)
+                                              (or (combobulate-elixir--function-attribute-p node)
+                                                  (combobulate-elixir--signature node)))
+                                         t)))
+         (clause (and node (combobulate-elixir--function-after node)))
+         (name-and-arity (and clause (cdr (combobulate-elixir--signature clause)))))
+    (unless name-and-arity
+      (user-error "No function at point"))
+    (let* ((siblings (treesit-node-children (treesit-node-parent clause) t))
+           (index (seq-position siblings clause #'treesit-node-eq))
+           (clause-p (lambda (node) (equal (cdr (combobulate-elixir--signature node)) name-and-arity)))
+           (member-p (lambda (node) (or (funcall clause-p node) (combobulate-elixir--function-extra-p node))))
+           (first index)
+           (last index))
+      (while (and (> first 0) (funcall member-p (nth (1- first) siblings)))
+        (setq first (1- first)))
+      (while (and (< (1+ last) (length siblings)) (funcall member-p (nth (1+ last) siblings)))
+        (setq last (1+ last)))
+      (while (not (funcall clause-p (nth last siblings)))
+        (setq last (1- last)))
+      (while (and (< first index)
+                  (equal (treesit-node-type (nth first siblings)) "comment")
+                  (combobulate-elixir--blank-line-between-p (nth first siblings) (nth (1+ first) siblings)))
+        (setq first (1+ first)))
+      (seq-subseq siblings first (1+ last)))))
+
+(defun combobulate-elixir-mark-function ()
+  "Mark the function at point, with all its clauses and what documents it.
+
+See `combobulate-elixir--function-group-at' for what the function
+includes.  The region covers whole lines, so killing and yanking it
+moves the function cleanly."
+  (interactive)
+  (let* ((group (combobulate-elixir--function-group-at (point)))
+         (start (save-excursion (goto-char (treesit-node-start (car group))) (line-beginning-position)))
+         (end (save-excursion (goto-char (treesit-node-end (car (last group))))
+                              (min (point-max) (1+ (line-end-position))))))
+    (push-mark end nil t)
+    (goto-char start)))
+
 (defun combobulate-elixir--trimmed-range (node)
   "Return the range of NODE without trailing whitespace.
 
