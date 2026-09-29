@@ -36,6 +36,29 @@
 ;;
 ;; Defun navigation is remapped to the `treesit-*-defun' commands,
 ;; which use the major mode's `treesit-defun-type-regexp' predicate.
+;;
+;; The Elixir-only commands have no keys by default.
+;; This suggestion puts them under Combobulate's `C-c o' prefix,
+;; so change that part if you customized `combobulate-key-prefix':
+;;
+;;   (with-eval-after-load 'combobulate-elixir
+;;     (let ((map combobulate-elixir-map))
+;;       (keymap-set map "C-c o n" #'combobulate-elixir-navigate-next-same-kind)
+;;       (keymap-set map "C-c o p" #'combobulate-elixir-navigate-previous-same-kind)
+;;       (keymap-set map "C-c o N" #'combobulate-elixir-navigate-next-occurrence)
+;;       (keymap-set map "C-c o P" #'combobulate-elixir-navigate-previous-occurrence)
+;;       (keymap-set map "C-c o <" #'combobulate-elixir-navigate-pipeline-head)
+;;       (keymap-set map "C-c o >" #'combobulate-elixir-navigate-pipeline-last-stage)
+;;       (keymap-set map "C-c o @" #'combobulate-elixir-navigate-function-attributes)
+;;       (keymap-set map "C-c o m" #'combobulate-elixir-mark-function)
+;;       (keymap-set map "C-c o [" #'combobulate-elixir-drag-function-up)
+;;       (keymap-set map "C-c o ]" #'combobulate-elixir-drag-function-down)
+;;       (keymap-set map "C-c o |" #'combobulate-elixir-toggle-pipe)
+;;       (keymap-set map "C-c o &" #'combobulate-elixir-toggle-capture)
+;;       (keymap-set map "C-c o d" #'combobulate-elixir-toggle-do-block)
+;;       (keymap-set map "C-c o D" #'combobulate-elixir-toggle-private)
+;;       (keymap-set map "C-c o j" #'combobulate-elixir-split-or-join)
+;;       (keymap-set map "C-c o A" #'combobulate-elixir-toggle-multi-alias)))
 
 ;;; Code:
 
