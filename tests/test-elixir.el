@@ -327,3 +327,39 @@ end
     (combobulate-test-elixir (replace-regexp-in-string (format "def %s," name) (format "def ‸%s," name)
                                                        combobulate-test-elixir--documented)
       (should-error (combobulate-elixir-navigate-function-attributes) :type 'user-error))))
+
+(ert-deftest combobulate-test-elixir-toggle-do-block-round-trips-a-definition ()
+  (combobulate-test-elixir "defmodule M do\n  def f(x) when x > 0, do: ‸x + 1\nend\n"
+    (combobulate-elixir-toggle-do-block)
+    (should (equal (buffer-string) "defmodule M do\n  def f(x) when x > 0 do\n    x + 1\n  end\nend\n"))
+    (combobulate-elixir-toggle-do-block)
+    (should (equal (buffer-string) "defmodule M do\n  def f(x) when x > 0, do: x + 1\nend\n"))))
+
+(ert-deftest combobulate-test-elixir-toggle-do-block-keeps-else ()
+  (combobulate-test-elixir "‸if a, do: b, else: c\n"
+    (combobulate-elixir-toggle-do-block)
+    (should (equal (buffer-string) "if a do\n  b\nelse\n  c\nend\n"))
+    (combobulate-elixir-toggle-do-block)
+    (should (equal (buffer-string) "if a, do: b, else: c\n"))))
+
+(ert-deftest combobulate-test-elixir-toggle-do-block-handles-calls-without-a-comma ()
+  (combobulate-test-elixir "‸quote do: x\nfoo(a, do: y)\n"
+    (combobulate-elixir-toggle-do-block)
+    (should (equal (buffer-string) "quote do\n  x\nend\nfoo(a, do: y)\n"))
+    (combobulate-elixir-toggle-do-block)
+    (should (equal (buffer-string) "quote do: x\nfoo(a, do: y)\n"))
+    (search-forward "foo")
+    (combobulate-elixir-toggle-do-block)
+    (should (equal (buffer-string) "quote do: x\nfoo(a) do\n  y\nend\n"))
+    (combobulate-elixir-toggle-do-block)
+    (should (equal (buffer-string) "quote do: x\nfoo(a, do: y)\n"))))
+
+(ert-deftest combobulate-test-elixir-toggle-do-block-refuses-blocks-that-do-not-fit-a-keyword ()
+  (dolist (source '("def f(x) do\n  ‸y = x\n  y\nend\n"
+                    "case ‸x do\n  1 -> :one\nend\n"
+                    "def f(x) do\n  # why\n  ‸x\nend\n"
+                    "try do\n  ‸x\nrescue\n  _ -> nil\nend\n"))
+    (combobulate-test-elixir source
+      (let ((before (buffer-string)))
+        (should-error (combobulate-elixir-toggle-do-block) :type 'user-error)
+        (should (equal (buffer-string) before))))))

@@ -812,6 +812,85 @@ Macros switch between `defmacro' and `defmacrop', and guards between
           (delete-region (treesit-node-start target) (treesit-node-end target))
           (insert (if (string-suffix-p "p" keyword) (substring keyword 0 -1) (concat keyword "p"))))))))
 
+(defun combobulate-elixir--block-call-p (node)
+  "Return non-nil if NODE is a call with a `do' block or a `do:' keyword."
+  (and (equal (treesit-node-type node) "call")
+       (or (combobulate-elixir--do-block node)
+           (let ((arguments (combobulate-elixir--child-of-type node "arguments")))
+             (and arguments (combobulate-elixir--do-keyword-p arguments))))))
+
+(defun combobulate-elixir--sole-expression (block)
+  "Return the text of the only expression in BLOCK, or signal a `user-error'."
+  (let ((children (seq-remove (lambda (child) (equal (treesit-node-type child) "else_block"))
+                              (treesit-node-children block t))))
+    (unless (and (= (length children) 1)
+                 (not (member (treesit-node-type (car children)) '("comment" "stab_clause"))))
+      (user-error "Only a block with a single expression fits in a keyword"))
+    (treesit-node-text (car children) t)))
+
+(defun combobulate-elixir--keyword-form (call)
+  "Return the text of CALL, which has a `do' block, written with `do:'."
+  (let ((do-block (combobulate-elixir--do-block call)))
+    (when (seq-some (lambda (child)
+                      (member (treesit-node-type child) '("rescue_block" "catch_block" "after_block")))
+                    (treesit-node-children do-block t))
+      (user-error "Only `do' and `else' blocks fit in a keyword"))
+    (let* ((else-block (combobulate-elixir--child-of-type do-block "else_block"))
+           (arguments (combobulate-elixir--child-of-type call "arguments"))
+           (keywords (concat "do: " (combobulate-elixir--sole-expression do-block)
+                             (and else-block
+                                  (concat ", else: " (combobulate-elixir--sole-expression else-block)))))
+           (start (treesit-node-start call)))
+      (cond
+       ((and arguments (equal (treesit-node-type (treesit-node-child arguments 0)) "("))
+        (concat (buffer-substring-no-properties start (treesit-node-start (car (last (treesit-node-children arguments)))))
+                (and (treesit-node-child arguments 0 t) ", ")
+                keywords ")"))
+       (arguments (concat (buffer-substring-no-properties start (treesit-node-end arguments)) ", " keywords))
+       (t (concat (buffer-substring-no-properties start (treesit-node-end (treesit-node-child-by-field-name call "target")))
+                  " " keywords))))))
+
+(defun combobulate-elixir--block-form (call)
+  "Return the text of CALL, which has a `do:' keyword, written with a `do' block."
+  (let* ((arguments (combobulate-elixir--child-of-type call "arguments"))
+         (keywords (combobulate-elixir--child-of-type arguments "keywords"))
+         (pairs (treesit-node-children keywords t))
+         (key (lambda (pair) (string-trim (treesit-node-text (treesit-node-child-by-field-name pair "key") t))))
+         (value (lambda (name)
+                  (when-let* ((pair (seq-find (lambda (pair) (equal (funcall key pair) name)) pairs)))
+                    (treesit-node-text (treesit-node-child-by-field-name pair "value") t))))
+         (positional (seq-remove (lambda (child) (treesit-node-eq child keywords))
+                                 (treesit-node-children arguments t)))
+         (else (funcall value "else:")))
+    (unless (seq-every-p (lambda (pair) (member (funcall key pair) '("do:" "else:"))) pairs)
+      (user-error "Only `do:' and `else:' keywords can become blocks"))
+    (concat (buffer-substring-no-properties
+             (treesit-node-start call)
+             (treesit-node-end (or (car (last positional)) (treesit-node-child-by-field-name call "target"))))
+            (and positional (equal (treesit-node-type (treesit-node-child arguments 0)) "(") ")")
+            " do\n" (funcall value "do:") "\n"
+            (and else (concat "else\n" else "\n"))
+            "end")))
+
+(defun combobulate-elixir-toggle-do-block ()
+  "Switch the call at point between `do: ...' and `do ... end'.
+
+An `else' block or `else:' keyword comes along.  A block becomes a
+keyword only if each of its blocks holds a single expression."
+  (interactive)
+  (let* ((call (or (treesit-parent-until (combobulate-elixir--node-at (point))
+                                         #'combobulate-elixir--block-call-p t)
+                   (user-error "No call with a `do' block or `do:' keyword at point")))
+         (text (if (combobulate-elixir--do-block call)
+                   (combobulate-elixir--keyword-form call)
+                 (combobulate-elixir--block-form call)))
+         (start (treesit-node-start call)))
+    (delete-region start (treesit-node-end call))
+    (goto-char start)
+    (insert text)
+    (indent-region start (point))
+    (goto-char start)))
+
 (defun combobulate-elixir-pretty-print-node-name (node _default-name)
   "Pretty printer for Elixir nodes"
   (combobulate-string-truncate
