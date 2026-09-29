@@ -278,3 +278,21 @@ end
 (ert-deftest combobulate-test-elixir-toggle-private-refuses-outside-a-definition ()
   (combobulate-test-elixir "defmodule M do\n  ‸@x 1\nend\n"
     (should-error (combobulate-elixir-toggle-private) :type 'user-error)))
+
+(ert-deftest combobulate-test-elixir-pipeline-head-and-last-stage ()
+  (combobulate-test-elixir "def f(x) do\n  x\n  |> foo()\n  |> ‸bar()\n  |> baz()\nend\n"
+    (combobulate-elixir-navigate-pipeline-head)
+    (should (looking-at-p "x\n  |> foo"))
+    (combobulate-elixir-navigate-pipeline-last-stage)
+    (should (looking-at-p "baz()"))))
+
+(ert-deftest combobulate-test-elixir-pipeline-ends-pick-the-innermost-pipeline ()
+  (combobulate-test-elixir "def f(x) do\n  x |> foo(y |> ‸bar() |> qux())\nend\n"
+    (combobulate-elixir-navigate-pipeline-head)
+    (should (looking-at-p "y |> bar"))
+    (combobulate-elixir-navigate-pipeline-last-stage)
+    (should (looking-at-p "qux()"))))
+
+(ert-deftest combobulate-test-elixir-pipeline-ends-refuse-outside-a-pipeline ()
+  (combobulate-test-elixir "def f(x) do\n  ‸foo(x)\nend\n"
+    (should-error (combobulate-elixir-navigate-pipeline-head) :type 'user-error)))

@@ -488,6 +488,22 @@ limited to siblings: from `Repo.query!' it reaches the next
                                               #'combobulate-navigate-previous)
    (lambda () (combobulate-elixir--occurrence-target 'previous))))
 
+(defun combobulate-elixir--pipeline-stages-at-point ()
+  "Return the head and stages of the innermost pipeline around point."
+  (combobulate-elixir--skip-indentation)
+  (combobulate-elixir--pipe-stages (or (combobulate-elixir--pipeline-at (point))
+                                       (user-error "No pipeline at point"))))
+
+(defun combobulate-elixir-navigate-pipeline-head ()
+  "Move to the expression that the pipeline at point starts from."
+  (interactive "^")
+  (combobulate-visual-move-to-node (car (combobulate-elixir--pipeline-stages-at-point))))
+
+(defun combobulate-elixir-navigate-pipeline-last-stage ()
+  "Move to the last stage of the pipeline at point."
+  (interactive "^")
+  (combobulate-visual-move-to-node (car (last (combobulate-elixir--pipeline-stages-at-point)))))
+
 (defun combobulate-elixir--trimmed-range (node)
   "Return the range of NODE without trailing whitespace.
 
