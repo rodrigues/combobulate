@@ -414,3 +414,28 @@ end
     (combobulate-test-elixir source
       (should-error (combobulate-elixir-toggle-multi-alias) :type 'user-error)
       (should (equal (buffer-string) (string-replace "‸" "" source))))))
+
+(ert-deftest combobulate-test-elixir-split-or-join-round-trips-a-list ()
+  (combobulate-test-elixir "def f do\n  x = [1, ‸2, 3]\nend\n"
+    (combobulate-elixir-split-or-join)
+    (should (equal (buffer-string) "def f do\n  x = [\n    1,\n    2,\n    3\n  ]\nend\n"))
+    (combobulate-elixir-split-or-join)
+    (should (equal (buffer-string) "def f do\n  x = [1, 2, 3]\nend\n"))))
+
+(ert-deftest combobulate-test-elixir-split-or-join-handles-each-collection ()
+  (dolist (case '(("%{‸a: 1, b: %{c: 2}}\n" "%{\n  a: 1,\n  b: %{c: 2}\n}\n")
+                  ("%User{‸name: \"x\", age: 1}\n" "%User{\n  name: \"x\",\n  age: 1\n}\n")
+                  ("{‸:ok, value}\n" "{\n  :ok,\n  value\n}\n")
+                  ("<<‸a, b>>\n" "<<\n  a,\n  b\n>>\n")
+                  ("foo(‸a, b: 1)\n" "foo(\n  a,\n  b: 1\n)\n")))
+    (combobulate-test-elixir (car case)
+      (combobulate-elixir-split-or-join)
+      (should (equal (buffer-string) (cadr case)))
+      (combobulate-elixir-split-or-join)
+      (should (equal (buffer-string) (string-replace "‸" "" (car case)))))))
+
+(ert-deftest combobulate-test-elixir-split-or-join-refuses-comments-and-empty-collections ()
+  (dolist (source '("[\n  1,\n  # two\n  ‸2\n]\n" "x = [‸]\n" "‸x\n"))
+    (combobulate-test-elixir source
+      (should-error (combobulate-elixir-split-or-join) :type 'user-error)
+      (should (equal (buffer-string) (string-replace "‸" "" source))))))

@@ -1052,6 +1052,43 @@ around point is searched."
             (setq start (car first-range)))))
       (goto-char start))))
 
+(defun combobulate-elixir--collection-p (node)
+  (or (combobulate-elixir--type-p node '("list" "tuple" "map" "bitstring"))
+      (and (equal (treesit-node-type node) "arguments")
+           (equal (treesit-node-type (treesit-node-child node 0)) "("))))
+
+(defun combobulate-elixir-split-or-join ()
+  "Put each element of the collection at point on its own line, or all on one.
+
+Lists, tuples, maps, structs, bitstrings and parenthesized arguments
+are collections.  A collection whose first element starts on the line
+after its opening delimiter is joined; any other is split."
+  (interactive)
+  (let* ((collection (or (treesit-parent-until (combobulate-elixir--node-at (point))
+                                               #'combobulate-elixir--collection-p t)
+                         (user-error "No collection at point")))
+         (container (if (equal (treesit-node-type collection) "map")
+                        (combobulate-elixir--child-of-type collection "map_content")
+                      collection))
+         (elements (and container (combobulate-elixir--elements container)))
+         (start (treesit-node-start collection)))
+    (unless elements
+      (user-error "No elements to split or join"))
+    (when (seq-some (lambda (node) (and node (combobulate-elixir--child-of-type node "comment")))
+                    (list container (combobulate-elixir--child-of-type container "keywords")))
+      (user-error "Splitting or joining would lose the comments in this collection"))
+    (let* ((open (string-trim-right (buffer-substring-no-properties start (treesit-node-start (car elements)))))
+           (close (treesit-node-text (car (last (treesit-node-children collection))) t))
+           (texts (mapcar (lambda (element) (treesit-node-text element t)) elements))
+           (text (if (string-search "\n" (buffer-substring-no-properties start (treesit-node-start (car elements))))
+                     (concat open (string-join texts ", ") close)
+                   (concat open "\n" (string-join texts ",\n") "\n" close))))
+      (delete-region start (treesit-node-end collection))
+      (goto-char start)
+      (insert text)
+      (indent-region start (point))
+      (goto-char start))))
+
 (defun combobulate-elixir-pretty-print-node-name (node _default-name)
   "Pretty printer for Elixir nodes"
   (combobulate-string-truncate
