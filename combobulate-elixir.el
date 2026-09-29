@@ -386,8 +386,8 @@ and get slow in large modules."
   "Return a string naming the kind of NODE for same-kind navigation.
 
 Calls are grouped by keyword, with private forms such as `defp'
-counting as their public form.  Module attributes are grouped by
-name and binary operators by operator."
+counting as their public form.  Module attributes and sigils are
+grouped by name and binary operators by operator."
   (let ((field-text (lambda (n field)
                       (treesit-node-text (treesit-node-child-by-field-name n field) t))))
     (pcase (treesit-node-type node)
@@ -403,6 +403,7 @@ name and binary operators by operator."
                      (funcall field-text operand "target")
                    (treesit-node-text operand t)))))
       ("binary_operator" (concat "binary_operator " (funcall field-text node "operator")))
+      ("sigil" (concat "~" (treesit-node-text (combobulate-elixir--child-of-type node "sigil_name") t)))
       (type type))))
 
 (defun combobulate-elixir--same-kind-target (direction)
@@ -449,6 +450,43 @@ the next `def' or `defp'; from `@doc' it reaches the next `@doc'."
    arg (combobulate-elixir--same-kind-fallback #'combobulate-heex-navigate-previous-same-kind
                                               #'combobulate-navigate-previous)
    (lambda () (combobulate-elixir--same-kind-target 'previous))))
+
+(defun combobulate-elixir--occurrence-target (direction)
+  "Return the nearest node in DIRECTION of the same kind as the one at point.
+
+Unlike `combobulate-elixir--same-kind-target', this searches the whole buffer."
+  (let* ((node (combobulate-elixir--thing-at (point)))
+         (node (if (equal (treesit-node-type node) "sigil_name") (treesit-node-parent node) node))
+         (kind (combobulate-elixir--kind node))
+         (start (treesit-node-start node))
+         (query `((,(intern (treesit-node-type node))) @node))
+         (same (seq-filter (lambda (candidate) (equal (combobulate-elixir--kind candidate) kind))
+                           (treesit-query-capture (combobulate-buffer-root-node 'elixir) query nil nil t))))
+    (if (eq direction 'next)
+        (seq-find (lambda (candidate) (> (treesit-node-start candidate) start)) same)
+      (car (last (seq-filter (lambda (candidate) (< (treesit-node-start candidate) start)) same))))))
+
+(defun combobulate-elixir-navigate-next-occurrence (&optional arg)
+  "Move to the next node of the same kind in the buffer ARG times.
+
+Unlike \\[combobulate-elixir-navigate-next-same-kind], this is not
+limited to siblings: from `Repo.query!' it reaches the next
+`Repo.query!' in any function, and from `~SQL' the next `~SQL'."
+  (interactive "^p")
+  (combobulate-elixir--navigate
+   arg (combobulate-elixir--same-kind-fallback #'combobulate-heex-navigate-next-same-kind
+                                              #'combobulate-navigate-next)
+   (lambda ()
+     (skip-chars-forward combobulate-skip-prefix-regexp)
+     (combobulate-elixir--occurrence-target 'next))))
+
+(defun combobulate-elixir-navigate-previous-occurrence (&optional arg)
+  "Move to the previous node of the same kind in the buffer ARG times."
+  (interactive "^p")
+  (combobulate-elixir--navigate
+   arg (combobulate-elixir--same-kind-fallback #'combobulate-heex-navigate-previous-same-kind
+                                              #'combobulate-navigate-previous)
+   (lambda () (combobulate-elixir--occurrence-target 'previous))))
 
 (defun combobulate-elixir--trimmed-range (node)
   "Return the range of NODE without trailing whitespace.

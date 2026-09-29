@@ -182,3 +182,60 @@ stubbed proffer returns the last node it was given, not the chosen one."
   (combobulate-test-elixir "def f(x) do\n  ‸foo(x)\nend\n"
     (should-error (combobulate-elixir-dbg-pipe) :type 'user-error)
     (should (equal (buffer-string) "def f(x) do\n  foo(x)\nend\n"))))
+
+(defconst combobulate-test-elixir--queries
+  "defp regions(a, b) do
+  %{rows: rows} =
+    Repo.query!(
+      ~SQL\"\"\"
+      SELECT 1
+      \"\"\",
+      [a, b]
+    )
+
+  Enum.map(rows, fn x -> ~w(x) end)
+end
+
+defp memberships(a, b) do
+  %{rows: rows} =
+    Repo.query!(
+      ~SQL\"\"\"
+      SELECT 2
+      \"\"\",
+      [a, b]
+    )
+end
+"
+  "Two functions that each call `Repo.query!' with a `~SQL' sigil.")
+
+(defun combobulate-test-elixir--queries-at (marker count)
+  "Return `combobulate-test-elixir--queries' with `‸' before the COUNTth MARKER."
+  (let ((source combobulate-test-elixir--queries)
+        (start 0))
+    (dotimes (_ count)
+      (setq start (1+ (string-search marker source start))))
+    (concat (substring source 0 (1- start)) "‸" (substring source (1- start)))))
+
+(ert-deftest combobulate-test-elixir-previous-occurrence-reaches-the-same-call-in-another-function ()
+  (combobulate-test-elixir (combobulate-test-elixir--queries-at "Repo" 2)
+    (combobulate-elixir-navigate-previous-occurrence)
+    (should (= (line-number-at-pos) 3))
+    (should (looking-at-p "Repo\\.query!"))))
+
+(ert-deftest combobulate-test-elixir-next-occurrence-reaches-the-same-call-in-another-function ()
+  (combobulate-test-elixir (combobulate-test-elixir--queries-at "query!" 1)
+    (combobulate-elixir-navigate-next-occurrence)
+    (should (= (line-number-at-pos) 15))
+    (should (looking-at-p "Repo\\.query!"))))
+
+(ert-deftest combobulate-test-elixir-previous-occurrence-matches-a-sigil-by-name ()
+  (combobulate-test-elixir (combobulate-test-elixir--queries-at "SQL" 2)
+    (combobulate-elixir-navigate-previous-occurrence)
+    (should (= (line-number-at-pos) 4))
+    (should (looking-at-p "~SQL"))))
+
+(ert-deftest combobulate-test-elixir-next-occurrence-stays-put-without-a-match ()
+  (combobulate-test-elixir (combobulate-test-elixir--queries-at "Enum" 1)
+    (let ((start (point)))
+      (combobulate-elixir-navigate-next-occurrence)
+      (should (= (point) start)))))
