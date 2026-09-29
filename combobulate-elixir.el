@@ -606,6 +606,50 @@ moves the function cleanly."
     (push-mark end nil t)
     (goto-char start)))
 
+(defun combobulate-elixir--neighbour-function (group direction)
+  "Return the nodes of the function next to GROUP in DIRECTION.
+
+Comments that head a section rather than a function are skipped."
+  (let ((node (if (eq direction 'up)
+                  (treesit-node-prev-sibling (car group) t)
+                (treesit-node-next-sibling (car (last group)) t))))
+    (while (and node (equal (treesit-node-type node) "comment"))
+      (setq node (if (eq direction 'up)
+                     (treesit-node-prev-sibling node t)
+                   (treesit-node-next-sibling node t))))
+    (let ((clause (and node (combobulate-elixir--function-after node))))
+      (unless (and clause (combobulate-elixir--signature clause))
+        (user-error "No function %s this one to swap with" (if (eq direction 'up) "above" "below")))
+      (combobulate-elixir--function-group-at (treesit-node-start clause)))))
+
+(defun combobulate-elixir--drag-function (direction)
+  "Swap the function at point with the one in DIRECTION and move to it."
+  (let* ((self (combobulate-elixir--function-group-at (point)))
+         (other (combobulate-elixir--neighbour-function self direction))
+         (range (lambda (group) (cons (treesit-node-start (car group)) (treesit-node-end (car (last group))))))
+         (self-range (funcall range self))
+         (other-range (funcall range other)))
+    (if (eq direction 'up)
+        (progn (transpose-subr-1 other-range self-range)
+               (goto-char (car other-range)))
+      (transpose-subr-1 self-range other-range)
+      (goto-char (- (cdr other-range) (- (cdr self-range) (car self-range)))))))
+
+(defun combobulate-elixir-drag-function-up (&optional arg)
+  "Swap the function at point with the one above it ARG times.
+
+A function includes all its clauses and what documents it; see
+`combobulate-elixir--function-group-at'."
+  (interactive "p")
+  (dotimes (_ (or arg 1))
+    (combobulate-elixir--drag-function 'up)))
+
+(defun combobulate-elixir-drag-function-down (&optional arg)
+  "Swap the function at point with the one below it ARG times."
+  (interactive "p")
+  (dotimes (_ (or arg 1))
+    (combobulate-elixir--drag-function 'down)))
+
 (defun combobulate-elixir--trimmed-range (node)
   "Return the range of NODE without trailing whitespace.
 

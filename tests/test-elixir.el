@@ -529,3 +529,39 @@ end
   (combobulate-test-elixir "defmodule M do\n  def f(x) do\n    ‸# why\n    x\n  end\nend\n"
     (combobulate-elixir-mark-function)
     (should (equal (buffer-substring (region-beginning) (region-end)) "  def f(x) do\n    # why\n    x\n  end\n"))))
+
+(defconst combobulate-test-elixir--functions-swapped
+  "defmodule M do
+  use GenServer
+
+  # Section
+
+  def g, do: 1
+
+  # sobelow_skip [\"SQL.Query\"]
+  @doc \"F\"
+  @spec f(integer) :: integer
+  def f(0), do: 0
+
+  def f(x) do
+    x
+  end
+end
+"
+  "`combobulate-test-elixir--functions' with `f' and `g' swapped.")
+
+(ert-deftest combobulate-test-elixir-drag-function-round-trips ()
+  (combobulate-test-elixir (combobulate-test-elixir--functions-at "x\n  end")
+    (combobulate-elixir-drag-function-down)
+    (should (equal (buffer-string) combobulate-test-elixir--functions-swapped))
+    (should (looking-at-p "# sobelow"))
+    (combobulate-elixir-drag-function-up)
+    (should (equal (buffer-string) combobulate-test-elixir--functions))
+    (should (looking-at-p "# sobelow"))))
+
+(ert-deftest combobulate-test-elixir-drag-function-refuses-without-a-neighbouring-function ()
+  (dolist (case '(("x\n  end" . combobulate-elixir-drag-function-up)
+                  ("g, do" . combobulate-elixir-drag-function-down)))
+    (combobulate-test-elixir (combobulate-test-elixir--functions-at (car case))
+      (should-error (funcall (cdr case)) :type 'user-error)
+      (should (equal (buffer-string) combobulate-test-elixir--functions)))))
