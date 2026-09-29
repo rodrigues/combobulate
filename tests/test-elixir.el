@@ -439,3 +439,36 @@ end
     (combobulate-test-elixir source
       (should-error (combobulate-elixir-split-or-join) :type 'user-error)
       (should (equal (buffer-string) (string-replace "‸" "" source))))))
+
+(defmacro combobulate-test-elixir--toggles-capture (before after)
+  "Assert that toggling the capture in BEFORE, with point at `‸', gives AFTER."
+  `(combobulate-test-elixir ,before
+     (combobulate-elixir-toggle-capture)
+     (should (equal (buffer-string) ,after))))
+
+(ert-deftest combobulate-test-elixir-toggle-capture-turns-functions-into-captures ()
+  (combobulate-test-elixir--toggles-capture "Enum.map(xs, fn x -> ‸foo(x) end)\n" "Enum.map(xs, &foo/1)\n")
+  (combobulate-test-elixir--toggles-capture "‸fn x, y -> String.contains?(x, y) end\n" "&String.contains?/2\n")
+  (combobulate-test-elixir--toggles-capture "‸fn x -> Map.get(x, :k) end\n" "&Map.get(&1, :k)\n")
+  (combobulate-test-elixir--toggles-capture "‸fn a, b -> b - a end\n" "&(&2 - &1)\n")
+  (combobulate-test-elixir--toggles-capture "‸fn x -> f.(x) end\n" "&f.(&1)\n")
+  (combobulate-test-elixir--toggles-capture "‸fn x -> x.name end\n" "&(&1.name)\n")
+  (combobulate-test-elixir--toggles-capture "‸fn -> now() end\n" "&now/0\n"))
+
+(ert-deftest combobulate-test-elixir-toggle-capture-turns-captures-into-functions ()
+  (combobulate-test-elixir--toggles-capture "Enum.map(xs, ‸&String.upcase/1)\n" "Enum.map(xs, fn arg1 -> String.upcase(arg1) end)\n")
+  (combobulate-test-elixir--toggles-capture "‸&Map.get(&1, :k)\n" "fn arg1 -> Map.get(arg1, :k) end\n")
+  (combobulate-test-elixir--toggles-capture "&(&2 - ‸&1)\n" "fn arg1, arg2 -> arg2 - arg1 end\n")
+  (combobulate-test-elixir--toggles-capture "‸&now/0\n" "fn -> now() end\n"))
+
+(ert-deftest combobulate-test-elixir-toggle-capture-refuses-functions-a-capture-cannot-express ()
+  (dolist (source '("‸fn\n  nil -> 0\n  x -> x\nend\n"
+                    "‸fn {a, b} -> a end\n"
+                    "‸fn x when x > 0 -> x end\n"
+                    "‸fn x -> 1 end\n"
+                    "‸fn x ->\n  y = x\n  y\nend\n"
+                    "‸fn x -> Enum.map(x, fn y -> y end) end\n"
+                    "‸fn -> 1 end\n"))
+    (combobulate-test-elixir source
+      (should-error (combobulate-elixir-toggle-capture) :type 'user-error)
+      (should (equal (buffer-string) (string-replace "‸" "" source))))))

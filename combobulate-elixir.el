@@ -1089,6 +1089,144 @@ after its opening delimiter is joined; any other is split."
       (indent-region start (point))
       (goto-char start))))
 
+(defun combobulate-elixir--capture-operator-p (node)
+  (and (equal (treesit-node-type node) "unary_operator")
+       (equal (treesit-node-text (treesit-node-child-by-field-name node "operator") t) "&")))
+
+(defun combobulate-elixir--operand (node)
+  "Return the operand of the unary operator NODE.
+
+In `&(x)' the grammar also puts the `operand' field on the parentheses."
+  (seq-find (lambda (child) (equal (treesit-node-field-name child) "operand"))
+            (treesit-node-children node t)))
+
+(defun combobulate-elixir--capture-argument-p (node)
+  "Return non-nil if NODE is a capture argument such as `&1'."
+  (and (combobulate-elixir--capture-operator-p node)
+       (equal (treesit-node-type (combobulate-elixir--operand node)) "integer")))
+
+(defun combobulate-elixir--capture-p (node)
+  "Return non-nil if NODE is a capture such as `&foo/1' rather than `&1'."
+  (and (combobulate-elixir--capture-operator-p node)
+       (not (combobulate-elixir--capture-argument-p node))))
+
+(defun combobulate-elixir--descendants (node pred)
+  "Return NODE and the nodes inside it that satisfy PRED, in buffer order."
+  (flatten-tree (treesit-induce-sparse-tree node pred)))
+
+(defun combobulate-elixir--text-replacing (node replacements)
+  "Return the text of NODE with REPLACEMENTS, a list of (DESCENDANT . TEXT)."
+  (let ((start (treesit-node-start node))
+        (text (treesit-node-text node t)))
+    (dolist (replacement (sort replacements (lambda (a b) (> (treesit-node-start (car a))
+                                                             (treesit-node-start (car b))))))
+      (setq text (concat (substring text 0 (- (treesit-node-start (car replacement)) start))
+                         (cdr replacement)
+                         (substring text (- (treesit-node-end (car replacement)) start)))))
+    text))
+
+(defun combobulate-elixir--parenthesized-call-p (node)
+  (and (equal (treesit-node-type node) "call")
+       (not (combobulate-elixir--do-block node))
+       (equal (treesit-node-type (treesit-node-child (combobulate-elixir--child-of-type node "arguments") 0)) "(")))
+
+(defun combobulate-elixir--captured (fn)
+  "Return the text of the anonymous function FN written as a capture."
+  (let ((clauses (treesit-node-children fn t)))
+    (unless (= (length clauses) 1)
+      (user-error "Only a function with one clause can become a capture"))
+    (let* ((head (treesit-node-child-by-field-name (car clauses) "left"))
+           (params (and head (treesit-node-children head t)))
+           (names (mapcar (lambda (param) (treesit-node-text param t)) params))
+           (expressions (treesit-node-children (treesit-node-child-by-field-name (car clauses) "right") t))
+           (expression (car expressions)))
+      (when (and head (not (equal (treesit-node-type head) "arguments")))
+        (user-error "A function with a guard cannot become a capture"))
+      (unless (seq-every-p (lambda (param)
+                             (and (equal (treesit-node-type param) "identifier")
+                                  (not (string-prefix-p "_" (treesit-node-text param t)))))
+                           params)
+        (user-error "Only plain parameters can become capture arguments"))
+      (unless (= (length expressions) 1)
+        (user-error "Only a function with a single expression can become a capture"))
+      (when (combobulate-elixir--descendants expression
+                                             (lambda (node)
+                                               (or (equal (treesit-node-type node) "anonymous_function")
+                                                   (combobulate-elixir--capture-operator-p node))))
+        (user-error "A function holding another function or capture cannot become a capture"))
+      (let* ((target (treesit-node-child-by-field-name expression "target"))
+             (uses (combobulate-elixir--descendants expression
+                                                    (lambda (node)
+                                                      (and (equal (treesit-node-type node) "identifier")
+                                                           (member (treesit-node-text node t) names))))))
+        (cond
+         ((and (combobulate-elixir--parenthesized-call-p expression)
+               (equal (mapcar (lambda (argument) (treesit-node-text argument t))
+                              (combobulate-elixir--call-arguments expression))
+                      names)
+               (not (and (equal (treesit-node-type target) "dot")
+                         (null (treesit-node-child-by-field-name target "right")))))
+          (format "&%s/%d" (treesit-node-text target t) (length names)))
+         ((or (null names)
+              (seq-some (lambda (name) (not (seq-find (lambda (use) (equal (treesit-node-text use t) name)) uses)))
+                        names))
+          (user-error "A capture must use every parameter"))
+         (t
+          (let ((captured (combobulate-elixir--text-replacing
+                           expression
+                           (mapcar (lambda (use)
+                                     (cons use (format "&%d" (1+ (seq-position names (treesit-node-text use t))))))
+                                   uses))))
+            (if (combobulate-elixir--parenthesized-call-p expression)
+                (concat "&" captured)
+              (concat "&(" captured ")")))))))))
+
+(defun combobulate-elixir--uncaptured (capture)
+  "Return the text of CAPTURE written as an anonymous function."
+  (let ((operand (combobulate-elixir--operand capture)))
+    (if (and (equal (treesit-node-type operand) "binary_operator")
+             (equal (treesit-node-text (treesit-node-child-by-field-name operand "operator") t) "/")
+             (equal (treesit-node-type (treesit-node-child-by-field-name operand "right")) "integer"))
+        (let* ((arity (string-to-number (treesit-node-text (treesit-node-child-by-field-name operand "right") t)))
+               (names (mapcar (lambda (i) (format "arg%d" i)) (number-sequence 1 arity))))
+          (concat "fn" (and names (concat " " (string-join names ", "))) " -> "
+                  (treesit-node-text (treesit-node-child-by-field-name operand "left") t)
+                  "(" (string-join names ", ") ") end"))
+      (let* ((arguments (combobulate-elixir--descendants operand #'combobulate-elixir--capture-argument-p))
+             (index (lambda (argument)
+                      (string-to-number (treesit-node-text (combobulate-elixir--operand argument) t))))
+             (arity (apply #'max 0 (mapcar index arguments)))
+             (names (mapcar (lambda (i) (format "arg%d" i)) (number-sequence 1 arity))))
+        (concat "fn " (string-join names ", ") " -> "
+                (combobulate-elixir--text-replacing
+                 operand
+                 (mapcar (lambda (argument) (cons argument (nth (1- (funcall index argument)) names)))
+                         arguments))
+                " end")))))
+
+(defun combobulate-elixir-toggle-capture ()
+  "Switch between `fn x -> foo(x) end' and `&foo/1', or `&foo(&1, y)'.
+
+An anonymous function becomes a capture only if it has one clause
+without a guard, plain parameters that its single expression all uses,
+and no function or capture inside.  A capture's arguments are named
+`arg1', `arg2' and so on."
+  (interactive)
+  (let* ((node (or (treesit-parent-until (combobulate-elixir--node-at (point))
+                                         (lambda (node)
+                                           (or (equal (treesit-node-type node) "anonymous_function")
+                                               (combobulate-elixir--capture-p node)))
+                                         t)
+                   (user-error "No anonymous function or capture at point")))
+         (text (if (equal (treesit-node-type node) "anonymous_function")
+                   (combobulate-elixir--captured node)
+                 (combobulate-elixir--uncaptured node)))
+         (start (treesit-node-start node)))
+    (delete-region start (treesit-node-end node))
+    (goto-char start)
+    (insert text)
+    (goto-char start)))
+
 (defun combobulate-elixir-pretty-print-node-name (node _default-name)
   "Pretty printer for Elixir nodes"
   (combobulate-string-truncate
