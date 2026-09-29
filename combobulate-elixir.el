@@ -504,6 +504,42 @@ limited to siblings: from `Repo.query!' it reaches the next
   (interactive "^")
   (combobulate-visual-move-to-node (car (last (combobulate-elixir--pipeline-stages-at-point)))))
 
+(defun combobulate-elixir--function-attribute-p (node)
+  (member (combobulate-elixir--kind node) '("@doc" "@spec" "@impl" "@deprecated")))
+
+(defun combobulate-elixir-navigate-function-attributes ()
+  "Move between the function at point and the `@doc' and `@spec' above it.
+
+From any clause this moves to the first of the `@doc', `@spec',
+`@impl' and `@deprecated' attributes above the first clause; from
+one of those attributes it moves to the function they describe."
+  (interactive "^")
+  (combobulate-elixir--skip-indentation)
+  (let* ((node (or (treesit-parent-until (combobulate-elixir--node-at (point))
+                                         (lambda (node)
+                                           (or (combobulate-elixir--function-attribute-p node)
+                                               (combobulate-elixir--signature node)))
+                                         t)
+                   (user-error "No function or function attribute at point")))
+         (siblings (seq-remove (lambda (sibling) (equal (treesit-node-type sibling) "comment"))
+                               (treesit-node-children (treesit-node-parent node) t)))
+         (index (seq-position siblings node #'treesit-node-eq)))
+    (combobulate-visual-move-to-node
+     (if (combobulate-elixir--function-attribute-p node)
+         (let ((next (seq-find (lambda (sibling) (not (combobulate-elixir--function-attribute-p sibling)))
+                               (nthcdr index siblings))))
+           (or (and next (combobulate-elixir--signature next) next)
+               (user-error "No function after these attributes")))
+       (let ((name-and-arity (cdr (combobulate-elixir--signature node)))
+             (first-attribute))
+         (while (and (> index 0)
+                     (equal (cdr (combobulate-elixir--signature (nth (1- index) siblings))) name-and-arity))
+           (setq index (1- index)))
+         (while (and (> index 0) (combobulate-elixir--function-attribute-p (nth (1- index) siblings)))
+           (setq index (1- index)
+                 first-attribute (nth index siblings)))
+         (or first-attribute (user-error "No `@doc' or `@spec' above this function")))))))
+
 (defun combobulate-elixir--trimmed-range (node)
   "Return the range of NODE without trailing whitespace.
 

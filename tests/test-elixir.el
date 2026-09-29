@@ -296,3 +296,34 @@ end
 (ert-deftest combobulate-test-elixir-pipeline-ends-refuse-outside-a-pipeline ()
   (combobulate-test-elixir "def f(x) do\n  ‸foo(x)\nend\n"
     (should-error (combobulate-elixir-navigate-pipeline-head) :type 'user-error)))
+
+(defconst combobulate-test-elixir--documented
+  "defmodule M do
+  @moduledoc \"M\"
+  def h, do: 0
+
+  @doc \"F\"
+  @spec f(integer) :: integer
+  def f(0), do: 0
+  def f(x) do
+    x
+  end
+
+  def g, do: 1
+end
+"
+  "A module with a documented function of two clauses.")
+
+(ert-deftest combobulate-test-elixir-function-attributes-round-trip ()
+  (combobulate-test-elixir (replace-regexp-in-string "^    x" "    ‸x" combobulate-test-elixir--documented)
+    (combobulate-elixir-navigate-function-attributes)
+    (should (looking-at-p "@doc \"F\""))
+    (search-forward "integer")
+    (combobulate-elixir-navigate-function-attributes)
+    (should (looking-at-p "def f(0)"))))
+
+(ert-deftest combobulate-test-elixir-function-attributes-refuse-without-attributes ()
+  (dolist (name '("g" "h"))
+    (combobulate-test-elixir (replace-regexp-in-string (format "def %s," name) (format "def ‸%s," name)
+                                                       combobulate-test-elixir--documented)
+      (should-error (combobulate-elixir-navigate-function-attributes) :type 'user-error))))
