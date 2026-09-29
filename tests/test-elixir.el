@@ -363,3 +363,34 @@ end
       (let ((before (buffer-string)))
         (should-error (combobulate-elixir-toggle-do-block) :type 'user-error)
         (should (equal (buffer-string) before))))))
+
+(defmacro combobulate-test-elixir--toggles-pipe (before after)
+  "Assert that toggling the pipe in BEFORE, with point at `‸', gives AFTER."
+  `(combobulate-test-elixir ,before
+     (combobulate-elixir-toggle-pipe)
+     (should (equal (buffer-string) ,after))))
+
+(ert-deftest combobulate-test-elixir-toggle-pipe-round-trips-a-call ()
+  (combobulate-test-elixir "‸Enum.map(rows, &f/1)\n"
+    (combobulate-elixir-toggle-pipe)
+    (should (equal (buffer-string) "rows |> Enum.map(&f/1)\n"))
+    (combobulate-elixir-toggle-pipe)
+    (should (equal (buffer-string) "Enum.map(rows, &f/1)\n"))))
+
+(ert-deftest combobulate-test-elixir-toggle-pipe-pipes-the-innermost-call ()
+  (combobulate-test-elixir--toggles-pipe "foo(‸x)\n" "x |> foo()\n")
+  (combobulate-test-elixir--toggles-pipe "x |> foo(bar(‸y, z))\n" "x |> foo(y |> bar(z))\n")
+  (combobulate-test-elixir--toggles-pipe "‸foo(x |> bar())\n" "x |> bar() |> foo()\n")
+  (combobulate-test-elixir--toggles-pipe "‸foo(a == b, c)\n" "(a == b) |> foo(c)\n"))
+
+(ert-deftest combobulate-test-elixir-toggle-pipe-unpipes-the-stage-at-point ()
+  (combobulate-test-elixir--toggles-pipe "x |> ‸a() |> b()\n" "a(x) |> b()\n")
+  (combobulate-test-elixir--toggles-pipe "‸x |> a() |> b()\n" "a(x) |> b()\n")
+  (combobulate-test-elixir--toggles-pipe "x |> a() |> ‸b(y)\n" "b(x |> a(), y)\n")
+  (combobulate-test-elixir--toggles-pipe "x |> ‸foo\n" "foo(x)\n"))
+
+(ert-deftest combobulate-test-elixir-toggle-pipe-refuses-calls-without-a-pipeable-argument ()
+  (dolist (source '("‸foo()\n" "‸foo(a: 1)\n" "x |> ‸case do\n  _ -> 1\nend\n"))
+    (combobulate-test-elixir source
+      (should-error (combobulate-elixir-toggle-pipe) :type 'user-error)
+      (should (equal (buffer-string) (string-replace "‸" "" source))))))
