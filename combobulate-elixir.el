@@ -62,6 +62,7 @@
 ;;       (keymap-set map "C-c o k" #'combobulate-elixir-toggle-map-keys)
 ;;       (keymap-set map "C-c o v" #'combobulate-elixir-extract-variable)
 ;;       (keymap-set map "C-c o i" #'combobulate-elixir-inline-variable)
+;;       (keymap-set map "C-c o f" #'combobulate-elixir-extract-function)
 ;;       (keymap-set map "C-c o A" #'combobulate-elixir-toggle-multi-alias)))
 
 ;;; Code:
@@ -1603,15 +1604,17 @@ heads and function heads."
               node parent)))
     found))
 
+(defun combobulate-elixir--pinned-p (id)
+  "Return non-nil if the variable ID is pinned, as in `^x'."
+  (equal (treesit-node-text (treesit-node-child-by-field-name (treesit-node-parent id) "operator") t) "^"))
+
 (defun combobulate-elixir--bound-variables (node)
   "Return the variables that the patterns and heads in NODE bind.
 
 Pinned variables such as `^x' are left out, because they are read."
   (seq-filter (lambda (id)
                 (and (combobulate-elixir--pattern-p id node)
-                     (not (equal (treesit-node-text
-                                  (treesit-node-child-by-field-name (treesit-node-parent id) "operator") t)
-                                 "^"))))
+                     (not (combobulate-elixir--pinned-p id))))
               (combobulate-elixir--variables node)))
 
 (defconst combobulate-elixir--statement-blocks
@@ -1778,6 +1781,125 @@ its value reads are not bound again before that use."
       (delete-region (car binding-range) (cdr binding-range))
       (goto-char start)
       (set-marker start nil))))
+
+(defun combobulate-elixir--extract-function-parts ()
+  "Return (DEFINITION NODES STATEMENTS) for the code in the region.
+
+NODES are the statements the region covers, or the one expression it
+covers, and STATEMENTS is non-nil in the first case.  DEFINITION is
+the function around them."
+  (unless (use-region-p)
+    (user-error "Mark the statements or the expression to extract"))
+  (let* ((start (save-excursion (goto-char (region-beginning)) (skip-chars-forward " \t\n") (point)))
+         (end (save-excursion (goto-char (region-end)) (skip-chars-backward " \t\n") (point)))
+         (node (treesit-node-descendant-for-range (combobulate-buffer-root-node 'elixir) start end t))
+         (block (treesit-parent-until node (lambda (node)
+                                             (combobulate-elixir--type-p node combobulate-elixir--statement-blocks))
+                                      t))
+         (statements (and block (seq-filter (lambda (child)
+                                              (and (>= (treesit-node-start child) start)
+                                                   (<= (cdr (combobulate-elixir--trimmed-range child)) end)))
+                                            (treesit-node-children block t))))
+         (whole (and statements
+                     (= (treesit-node-start (car statements)) start)
+                     (= (cdr (combobulate-elixir--trimmed-range (car (last statements)))) end)))
+         (nodes (cond
+                 (whole statements)
+                 ((and (= (treesit-node-start node) start) (= (treesit-node-end node) end)) (list node))
+                 (t (user-error "The region must cover whole statements or one expression"))))
+         (definition (or (treesit-parent-until (car nodes) #'combobulate-elixir--signature)
+                         (user-error "Only code inside a function can move to a new function"))))
+    (list definition nodes whole)))
+
+(defun combobulate-elixir--extract-function-io (definition nodes)
+  "Return (PARAMETERS OUTPUTS) for moving NODES out of DEFINITION.
+
+PARAMETERS are the variables NODES read that are bound before them,
+and OUTPUTS the variables NODES bind that the statements after them
+read, each in the order they first appear."
+  (let* ((start (treesit-node-start (car nodes)))
+         (end (treesit-node-end (car (last nodes))))
+         (name (lambda (id) (treesit-node-text id t)))
+         (binds-p (lambda (id) (and (combobulate-elixir--pattern-p id definition)
+                                    (not (combobulate-elixir--pinned-p id)))))
+         (before (seq-keep (lambda (id) (and (<= (treesit-node-end id) start) (funcall name id)))
+                           (combobulate-elixir--bound-variables definition)))
+         (statement (combobulate-elixir--statement (car nodes)))
+         (after (seq-filter (lambda (node) (>= (treesit-node-start node) end))
+                            (treesit-node-children (treesit-node-parent statement) t)))
+         (read-after (seq-keep (lambda (id) (and (not (funcall binds-p id)) (funcall name id)))
+                               (mapcan #'combobulate-elixir--variables after)))
+         (parameters)
+         (bound))
+    (dolist (id (mapcan #'combobulate-elixir--variables nodes))
+      (let ((variable (funcall name id)))
+        (if (funcall binds-p id)
+            (unless (member variable bound)
+              (push variable bound))
+          (when (and (member variable before) (not (member variable bound)) (not (member variable parameters)))
+            (push variable parameters)))))
+    (list (nreverse parameters)
+          (seq-filter (lambda (variable) (member variable read-after)) (nreverse bound)))))
+
+(defun combobulate-elixir-extract-function (name &optional parameters)
+  "Move the statements or the expression in the region to a new function NAME.
+
+The new function is private and goes after the function the code
+came from, and a call to it takes the code's place.  PARAMETERS is
+the text of its parameter list.  It defaults to the variables the
+code reads that are bound before it, which is a guess worth
+checking, so interactively it is offered for editing.  Variables
+the code binds and the statements after it read come back from the
+function, in a tuple when there are several."
+  (interactive
+   (let ((name (read-string "Function name: ")))
+     (pcase-let ((`(,definition ,nodes) (combobulate-elixir--extract-function-parts)))
+       (list name (read-string "Parameters: "
+                               (string-join (car (combobulate-elixir--extract-function-io definition nodes))
+                                            ", "))))))
+  (unless (let ((case-fold-search nil))
+            (string-match-p (rx bos (any "a-z_") (* (any "a-zA-Z0-9_")) (? (any "?!")) eos) name))
+    (user-error "`%s' is not a function name" name))
+  (pcase-let* ((`(,definition ,nodes ,statements) (combobulate-elixir--extract-function-parts))
+               (`(,computed ,outputs) (combobulate-elixir--extract-function-io definition nodes))
+               (parameters (string-trim (or parameters (string-join computed ", "))))
+               (expression (car nodes))
+               (parent (treesit-node-parent expression))
+               (start (treesit-node-start (car nodes)))
+               (end (treesit-node-end (car (last nodes)))))
+    (unless statements
+      (cond
+       ((combobulate-elixir--pattern-p expression definition)
+        (user-error "A pattern or a head cannot call a function"))
+       ((and (combobulate-elixir--pipe-p parent)
+             (treesit-node-eq expression (treesit-node-child-by-field-name parent "right")))
+        (user-error "A pipeline stage cannot leave its pipeline"))
+       (outputs
+        (user-error "The expression binds variables that the code after it reads"))))
+    (when (seq-some (lambda (node)
+                      (seq-find #'combobulate-elixir--capture-argument-p
+                                (combobulate-elixir--descendants node #'combobulate-elixir--capture-argument-p)))
+                    nodes)
+      (user-error "Arguments such as `&1' cannot leave their capture"))
+    (let* ((call (concat name "(" parameters ")"))
+           (returned (and outputs (if (cdr outputs)
+                                      (concat "{" (string-join outputs ", ") "}")
+                                    (car outputs))))
+           (group (combobulate-elixir--function-group-at (treesit-node-start definition)))
+           (after (treesit-node-end (car (last group))))
+           (indentation (make-string (save-excursion (goto-char (treesit-node-start definition)) (current-column))
+                                     ?\s))
+           (head (if (string-empty-p parameters) name call))
+           (body (concat (buffer-substring-no-properties start end) (and returned (concat "\n" returned)))))
+      (save-excursion
+        (goto-char after)
+        (insert "\n\n" indentation "defp " head " do\n" body "\n" indentation "end")
+        (indent-region after (point)))
+      (deactivate-mark)
+      (delete-region start end)
+      (goto-char start)
+      (insert (if returned (concat returned " = " call) call))
+      (goto-char start))))
 
 (defun combobulate-elixir-pretty-print-node-name (node _default-name)
   "Pretty printer for Elixir nodes"

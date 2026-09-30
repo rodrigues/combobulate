@@ -755,3 +755,47 @@ end
     (combobulate-test-elixir source
       (should-error (combobulate-elixir-inline-variable) :type 'user-error)
       (should (equal (buffer-string) (string-replace "‸" "" source))))))
+
+(defun combobulate-test-elixir--mark-to (marker)
+  "Delete MARKER after point and mark the text between point and it."
+  (let ((start (point)))
+    (search-forward marker)
+    (delete-char -1)
+    (set-mark start)
+    (activate-mark)))
+
+(ert-deftest combobulate-test-elixir-extract-function-moves-the-region-to-a-private-function ()
+  (dolist (case '(("defmodule M do\n  def f(x, y) do\n    a = x + 1\n    ‸b = a * y\n    IO.puts(b)¦\n  end\nend\n" "show"
+                   "defmodule M do\n  def f(x, y) do\n    a = x + 1\n    show(a, y)\n  end\n\n  defp show(a, y) do\n    b = a * y\n    IO.puts(b)\n  end\nend\n")
+                  ("defmodule M do\n  def f(x) do\n    ‸a = x + 1¦\n    b = a * 2\n    a + b\n  end\nend\n" "calc"
+                   "defmodule M do\n  def f(x) do\n    a = calc(x)\n    b = a * 2\n    a + b\n  end\n\n  defp calc(x) do\n    a = x + 1\n    a\n  end\nend\n")
+                  ("defmodule M do\n  def f(x) do\n    ‸a = x + 1\n    b = a * 2¦\n    a + b\n  end\nend\n" "calc"
+                   "defmodule M do\n  def f(x) do\n    {a, b} = calc(x)\n    a + b\n  end\n\n  defp calc(x) do\n    a = x + 1\n    b = a * 2\n    {a, b}\n  end\nend\n")
+                  ("defmodule M do\n  def f(x) do\n    foo(‸x * 2 + 1¦)\n  end\nend\n" "double"
+                   "defmodule M do\n  def f(x) do\n    foo(double(x))\n  end\n\n  defp double(x) do\n    x * 2 + 1\n  end\nend\n")
+                  ("defmodule M do\n  def f do\n    ‸IO.puts(1)¦\n  end\nend\n" "hello"
+                   "defmodule M do\n  def f do\n    hello()\n  end\n\n  defp hello do\n    IO.puts(1)\n  end\nend\n")
+                  ("defmodule M do\n  def f(0), do: 0\n\n  def f(x) do\n    ‸IO.puts(x)¦\n  end\n\n  def g, do: 1\nend\n" "say"
+                   "defmodule M do\n  def f(0), do: 0\n\n  def f(x) do\n    say(x)\n  end\n\n  defp say(x) do\n    IO.puts(x)\n  end\n\n  def g, do: 1\nend\n")))
+    (combobulate-test-elixir (car case)
+      (combobulate-test-elixir--mark-to "¦")
+      (combobulate-elixir-extract-function (cadr case))
+      (should (equal (buffer-string) (caddr case))))))
+
+(ert-deftest combobulate-test-elixir-extract-function-takes-the-parameters-given ()
+  (combobulate-test-elixir "defmodule M do\n  def f(x) do\n    ‸IO.puts(x)¦\n  end\nend\n"
+    (combobulate-test-elixir--mark-to "¦")
+    (combobulate-elixir-extract-function "say" "value")
+    (should (equal (buffer-string)
+                   "defmodule M do\n  def f(x) do\n    say(value)\n  end\n\n  defp say(value) do\n    IO.puts(x)\n  end\nend\n"))))
+
+(ert-deftest combobulate-test-elixir-extract-function-refuses-what-it-cannot-move ()
+  (dolist (source '("defmodule M do\n  ‸@x 1¦\nend\n"
+                    "defmodule M do\n  def f(x) do\n    ‸a = x + 1\n    b = a¦ * 2\n  end\nend\n"
+                    "defmodule M do\n  def f(x) do\n    {:ok, ‸a¦} = x\n  end\nend\n"
+                    "defmodule M do\n  def f(x) do\n    x |> ‸foo()¦\n  end\nend\n"
+                    "defmodule M do\n  def f(xs) do\n    Enum.map(xs, &(‸&1 + 1¦))\n  end\nend\n"))
+    (combobulate-test-elixir source
+      (combobulate-test-elixir--mark-to "¦")
+      (should-error (combobulate-elixir-extract-function "g") :type 'user-error)
+      (should (equal (buffer-string) (string-replace "¦" "" (string-replace "‸" "" source)))))))
