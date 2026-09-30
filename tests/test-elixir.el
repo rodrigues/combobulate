@@ -728,3 +728,30 @@ end
     (combobulate-test-elixir (car case)
       (should-error (combobulate-elixir-extract-variable (cdr case)) :type 'user-error)
       (should (equal (buffer-string) (string-replace "‸" "" (car case)))))))
+
+(ert-deftest combobulate-test-elixir-inline-variable-replaces-the-use-with-the-value ()
+  (dolist (case '(("def f(x) do\n  ‸y = bar(x)\n  foo(y, 1)\nend\n" "def f(x) do\n  foo(bar(x), 1)\nend\n")
+                  ("def f(x) do\n  y = ‸x + 1\n  y * 2\nend\n" "def f(x) do\n  (x + 1) * 2\nend\n")
+                  ("def f(x) do\n  ‸y = bar(x)\n  y |> baz()\nend\n" "def f(x) do\n  bar(x) |> baz()\nend\n")
+                  ("def f do\n  ‸m = %{\n    a: 1\n  }\n  foo(m)\nend\n" "def f do\n  foo(%{\n    a: 1\n  })\nend\n")))
+    (combobulate-test-elixir (car case)
+      (combobulate-elixir-inline-variable)
+      (should (equal (buffer-string) (cadr case))))))
+
+(ert-deftest combobulate-test-elixir-inline-variable-round-trips-extract-variable ()
+  (combobulate-test-elixir "def f(x) do\n  y = foo(‸bar(x), 1)\n  y\nend\n"
+    (combobulate-elixir-extract-variable "b")
+    (combobulate-elixir-inline-variable)
+    (should (equal (buffer-string) "def f(x) do\n  y = foo(bar(x), 1)\n  y\nend\n"))))
+
+(ert-deftest combobulate-test-elixir-inline-variable-refuses-what-would-change-the-code ()
+  (dolist (source '("def f do\n  ‸y = g()\n  y + y\nend\n"
+                    "def f do\n  ‸y = g()\n  :ok\nend\n"
+                    "def f(z) do\n  ‸y = z + 1\n  z = 2\n  y\nend\n"
+                    "def f do\n  ‸y = g()\n  y = 2\n  y\nend\n"
+                    "def f(xs) do\n  ‸y = g()\n  Enum.map(xs, fn x -> x + y end)\nend\n"
+                    "def f(z) do\n  ‸y = g()\n  ^y = z\nend\n"
+                    "def f do\n  ‸{:ok, y} = g()\n  y\nend\n"))
+    (combobulate-test-elixir source
+      (should-error (combobulate-elixir-inline-variable) :type 'user-error)
+      (should (equal (buffer-string) (string-replace "‸" "" source))))))

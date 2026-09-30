@@ -61,6 +61,7 @@
 ;;       (keymap-set map "C-c o %" #'combobulate-elixir-toggle-keyword-map)
 ;;       (keymap-set map "C-c o k" #'combobulate-elixir-toggle-map-keys)
 ;;       (keymap-set map "C-c o v" #'combobulate-elixir-extract-variable)
+;;       (keymap-set map "C-c o i" #'combobulate-elixir-inline-variable)
 ;;       (keymap-set map "C-c o A" #'combobulate-elixir-toggle-multi-alias)))
 
 ;;; Code:
@@ -1708,6 +1709,75 @@ a variable further on."
     (insert name " = " text "\n")
     (indent-region statement-start (line-end-position))
     (goto-char statement-start)))
+
+(defun combobulate-elixir--binding-at (pos)
+  "Return the statement `name = value' around POS."
+  (treesit-parent-until (combobulate-elixir--node-at pos)
+                        (lambda (node)
+                          (and (equal (combobulate-elixir--operator node) "=")
+                               (equal (treesit-node-type (treesit-node-child-by-field-name node "left"))
+                                      "identifier")
+                               (combobulate-elixir--type-p (treesit-node-parent node)
+                                                           combobulate-elixir--statement-blocks)))
+                        t))
+
+(defun combobulate-elixir-inline-variable ()
+  "Replace the use of the variable bound at point with its value.
+
+The binding is removed and the value runs where the variable was
+used.  Refuse unless the variable has exactly one use, outside any
+`fn' or `for', it is not bound again further on, and the variables
+its value reads are not bound again before that use."
+  (interactive)
+  (combobulate-elixir--skip-indentation)
+  (let* ((binding (or (combobulate-elixir--binding-at (point))
+                      (user-error "No `name = value' binding at point")))
+         (name (treesit-node-text (treesit-node-child-by-field-name binding "left") t))
+         (value (treesit-node-child-by-field-name binding "right"))
+         (block (treesit-node-parent binding))
+         (later (seq-filter (lambda (node) (> (treesit-node-start node) (treesit-node-start binding)))
+                            (treesit-node-children block t)))
+         (bound (mapcan #'combobulate-elixir--bound-variables later))
+         (uses (seq-filter (lambda (id) (and (equal (treesit-node-text id t) name)
+                                             (not (seq-find (lambda (other) (treesit-node-eq other id)) bound))))
+                           (mapcan #'combobulate-elixir--variables later)))
+         (use (car uses))
+         (parent (treesit-node-parent use)))
+    (when (seq-find (lambda (id) (equal (treesit-node-text id t) name)) bound)
+      (user-error "`%s' is bound again further on" name))
+    (unless uses
+      (user-error "`%s' is not used after its binding" name))
+    (when (cdr uses)
+      (user-error "`%s' is used more than once, so its value would run more than once" name))
+    (unless (treesit-node-eq block (treesit-parent-until use (lambda (node)
+                                                               (or (treesit-node-eq node block)
+                                                                   (equal (treesit-node-type node) "anonymous_function")
+                                                                   (equal (combobulate-elixir--kind node) "for")))))
+      (user-error "`%s' is used in a `fn' or `for', so its value would run more than once" name))
+    (when (equal (treesit-node-text (treesit-node-child-by-field-name parent "operator") t) "^")
+      (user-error "A pinned variable cannot take a value"))
+    (when-let* ((reads (mapcar (lambda (id) (treesit-node-text id t)) (combobulate-elixir--variables value)))
+                (rebound (seq-find (lambda (id) (and (<= (treesit-node-end id) (treesit-node-start use))
+                                                     (member (treesit-node-text id t) reads)))
+                                   bound)))
+      (user-error "`%s' is bound again before the use" (treesit-node-text rebound t)))
+    (let* ((text (treesit-node-text value t))
+           (text (if (and (equal (treesit-node-type value) "binary_operator")
+                          (combobulate-elixir--type-p parent '("binary_operator" "unary_operator" "dot" "access_call"))
+                          (not (and (combobulate-elixir--pipe-p parent)
+                                    (combobulate-elixir--pipe-p value)
+                                    (treesit-node-eq use (treesit-node-child-by-field-name parent "left")))))
+                     (concat "(" text ")")
+                   text))
+           (start (copy-marker (treesit-node-start use)))
+           (binding-range (combobulate-elixir--statement-range binding)))
+      (delete-region start (treesit-node-end use))
+      (goto-char start)
+      (insert text)
+      (indent-region start (point))
+      (delete-region (car binding-range) (cdr binding-range))
+      (goto-char start)
+      (set-marker start nil))))
 
 (defun combobulate-elixir-pretty-print-node-name (node _default-name)
   "Pretty printer for Elixir nodes"
