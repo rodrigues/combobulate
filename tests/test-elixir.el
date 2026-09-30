@@ -580,3 +580,50 @@ end
 (ert-deftest combobulate-test-elixir-clone-refuses-outside-a-sibling ()
   (combobulate-test-elixir "‸\n"
     (should-error (combobulate-elixir-clone-node-dwim) :type 'user-error)))
+
+(defconst combobulate-test-elixir--overloaded
+  "defmodule M do
+  @doc \"F\"
+  @spec f(integer) :: integer
+  @spec f(a) :: a when a: atom
+  def f(0), do: 0
+  def f(x) when is_atom(x), do: x
+  def f(x) do
+    x
+  end
+
+  @spec f(integer, integer) :: integer
+  def f(x, y), do: x + y
+
+  @spec g :: integer
+  defp g, do: f(1)
+end
+"
+  "A module with `f/1', `f/2' and `g/0', each with a `@spec'.")
+
+(defun combobulate-test-elixir--overloaded-at (text)
+  "Return `combobulate-test-elixir--overloaded' with `‸' before TEXT."
+  (string-replace text (concat "‸" text) combobulate-test-elixir--overloaded))
+
+(defun combobulate-test-elixir--edited-names ()
+  "Return the (LINE . TEXT) of the nodes that editing the function name at point edits."
+  (let ((edited))
+    (cl-letf (((symbol-function 'combobulate-cursor-edit-nodes)
+               (lambda (nodes &rest _) (setq edited nodes))))
+      (combobulate-elixir-edit-function-name nil))
+    (mapcar (lambda (node) (cons (line-number-at-pos (treesit-node-start node)) (treesit-node-text node t)))
+            edited)))
+
+(ert-deftest combobulate-test-elixir-edit-function-name-covers-every-clause-and-spec ()
+  (dolist (at '("x\n  end" "@spec f(a)" "f(0)"))
+    (combobulate-test-elixir (combobulate-test-elixir--overloaded-at at)
+      (should (equal (combobulate-test-elixir--edited-names)
+                     '((3 . "f") (4 . "f") (5 . "f") (6 . "f") (7 . "f")))))))
+
+(ert-deftest combobulate-test-elixir-edit-function-name-handles-functions-without-arguments ()
+  (combobulate-test-elixir (combobulate-test-elixir--overloaded-at "defp g")
+    (should (equal (combobulate-test-elixir--edited-names) '((14 . "g") (15 . "g"))))))
+
+(ert-deftest combobulate-test-elixir-edit-function-name-refuses-outside-a-function ()
+  (combobulate-test-elixir (combobulate-test-elixir--overloaded-at "@doc")
+    (should-error (combobulate-test-elixir--edited-names) :type 'user-error)))

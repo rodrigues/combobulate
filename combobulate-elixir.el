@@ -67,6 +67,7 @@
 (require 'combobulate-navigation)
 (require 'combobulate-setup)
 (require 'combobulate-manipulation)
+(require 'combobulate-cursor)
 (require 'combobulate-rules)
 
 (declare-function combobulate-heex-navigate-next-same-kind "combobulate-heex")
@@ -924,23 +925,70 @@ Outside any construct, fall back to `combobulate-navigate-sequence-previous'."
                  (indent-according-to-mode))
         (insert " |> dbg()")))))
 
+(defun combobulate-elixir--without-guard (node)
+  "Return the left side of NODE if it is a `when' guard, else NODE."
+  (if (and (equal (treesit-node-type node) "binary_operator")
+           (equal (treesit-node-text (treesit-node-child-by-field-name node "operator") t) "when"))
+      (treesit-node-child-by-field-name node "left")
+    node))
+
+(defun combobulate-elixir--head-name (head)
+  "Return (NAME ARITY) for the function HEAD, where NAME is the node naming it."
+  (let ((head (combobulate-elixir--without-guard head)))
+    (pcase (treesit-node-type head)
+      ("call"
+       (let ((arguments (combobulate-elixir--child-of-type head "arguments")))
+         (list (treesit-node-child-by-field-name head "target")
+               (seq-count (lambda (child) (not (equal (treesit-node-type child) "comment")))
+                          (and arguments (treesit-node-children arguments t))))))
+      ("identifier" (list head 0)))))
+
 (defun combobulate-elixir--signature (node)
   "Return (KEYWORD NAME ARITY) if NODE defines a function, macro or guard."
   (when-let* (((equal (treesit-node-type node) "call"))
               (keyword (treesit-node-text (treesit-node-child-by-field-name node "target") t))
               ((member keyword '("def" "defp" "defmacro" "defmacrop" "defguard" "defguardp")))
-              (head (treesit-node-child (combobulate-elixir--child-of-type node "arguments") 0 t)))
-    (when (and (equal (treesit-node-type head) "binary_operator")
-               (equal (treesit-node-text (treesit-node-child-by-field-name head "operator") t) "when"))
-      (setq head (treesit-node-child-by-field-name head "left")))
-    (pcase (treesit-node-type head)
-      ("call"
-       (let ((arguments (combobulate-elixir--child-of-type head "arguments")))
-         (list keyword
-               (treesit-node-text (treesit-node-child-by-field-name head "target") t)
-               (seq-count (lambda (child) (not (equal (treesit-node-type child) "comment")))
-                          (and arguments (treesit-node-children arguments t))))))
-      ("identifier" (list keyword (treesit-node-text head t) 0)))))
+              (name (combobulate-elixir--head-name
+                     (treesit-node-child (combobulate-elixir--child-of-type node "arguments") 0 t))))
+    (list keyword (treesit-node-text (car name) t) (cadr name))))
+
+(defun combobulate-elixir--named (node)
+  "Return (NAME ARITY) if NODE defines a function or is its `@spec'.
+
+NAME is the node naming the function."
+  (if (combobulate-elixir--signature node)
+      (combobulate-elixir--head-name
+       (treesit-node-child (combobulate-elixir--child-of-type node "arguments") 0 t))
+    (when-let* (((equal (combobulate-elixir--kind node) "@spec"))
+                (spec (treesit-node-child-by-field-name node "operand"))
+                (type (combobulate-elixir--without-guard
+                       (treesit-node-child (combobulate-elixir--child-of-type spec "arguments") 0 t)))
+                ((equal (treesit-node-text (treesit-node-child-by-field-name type "operator") t) "::")))
+      (combobulate-elixir--head-name (treesit-node-child-by-field-name type "left")))))
+
+(defun combobulate-elixir--function-names (pos)
+  "Return the nodes naming the function at POS in its clauses and `@spec's."
+  (let* ((node (or (treesit-parent-until (combobulate-elixir--node-at pos) #'combobulate-elixir--named t)
+                   (user-error "No function or `@spec' at point")))
+         (key (lambda (named) (and named (list (treesit-node-text (car named) t) (cadr named)))))
+         (target (funcall key (combobulate-elixir--named node))))
+    (seq-keep (lambda (sibling)
+                (let ((named (combobulate-elixir--named sibling)))
+                  (and (equal (funcall key named) target) (car named))))
+              (treesit-node-children (treesit-node-parent node) t))))
+
+(defun combobulate-elixir-edit-function-name (&optional arg)
+  "Edit the name of the function at point in all its clauses and `@spec's.
+
+Point goes to the start of each name; with one prefix ARG, to the
+end, and with two, each name is marked.  In an embedded language,
+run `combobulate-cursor-edit-sequence-dwim' instead, which in HEEx
+edits the tag at point and its closing tag."
+  (interactive "P")
+  (combobulate-elixir--skip-indentation)
+  (unless (combobulate-run-embedded-command 'elixir #'combobulate-cursor-edit-sequence-dwim arg)
+    (combobulate-cursor-edit-nodes (combobulate-elixir--function-names (point))
+                                   (combobulate-cursor-edit-node-determine-action arg))))
 
 (defun combobulate-elixir-toggle-private ()
   "Switch the function at point between `def' and `defp', in every clause.
@@ -1602,6 +1650,7 @@ and no function or capture inside.  A capture's arguments are named
     (define-key map [remap combobulate-drag-down] #'combobulate-elixir-drag-down)
     (define-key map [remap combobulate-kill-node-dwim] #'combobulate-elixir-kill-node-dwim)
     (define-key map [remap combobulate-clone-node-dwim] #'combobulate-elixir-clone-node-dwim)
+    (define-key map [remap combobulate-cursor-edit-sequence-dwim] #'combobulate-elixir-edit-function-name)
     (define-key map [remap combobulate-splice-up] #'combobulate-elixir-splice-up)
     (define-key map [remap combobulate-splice-down] #'combobulate-elixir-splice-down)
     (define-key map [remap combobulate-splice-self] #'combobulate-elixir-splice-self)
