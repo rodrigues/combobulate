@@ -966,20 +966,71 @@ NAME is the node naming the function."
                 ((equal (treesit-node-text (treesit-node-child-by-field-name type "operator") t) "::")))
       (combobulate-elixir--head-name (treesit-node-child-by-field-name type "left")))))
 
+(defun combobulate-elixir--call-name (node)
+  "Return (NAME ARITY) if NODE calls or captures a local function.
+
+NAME is the node naming the function.  A call piped into takes one
+more argument than it shows."
+  (let* ((parent (treesit-node-parent node))
+         (piped (if (and (combobulate-elixir--pipe-p parent)
+                         (treesit-node-eq node (treesit-node-child-by-field-name parent "right")))
+                    1
+                  0)))
+    (pcase (treesit-node-type node)
+      ("call"
+       (let ((target (treesit-node-child-by-field-name node "target"))
+             (arguments (combobulate-elixir--child-of-type node "arguments")))
+         (and (equal (treesit-node-type target) "identifier")
+              (list target (+ piped
+                              (if (combobulate-elixir--do-block node) 1 0)
+                              (seq-count (lambda (child) (not (equal (treesit-node-type child) "comment")))
+                                         (and arguments (treesit-node-children arguments t))))))))
+      ("identifier" (and (= piped 1) (list node 1)))
+      ("unary_operator"
+       (let ((operand (combobulate-elixir--operand node)))
+         (and (combobulate-elixir--capture-p node)
+              (equal (treesit-node-text (treesit-node-child-by-field-name operand "operator") t) "/")
+              (equal (treesit-node-type (treesit-node-child-by-field-name operand "left")) "identifier")
+              (equal (treesit-node-type (treesit-node-child-by-field-name operand "right")) "integer")
+              (list (treesit-node-child-by-field-name operand "left")
+                    (string-to-number (treesit-node-text (treesit-node-child-by-field-name operand "right") t)))))))))
+
 (defun combobulate-elixir--function-names (pos)
-  "Return the nodes naming the function at POS in its clauses and `@spec's."
+  "Return the nodes naming the function at POS in its clauses and `@spec's.
+
+For a private function, which only its own module can call, this also
+includes the calls and captures of it, but not those in a nested module."
   (let* ((node (or (treesit-parent-until (combobulate-elixir--node-at pos) #'combobulate-elixir--named t)
                    (user-error "No function or `@spec' at point")))
+         (scope (treesit-node-parent node))
          (key (lambda (named) (and named (list (treesit-node-text (car named) t) (cadr named)))))
-         (target (funcall key (combobulate-elixir--named node))))
-    (seq-keep (lambda (sibling)
-                (let ((named (combobulate-elixir--named sibling)))
-                  (and (equal (funcall key named) target) (car named))))
-              (treesit-node-children (treesit-node-parent node) t))))
+         (target (funcall key (combobulate-elixir--named node)))
+         (clauses (seq-filter (lambda (sibling) (equal (funcall key (combobulate-elixir--named sibling)) target))
+                              (treesit-node-children scope t)))
+         (names (mapcar (lambda (clause) (car (combobulate-elixir--named clause))) clauses)))
+    (if (not (seq-some (lambda (clause)
+                         (string-suffix-p "p" (or (car (combobulate-elixir--signature clause)) "")))
+                       clauses))
+        names
+      (let ((calls (seq-keep
+                    (lambda (call)
+                      (let ((called (combobulate-elixir--call-name call)))
+                        (and (equal (funcall key called) target)
+                             (treesit-node-eq (treesit-parent-until
+                                               call (lambda (node)
+                                                      (or (treesit-node-eq node scope)
+                                                          (member (combobulate-elixir--kind node)
+                                                                  '("defmodule" "defimpl" "defprotocol")))))
+                                              scope)
+                             (car called))))
+                    (combobulate-elixir--descendants scope #'combobulate-elixir--call-name))))
+        (sort (seq-uniq (append names calls) #'treesit-node-eq)
+              (lambda (a b) (< (treesit-node-start a) (treesit-node-start b))))))))
 
 (defun combobulate-elixir-edit-function-name (&optional arg)
   "Edit the name of the function at point in all its clauses and `@spec's.
 
+For a private function, also edit its calls and captures in the module.
 Point goes to the start of each name; with one prefix ARG, to the
 end, and with two, each name is marked.  In an embedded language,
 run `combobulate-cursor-edit-sequence-dwim' instead, which in HEEx

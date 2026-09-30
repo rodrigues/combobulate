@@ -627,3 +627,27 @@ end
 (ert-deftest combobulate-test-elixir-edit-function-name-refuses-outside-a-function ()
   (combobulate-test-elixir (combobulate-test-elixir--overloaded-at "@doc")
     (should-error (combobulate-test-elixir--edited-names) :type 'user-error)))
+
+(ert-deftest combobulate-test-elixir-edit-function-name-covers-the-calls-of-a-private-function ()
+  (combobulate-test-elixir "defmodule M do
+  @spec g(integer) :: integer
+  defp ‸g(0), do: 0
+  defp g(x), do: g(x - 1)
+
+  def run(xs) do
+    a = g(1)
+    b = xs |> g()
+    c = Enum.map(xs, &g/1)
+    d = Enum.map(xs, &g(&1))
+    e = xs |> g
+    g(1, 2)
+    other.g(1)
+  end
+
+  defmodule Inner do
+    def h(x), do: g(x)
+  end
+end
+"
+    (should (equal (combobulate-test-elixir--edited-names)
+                   '((2 . "g") (3 . "g") (4 . "g") (4 . "g") (7 . "g") (8 . "g") (9 . "g") (10 . "g") (11 . "g"))))))
