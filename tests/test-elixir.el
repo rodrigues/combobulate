@@ -692,3 +692,39 @@ end
     (combobulate-test-elixir source
       (should-error (combobulate-elixir-toggle-map-keys) :type 'user-error)
       (should (equal (buffer-string) (string-replace "‸" "" source))))))
+
+(ert-deftest combobulate-test-elixir-extract-variable-binds-the-expression-above-its-statement ()
+  (dolist (case '(("def f(x) do\n  y = foo(‸bar(x), 1)\n  y\nend\n" "b"
+                   "def f(x) do\n  b = bar(x)\n  y = foo(b, 1)\n  y\nend\n")
+                  ("def f(xs) do\n  if xs do\n    Enum.map(xs, ‸&g/1)\n  end\nend\n" "fun"
+                   "def f(xs) do\n  if xs do\n    fun = &g/1\n    Enum.map(xs, fun)\n  end\nend\n")
+                  ("def f do\n  foo(‸%{\n    a: 1\n  })\nend\n" "m"
+                   "def f do\n  m = %{\n    a: 1\n  }\n  foo(m)\nend\n")
+                  ("def f(x) do\n  ‸bar(x)\n  |> baz()\nend\n" "b"
+                   "def f(x) do\n  b = bar(x)\n  b\n  |> baz()\nend\n")))
+    (combobulate-test-elixir (car case)
+      (combobulate-elixir-extract-variable (cadr case))
+      (should (equal (buffer-string) (caddr case))))))
+
+(ert-deftest combobulate-test-elixir-extract-variable-extracts-the-region ()
+  (combobulate-test-elixir "def f(x) do\n  ‸x + 1 + 2\nend\n"
+    (set-mark (point))
+    (forward-char 5)
+    (activate-mark)
+    (combobulate-elixir-extract-variable "s")
+    (should (equal (buffer-string) "def f(x) do\n  s = x + 1\n  s + 2\nend\n"))))
+
+(ert-deftest combobulate-test-elixir-extract-variable-refuses-what-would-change-the-code ()
+  (dolist (case '(("def f(x) do\n  {:ok, ‸y} = x\nend\n" . "v")
+                  ("case x do\n  {:ok, ‸y} -> y\nend\n" . "v")
+                  ("def f(‸x) do\n  x\nend\n" . "v")
+                  ("with {:ok, a} <- f(),\n     {:ok, b} <- ‸g(a) do\n  b\nend\n" . "v")
+                  ("x = if c, do: ‸expensive()\n" . "v")
+                  ("x = a && ‸f()\n" . "v")
+                  ("x |> ‸foo()\n" . "v")
+                  ("Enum.map(xs, fn x -> ‸x * 2 end)\n" . "v")
+                  ("def f(x) do\n  y = foo(‸bar(x))\n  x + y\nend\n" . "x")
+                  ("def f(x) do\n  y = foo(‸bar(x))\nend\n" . "Bar")))
+    (combobulate-test-elixir (car case)
+      (should-error (combobulate-elixir-extract-variable (cdr case)) :type 'user-error)
+      (should (equal (buffer-string) (string-replace "‸" "" (car case)))))))

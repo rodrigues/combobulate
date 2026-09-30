@@ -60,6 +60,7 @@
 ;;       (keymap-set map "C-c o j" #'combobulate-elixir-split-or-join)
 ;;       (keymap-set map "C-c o %" #'combobulate-elixir-toggle-keyword-map)
 ;;       (keymap-set map "C-c o k" #'combobulate-elixir-toggle-map-keys)
+;;       (keymap-set map "C-c o v" #'combobulate-elixir-extract-variable)
 ;;       (keymap-set map "C-c o A" #'combobulate-elixir-toggle-multi-alias)))
 
 ;;; Code:
@@ -1562,6 +1563,151 @@ and no function or capture inside.  A capture's arguments are named
     (goto-char start)
     (insert text)
     (goto-char start)))
+
+(defun combobulate-elixir--operator (node)
+  "Return the operator of NODE if it is a binary operator."
+  (and (equal (treesit-node-type node) "binary_operator")
+       (treesit-node-text (treesit-node-child-by-field-name node "operator") t)))
+
+(defun combobulate-elixir--variables (node)
+  "Return the identifiers in NODE that name variables, in buffer order.
+
+Call targets, fields such as `b' in `a.b' and attributes such as
+`@a' are left out."
+  (combobulate-elixir--descendants
+   node (lambda (id)
+          (let ((parent (treesit-node-parent id)))
+            (and (equal (treesit-node-type id) "identifier")
+                 (not (pcase (treesit-node-type parent)
+                        ("call" (treesit-node-eq id (treesit-node-child-by-field-name parent "target")))
+                        ("dot" (treesit-node-eq id (treesit-node-child-by-field-name parent "right")))
+                        ("unary_operator"
+                         (equal (treesit-node-text (treesit-node-child-by-field-name parent "operator") t)
+                                "@")))))))))
+
+(defun combobulate-elixir--pattern-p (node stop)
+  "Return non-nil if NODE is in a pattern or a head below STOP.
+
+Patterns are the left sides of `=' and `<-', and heads are clause
+heads and function heads."
+  (let ((found))
+    (while (and (not found) node (not (treesit-node-eq node stop)))
+      (let ((parent (treesit-node-parent node)))
+        (setq found (or (and (member (combobulate-elixir--operator parent) '("=" "<-"))
+                             (treesit-node-eq node (treesit-node-child-by-field-name parent "left")))
+                        (and (equal (treesit-node-type parent) "stab_clause")
+                             (equal (treesit-node-field-name node) "left"))
+                        (and (equal (treesit-node-type parent) "arguments")
+                             (combobulate-elixir--signature (treesit-node-parent parent))))
+              node parent)))
+    found))
+
+(defun combobulate-elixir--bound-variables (node)
+  "Return the variables that the patterns and heads in NODE bind.
+
+Pinned variables such as `^x' are left out, because they are read."
+  (seq-filter (lambda (id)
+                (and (combobulate-elixir--pattern-p id node)
+                     (not (equal (treesit-node-text
+                                  (treesit-node-child-by-field-name (treesit-node-parent id) "operator") t)
+                                 "^"))))
+              (combobulate-elixir--variables node)))
+
+(defconst combobulate-elixir--statement-blocks
+  '("source" "do_block" "else_block" "rescue_block" "catch_block" "after_block" "body" "block")
+  "Node types whose children are statements.")
+
+(defun combobulate-elixir--statement (node)
+  "Return the statement NODE belongs to, which may be NODE itself."
+  (treesit-parent-until node (lambda (node)
+                               (combobulate-elixir--type-p (treesit-node-parent node)
+                                                           combobulate-elixir--statement-blocks))
+                        t))
+
+(defun combobulate-elixir--expression-at-point ()
+  "Return the expression the region covers, or the one at point."
+  (if (use-region-p)
+      (let* ((start (save-excursion (goto-char (region-beginning)) (skip-chars-forward " \t\n") (point)))
+             (end (save-excursion (goto-char (region-end)) (skip-chars-backward " \t\n") (point)))
+             (node (treesit-node-descendant-for-range (combobulate-buffer-root-node 'elixir) start end t)))
+        (or (and node (= (treesit-node-start node) start) (= (treesit-node-end node) end) node)
+            (user-error "The region does not cover a single expression")))
+    (combobulate-elixir--skip-indentation)
+    (combobulate-elixir--thing-at (point))))
+
+(defun combobulate-elixir--extract-problem (expression statement)
+  "Return why binding EXPRESSION above STATEMENT would change the code, or nil."
+  (let ((node expression)
+        (problem))
+    (while (and (not problem) (not (treesit-node-eq node statement)))
+      (let ((parent (treesit-node-parent node)))
+        (setq problem
+              (cond
+               ((or (and (member (combobulate-elixir--operator parent) '("&&" "||" "and" "or"))
+                         (treesit-node-eq node (treesit-node-child-by-field-name parent "right")))
+                    (and (equal (treesit-node-type parent) "pair")
+                         (member (string-trim (treesit-node-text (treesit-node-child-by-field-name parent "key") t))
+                                 '("do:" "else:" "after:" "rescue:" "catch:"))))
+                "The expression only runs sometimes, so it cannot run before its statement")
+               ((and (treesit-node-eq node expression)
+                     (combobulate-elixir--pipe-p parent)
+                     (treesit-node-eq node (treesit-node-child-by-field-name parent "right")))
+                "A pipeline stage cannot leave its pipeline"))
+              node parent)))
+    (or problem
+        (and (combobulate-elixir--pattern-p expression statement)
+             "A pattern or a head cannot hold a variable")
+        (let* ((start (treesit-node-start expression))
+               (bound (seq-keep (lambda (id) (and (<= (treesit-node-end id) start) (treesit-node-text id t)))
+                                (combobulate-elixir--bound-variables statement)))
+               (used (seq-find (lambda (id) (member (treesit-node-text id t) bound))
+                               (combobulate-elixir--variables expression))))
+          (and used
+               (let ((name (treesit-node-text used t)))
+                 (format "`%s' is bound earlier in the same statement" name)))))))
+
+(defun combobulate-elixir-extract-variable (name)
+  "Bind the expression at point to NAME, and use NAME in its place.
+
+With an active region, extract the expression it covers.  The
+binding goes above the statement in the innermost block around the
+expression, and that statement must start its own line.  Refuse
+when the move would change what the code does: in a pattern or a
+head, in a branch that only runs sometimes, or when NAME is already
+a variable further on."
+  (interactive (list (read-string "Variable name: ")))
+  (unless (let ((case-fold-search nil))
+            (string-match-p (rx bos (any "a-z_") (* (any "a-zA-Z0-9_")) eos) name))
+    (user-error "`%s' is not a variable name" name))
+  (let* ((expression (or (combobulate-elixir--expression-at-point) (user-error "No expression at point")))
+         (statement (or (combobulate-elixir--statement expression)
+                        (user-error "No statement around the expression")))
+         (problem (combobulate-elixir--extract-problem expression statement))
+         (start (treesit-node-start expression))
+         (end (treesit-node-end expression))
+         (statement-start (treesit-node-start statement))
+         (text (treesit-node-text expression t)))
+    (when (combobulate-elixir--type-p expression (append combobulate-elixir--wrappers
+                                                         '("keyword" "quoted_keyword" "pair" "stab_clause" "comment")))
+      (user-error "Only an expression can become a variable"))
+    (when problem
+      (user-error "%s" problem))
+    (unless (save-excursion (goto-char statement-start) (looking-back "^[ \t]*" (line-beginning-position)))
+      (user-error "Only a statement on its own line can have a binding put above it"))
+    (when (seq-find (lambda (id)
+                      (and (equal (treesit-node-text id t) name)
+                           (>= (treesit-node-start id) statement-start)
+                           (not (and (>= (treesit-node-start id) start) (<= (treesit-node-end id) end)))))
+                    (combobulate-elixir--variables (treesit-node-parent statement)))
+      (user-error "`%s' is already a variable further on" name))
+    (deactivate-mark)
+    (delete-region start end)
+    (goto-char start)
+    (insert name)
+    (goto-char statement-start)
+    (insert name " = " text "\n")
+    (indent-region statement-start (line-end-position))
+    (goto-char statement-start)))
 
 (defun combobulate-elixir-pretty-print-node-name (node _default-name)
   "Pretty printer for Elixir nodes"
