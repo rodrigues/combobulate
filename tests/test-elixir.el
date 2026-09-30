@@ -799,3 +799,39 @@ end
       (combobulate-test-elixir--mark-to "¦")
       (should-error (combobulate-elixir-extract-function "g") :type 'user-error)
       (should (equal (buffer-string) (string-replace "¦" "" (string-replace "‸" "" source)))))))
+
+(ert-deftest combobulate-test-elixir-toggle-pipe-chain-round-trips ()
+  (combobulate-test-elixir--round-trips combobulate-elixir-toggle-pipe-chain
+                                        "‸c(b(a(x), y), z)\n" "x |> a() |> b(y) |> c(z)\n")
+  (combobulate-test-elixir--round-trips combobulate-elixir-toggle-pipe-chain
+                                        "‸Enum.map(Enum.filter(rows, &f/1), &g/1)\n"
+                                        "rows |> Enum.filter(&f/1) |> Enum.map(&g/1)\n")
+  (combobulate-test-elixir--round-trips combobulate-elixir-toggle-pipe-chain
+                                        "‸foo(bar(a == b))\n" "(a == b) |> bar() |> foo()\n"))
+
+(ert-deftest combobulate-test-elixir-toggle-pipe-chain-pipes-the-nest-around-point ()
+  (dolist (case '(("c(b(‸a(x), y), z)\n" "x |> a() |> b(y) |> c(z)\n")
+                  ("x |> foo(bar(‸y))\n" "x |> foo(y |> bar())\n")
+                  ("‸c(b(x)) |> d()\n" "d(c(b(x)))\n")
+                  ("c(‸b(x)) |> d()\n" "x |> b() |> c() |> d()\n")))
+    (combobulate-test-elixir (car case)
+      (combobulate-elixir-toggle-pipe-chain)
+      (should (equal (buffer-string) (cadr case))))))
+
+(ert-deftest combobulate-test-elixir-toggle-pipe-chain-unpipes-the-whole-pipeline ()
+  (dolist (case '(("x\n|> ‸a()\n|> b(y)\n" "b(a(x), y)\n")
+                  ("x |> ‸foo |> bar()\n" "bar(foo(x))\n")))
+    (combobulate-test-elixir (car case)
+      (combobulate-elixir-toggle-pipe-chain)
+      (should (equal (buffer-string) (cadr case))))))
+
+(ert-deftest combobulate-test-elixir-toggle-pipe-chain-refuses-what-it-cannot-convert ()
+  (dolist (source '("‸foo()\n" "x |> ‸case do\n  _ -> 1\nend\n"))
+    (combobulate-test-elixir source
+      (should-error (combobulate-elixir-toggle-pipe-chain) :type 'user-error)
+      (should (equal (buffer-string) (string-replace "‸" "" source))))))
+
+(ert-deftest combobulate-test-elixir-toggle-pipe-with-a-prefix-toggles-the-chain ()
+  (combobulate-test-elixir "‸c(b(a(x)))\n"
+    (combobulate-elixir-toggle-pipe t)
+    (should (equal (buffer-string) "x |> a() |> b() |> c()\n"))))

@@ -1160,67 +1160,150 @@ keyword only if each of its blocks holds a single expression."
        (let ((first (car (combobulate-elixir--call-arguments node))))
          (and first (not (equal (treesit-node-type first) "keywords"))))))
 
-(defun combobulate-elixir--piped (call)
-  "Return the text of CALL with its first argument piped into it."
-  (pcase-let* ((`(,first . ,rest) (combobulate-elixir--call-arguments call))
-               (head (treesit-node-text first t)))
-    (when (or (and (equal (treesit-node-type first) "binary_operator")
-                   (not (combobulate-elixir--pipe-p first)))
-              (and (equal (treesit-node-type first) "unary_operator")
-                   (not (equal (treesit-node-text (treesit-node-child-by-field-name first "operator") t) "@"))))
-      (setq head (concat "(" head ")")))
-    (concat head " |> " (treesit-node-text (treesit-node-child-by-field-name call "target") t) "("
+(defun combobulate-elixir--pipe-head-text (node)
+  "Return the text of NODE as a pipeline head, with parentheses if needed."
+  (let ((text (treesit-node-text node t)))
+    (if (or (and (equal (treesit-node-type node) "binary_operator")
+                 (not (combobulate-elixir--pipe-p node)))
+            (and (equal (treesit-node-type node) "unary_operator")
+                 (not (equal (treesit-node-text (treesit-node-child-by-field-name node "operator") t) "@"))))
+        (concat "(" text ")")
+      text)))
+
+(defun combobulate-elixir--stage-text (call)
+  "Return the text of CALL without its first argument, as a pipeline stage."
+  (let ((rest (cdr (combobulate-elixir--call-arguments call))))
+    (concat (treesit-node-text (treesit-node-child-by-field-name call "target") t) "("
             (and rest (buffer-substring-no-properties (treesit-node-start (car rest))
                                                       (treesit-node-end (car (last rest)))))
             ")")))
 
-(defun combobulate-elixir--unpiped (pipe)
-  "Return the text of PIPE with its left side as the first argument of its stage."
-  (let* ((left (treesit-node-text (treesit-node-child-by-field-name pipe "left") t))
-         (stage (treesit-node-child-by-field-name pipe "right"))
-         (arguments (combobulate-elixir--child-of-type stage "arguments"))
-         (rest (combobulate-elixir--call-arguments stage)))
+(defun combobulate-elixir--piped (call)
+  "Return the text of CALL with its first argument piped into it."
+  (concat (combobulate-elixir--pipe-head-text (car (combobulate-elixir--call-arguments call)))
+          " |> " (combobulate-elixir--stage-text call)))
+
+(defun combobulate-elixir--with-first-argument (stage text)
+  "Return the text of the pipeline STAGE called with TEXT as its first argument."
+  (let ((arguments (combobulate-elixir--child-of-type stage "arguments"))
+        (rest (combobulate-elixir--call-arguments stage)))
     (cond
      ((equal (treesit-node-type stage) "identifier")
-      (concat (treesit-node-text stage t) "(" left ")"))
+      (concat (treesit-node-text stage t) "(" text ")"))
      ((or (not (equal (treesit-node-type stage) "call"))
           (combobulate-elixir--do-block stage)
           (and arguments (not (equal (treesit-node-type (treesit-node-child arguments 0)) "("))))
       (user-error "Only a stage that calls with parentheses can take the piped value"))
-     ((not arguments) (concat (treesit-node-text stage t) "(" left ")"))
-     (t (concat (treesit-node-text (treesit-node-child-by-field-name stage "target") t) "(" left
+     ((not arguments) (concat (treesit-node-text stage t) "(" text ")"))
+     (t (concat (treesit-node-text (treesit-node-child-by-field-name stage "target") t) "(" text
                 (and rest (concat ", " (buffer-substring-no-properties (treesit-node-start (car rest))
                                                                        (treesit-node-end (car (last rest))))))
                 ")")))))
 
-(defun combobulate-elixir-toggle-pipe ()
+(defun combobulate-elixir--unpiped (pipe)
+  "Return the text of PIPE with its left side as the first argument of its stage."
+  (combobulate-elixir--with-first-argument (treesit-node-child-by-field-name pipe "right")
+                                           (treesit-node-text (treesit-node-child-by-field-name pipe "left") t)))
+
+(defun combobulate-elixir-toggle-pipe (&optional chain)
   "Switch the call at point between `foo(x, y)' and `x |> foo(y)'.
 
 In a pipeline, the stage at point takes the value piped into it as
 its first argument; on the pipeline's head, the first stage does.
-Elsewhere, the innermost call with arguments pipes in its first one."
+Elsewhere, the innermost call with arguments pipes in its first one.
+With a prefix argument CHAIN, run `combobulate-elixir-toggle-pipe-chain'."
+  (interactive "P")
+  (if chain
+      (combobulate-elixir-toggle-pipe-chain)
+    (let ((node (combobulate-elixir--node-at (point)))
+          (edit))
+      (while (and node (not edit))
+        (let ((parent (treesit-node-parent node)))
+          (cond
+           ((and (combobulate-elixir--pipe-p parent)
+                 (or (treesit-node-eq node (treesit-node-child-by-field-name parent "right"))
+                     (not (combobulate-elixir--pipe-p node))))
+            (setq edit (cons parent #'combobulate-elixir--unpiped)))
+           ((combobulate-elixir--pipeable-p node)
+            (setq edit (cons node #'combobulate-elixir--piped))))
+          (setq node parent)))
+      (unless edit
+        (user-error "No call with arguments or pipeline at point"))
+      (combobulate-elixir--replace-with (car edit) (funcall (cdr edit) (car edit))))))
+
+(defun combobulate-elixir--replace-with (node text)
+  "Replace NODE with TEXT, indent it and move to its start."
+  (let ((start (treesit-node-start node)))
+    (delete-region start (treesit-node-end node))
+    (goto-char start)
+    (insert text)
+    (indent-region start (point))
+    (goto-char start)))
+
+(defun combobulate-elixir--pipe-chain (call)
+  "Return the text of CALL as one pipeline.
+
+The pipeline goes through the calls nested in CALL as first arguments."
+  (let ((node call)
+        (stages))
+    (while (combobulate-elixir--pipeable-p node)
+      (push (combobulate-elixir--stage-text node) stages)
+      (setq node (car (combobulate-elixir--call-arguments node))))
+    (string-join (cons (combobulate-elixir--pipe-head-text node) stages) " |> ")))
+
+(defun combobulate-elixir--unpipe-chain (pipe)
+  "Return the text of the pipeline PIPE with every stage called on the one before."
+  (pcase-let* ((`(,head . ,stages) (combobulate-elixir--pipe-stages pipe))
+               (inner (and (equal (treesit-node-type head) "block")
+                           (seq-remove (lambda (child) (equal (treesit-node-type child) "comment"))
+                                       (treesit-node-children head t))))
+               (text (treesit-node-text (if (= (length inner) 1) (car inner) head) t)))
+    (dolist (stage stages)
+      (setq text (combobulate-elixir--with-first-argument stage text)))
+    text))
+
+(defun combobulate-elixir--nest-top (call)
+  "Return the outermost call that CALL is nested in through first arguments.
+
+A call that is itself a pipeline stage is not climbed into, because
+its first argument is the piped value."
+  (let ((node call)
+        (done))
+    (while (not done)
+      (let* ((arguments (treesit-node-parent node))
+             (owner (treesit-node-parent arguments))
+             (pipe (treesit-node-parent owner)))
+        (if (and (equal (treesit-node-type arguments) "arguments")
+                 (combobulate-elixir--pipeable-p owner)
+                 (treesit-node-eq node (car (combobulate-elixir--call-arguments owner)))
+                 (not (and (combobulate-elixir--pipe-p pipe)
+                           (treesit-node-eq owner (treesit-node-child-by-field-name pipe "right")))))
+            (setq node owner)
+          (setq done t))))
+    node))
+
+(defun combobulate-elixir-toggle-pipe-chain ()
+  "Switch the calls at point between `c(b(a(x)))' and `x |> a() |> b() |> c()'.
+
+In a pipeline, every stage takes the value piped into it as its
+first argument.  Elsewhere, the calls nested through their first
+argument around point become one pipeline."
   (interactive)
   (let ((node (combobulate-elixir--node-at (point)))
         (edit))
     (while (and node (not edit))
       (let ((parent (treesit-node-parent node)))
         (cond
-         ((and (combobulate-elixir--pipe-p parent)
-               (or (treesit-node-eq node (treesit-node-child-by-field-name parent "right"))
-                   (not (combobulate-elixir--pipe-p node))))
-          (setq edit (cons parent #'combobulate-elixir--unpiped)))
+         ((combobulate-elixir--pipe-p parent)
+          (while (combobulate-elixir--pipe-p (treesit-node-parent parent))
+            (setq parent (treesit-node-parent parent)))
+          (setq edit (cons parent #'combobulate-elixir--unpipe-chain)))
          ((combobulate-elixir--pipeable-p node)
-          (setq edit (cons node #'combobulate-elixir--piped))))
+          (setq edit (cons (combobulate-elixir--nest-top node) #'combobulate-elixir--pipe-chain))))
         (setq node parent)))
     (unless edit
       (user-error "No call with arguments or pipeline at point"))
-    (let ((text (funcall (cdr edit) (car edit)))
-          (start (treesit-node-start (car edit))))
-      (delete-region start (treesit-node-end (car edit)))
-      (goto-char start)
-      (insert text)
-      (indent-region start (point))
-      (goto-char start))))
+    (combobulate-elixir--replace-with (car edit) (funcall (cdr edit) (car edit)))))
 
 (defun combobulate-elixir--alias-parts (node)
   "Return (PREFIX NAMES MULTI) if NODE aliases modules and has no options.
