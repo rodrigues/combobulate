@@ -58,6 +58,8 @@
 ;;       (keymap-set map "C-c o d" #'combobulate-elixir-toggle-do-block)
 ;;       (keymap-set map "C-c o D" #'combobulate-elixir-toggle-private)
 ;;       (keymap-set map "C-c o j" #'combobulate-elixir-split-or-join)
+;;       (keymap-set map "C-c o %" #'combobulate-elixir-toggle-keyword-map)
+;;       (keymap-set map "C-c o k" #'combobulate-elixir-toggle-map-keys)
 ;;       (keymap-set map "C-c o A" #'combobulate-elixir-toggle-multi-alias)))
 
 ;;; Code:
@@ -1338,6 +1340,90 @@ after its opening delimiter is joined; any other is split."
       (insert text)
       (indent-region start (point))
       (goto-char start))))
+
+(defun combobulate-elixir-toggle-keyword-map ()
+  "Switch the collection at point between `[a: 1]' and `%{a: 1}'.
+
+Only the delimiters change, so the layout and comments stay.  A map
+becomes a keyword list only if all its keys use the `a: 1' form."
+  (interactive)
+  (let* ((node (or (treesit-parent-until (combobulate-elixir--node-at (point))
+                                         (lambda (node) (combobulate-elixir--type-p node '("list" "map")))
+                                         t)
+                   (user-error "No keyword list or map at point")))
+         (map (equal (treesit-node-type node) "map"))
+         (container (if map (combobulate-elixir--child-of-type node "map_content") node))
+         (elements (and container (combobulate-elixir--elements container)))
+         (start (treesit-node-start node)))
+    (unless (and (seq-some (lambda (element) (equal (treesit-node-type element) "pair")) elements)
+                 (not (combobulate-elixir--child-of-type node "struct"))
+                 (seq-every-p (lambda (element) (member (treesit-node-type element) '("pair" "comment")))
+                              elements))
+      (user-error "Only a keyword list or a map with `a: 1' keys can switch"))
+    (goto-char (treesit-node-end node))
+    (delete-char -1)
+    (insert (if map "]" "}"))
+    (goto-char start)
+    (delete-char (if map 2 1))
+    (insert (if map "[" "%{"))
+    (goto-char start)))
+
+(defun combobulate-elixir--map-key (element)
+  "Return (KIND NAME START VALUE-START) for the key of the map ELEMENT.
+
+KIND is `atom' or `string', and NAME is the key as written between
+its quotes.  START is where the key starts and VALUE-START where the
+value starts.  Return nil for any other key, such as a variable or
+an interpolated string."
+  (let* ((pair (equal (treesit-node-type element) "pair"))
+         (key (if pair
+                  (treesit-node-child-by-field-name element "key")
+                (and (equal (treesit-node-type element) "binary_operator")
+                     (equal (treesit-node-text (treesit-node-child-by-field-name element "operator") t) "=>")
+                     (treesit-node-child-by-field-name element "left"))))
+         (kind (pcase (treesit-node-type key)
+                 ((or "keyword" "quoted_keyword" "atom" "quoted_atom") 'atom)
+                 ("string" 'string)))
+         (bare (and key (string-remove-suffix ":" (string-remove-prefix ":" (string-trim (treesit-node-text key t))))))
+         (name (cond
+                ((or (not kind) (combobulate-elixir--child-of-type key "interpolation")) nil)
+                ((member (treesit-node-type key) '("keyword" "atom")) bare)
+                ((string-match (rx bos "\"" (group (* anything)) "\"" eos) bare) (match-string 1 bare)))))
+    (when name
+      (list kind name (treesit-node-start key)
+            (treesit-node-start (treesit-node-child-by-field-name element (if pair "value" "right")))))))
+
+(defun combobulate-elixir-toggle-map-keys ()
+  "Switch the keys of the map at point between `a: 1' and `\"a\" => 1'.
+
+Only the keys change, so the layout, comments and values stay.  A
+string that is not a plain atom name becomes a quoted key, such as
+`\"a-b\": 1'."
+  (interactive)
+  (let* ((node (or (treesit-parent-until (combobulate-elixir--node-at (point))
+                                         (lambda (node) (equal (treesit-node-type node) "map"))
+                                         t)
+                   (user-error "No map at point")))
+         (content (combobulate-elixir--child-of-type node "map_content"))
+         (keys (mapcar #'combobulate-elixir--map-key
+                       (seq-remove (lambda (element) (equal (treesit-node-type element) "comment"))
+                                   (and content (combobulate-elixir--elements content)))))
+         (start (treesit-node-start node)))
+    (when (or (null keys)
+              (memq nil keys)
+              (combobulate-elixir--child-of-type node "struct")
+              (cdr (seq-uniq (mapcar #'car keys))))
+      (user-error "Only a map whose keys are all atoms or all strings can switch"))
+    (dolist (key (reverse keys))
+      (pcase-let ((`(,kind ,name ,key-start ,value-start) key))
+        (delete-region key-start value-start)
+        (goto-char key-start)
+        (insert (cond
+                 ((eq kind 'atom) (format "\"%s\" => " name))
+                 ((string-match-p (rx bos (any "a-zA-Z_") (* (any "a-zA-Z0-9_@")) (? (any "?!")) eos) name)
+                  (format "%s: " name))
+                 (t (format "\"%s\": " name))))))
+    (goto-char start)))
 
 (defun combobulate-elixir--capture-operator-p (node)
   (and (equal (treesit-node-type node) "unary_operator")

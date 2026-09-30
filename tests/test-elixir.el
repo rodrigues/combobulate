@@ -651,3 +651,44 @@ end
 "
     (should (equal (combobulate-test-elixir--edited-names)
                    '((2 . "g") (3 . "g") (4 . "g") (4 . "g") (7 . "g") (8 . "g") (9 . "g") (10 . "g") (11 . "g"))))))
+
+(defmacro combobulate-test-elixir--round-trips (command before after)
+  "Assert that COMMAND turns BEFORE, with point at `‸', into AFTER and back."
+  `(combobulate-test-elixir ,before
+     (,command)
+     (should (equal (buffer-string) ,after))
+     (,command)
+     (should (equal (buffer-string) (string-replace "‸" "" ,before)))))
+
+(ert-deftest combobulate-test-elixir-toggle-keyword-map-round-trips ()
+  (combobulate-test-elixir--round-trips combobulate-elixir-toggle-keyword-map
+                                        "x = [‸a: 1, b: 2]\n" "x = %{a: 1, b: 2}\n")
+  (combobulate-test-elixir--round-trips combobulate-elixir-toggle-keyword-map
+                                        "[\n  ‸a: 1,\n  # c\n  b: 2\n]\n" "%{\n  a: 1,\n  # c\n  b: 2\n}\n")
+  (combobulate-test-elixir--round-trips combobulate-elixir-toggle-keyword-map
+                                        "[a: %{‸b: 1}]\n" "[a: [b: 1]]\n"))
+
+(ert-deftest combobulate-test-elixir-toggle-keyword-map-refuses-other-collections ()
+  (dolist (source '("[‸1, 2]\n" "[‸]\n" "%{‸\"a\" => 1}\n" "%User{‸a: 1}\n" "%{m | ‸a: 1}\n" "foo(‸a: 1)\n"))
+    (combobulate-test-elixir source
+      (should-error (combobulate-elixir-toggle-keyword-map) :type 'user-error)
+      (should (equal (buffer-string) (string-replace "‸" "" source))))))
+
+(ert-deftest combobulate-test-elixir-toggle-map-keys-round-trips ()
+  (combobulate-test-elixir--round-trips combobulate-elixir-toggle-map-keys
+                                        "%{‸a: 1, \"b-c\": 2}\n" "%{\"a\" => 1, \"b-c\" => 2}\n")
+  (combobulate-test-elixir--round-trips combobulate-elixir-toggle-map-keys
+                                        "%{\n  # c\n  ‸a: %{b: 1},\n  # d\n  ok?: true\n}\n"
+                                        "%{\n  # c\n  \"a\" => %{b: 1},\n  # d\n  \"ok?\" => true\n}\n"))
+
+(ert-deftest combobulate-test-elixir-toggle-map-keys-turns-atom-arrows-into-strings ()
+  (combobulate-test-elixir "%{:a => 1, ‸b: 2}\n"
+    (combobulate-elixir-toggle-map-keys)
+    (should (equal (buffer-string) "%{\"a\" => 1, \"b\" => 2}\n"))))
+
+(ert-deftest combobulate-test-elixir-toggle-map-keys-refuses-what-it-cannot-convert ()
+  (dolist (source '("%{\"a\" => 1, ‸b: 2}\n" "%User{‸a: 1}\n" "%{m | ‸a: 1}\n" "%{\"#{x}\" => ‸1}\n"
+                    "%{k => ‸1}\n" "[‸a: 1]\n"))
+    (combobulate-test-elixir source
+      (should-error (combobulate-elixir-toggle-map-keys) :type 'user-error)
+      (should (equal (buffer-string) (string-replace "‸" "" source))))))
