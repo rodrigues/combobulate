@@ -565,3 +565,18 @@ end
     (combobulate-test-elixir (combobulate-test-elixir--functions-at (car case))
       (should-error (funcall (cdr case)) :type 'user-error)
       (should (equal (buffer-string) combobulate-test-elixir--functions)))))
+
+(ert-deftest combobulate-test-elixir-clone-clones-the-sibling-at-point ()
+  (dolist (case '(("defmodule M do\n  ‸def g do\n    2\n  end\nend\n"
+                   "defmodule M do\n  def g do\n    2\n  end\n  def g do\n    2\n  end\nend\n")
+                  ("def f do\n  ‸a = 1\n  b\nend\n" "def f do\n  a = 1\n  a = 1\n  b\nend\n")
+                  ("case x do\n  1 -> :one\n  ‸2 -> :two\nend\n"
+                   "case x do\n  1 -> :one\n  2 -> :two\n  2 -> :two\nend\n")
+                  ("x = [1, ‸2, 3]\n" "x = [1, 2, 2, 3]\n")))
+    (combobulate-test-elixir (car case)
+      (combobulate-elixir-clone-node-dwim)
+      (should (equal (buffer-string) (cadr case))))))
+
+(ert-deftest combobulate-test-elixir-clone-refuses-outside-a-sibling ()
+  (combobulate-test-elixir "‸\n"
+    (should-error (combobulate-elixir-clone-node-dwim) :type 'user-error)))

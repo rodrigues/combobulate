@@ -762,6 +762,24 @@ The last clause of a `case' or `fn' includes the newline before
               (kill-new text)))
           (combobulate-message "Killed node" proxy))))))
 
+(defun combobulate-elixir-clone-node-dwim (&optional arg)
+  "Clone the sibling at point ARG times.
+
+This is the node \\[combobulate-elixir-drag-down] moves, so a keyword
+such as `def' is never cloned on its own."
+  (interactive "^p")
+  (combobulate-elixir--skip-indentation)
+  (unless (combobulate-run-embedded-command 'elixir #'combobulate-clone-node-dwim arg)
+    (dotimes (_ (or arg 1))
+      (let* ((anchor (combobulate-elixir--anchor))
+             (node (or (seq-find (lambda (node)
+                                   (and (<= (treesit-node-start node) anchor)
+                                        (< anchor (treesit-node-end node))))
+                                 (combobulate-elixir--siblings anchor))
+                       (user-error "Nothing to clone at point"))))
+        (combobulate-message "Cloning" node)
+        (combobulate--clone-node node (treesit-node-start node))))))
+
 (defconst combobulate-elixir--unsplicable
   '("do_block" "else_block" "rescue_block" "catch_block" "after_block"
     "body" "stab_clause" "keywords" "map_content")
@@ -1583,6 +1601,7 @@ and no function or capture inside.  A capture's arguments are named
     (define-key map [remap combobulate-drag-up] #'combobulate-elixir-drag-up)
     (define-key map [remap combobulate-drag-down] #'combobulate-elixir-drag-down)
     (define-key map [remap combobulate-kill-node-dwim] #'combobulate-elixir-kill-node-dwim)
+    (define-key map [remap combobulate-clone-node-dwim] #'combobulate-elixir-clone-node-dwim)
     (define-key map [remap combobulate-splice-up] #'combobulate-elixir-splice-up)
     (define-key map [remap combobulate-splice-down] #'combobulate-elixir-splice-down)
     (define-key map [remap combobulate-splice-self] #'combobulate-elixir-splice-self)
