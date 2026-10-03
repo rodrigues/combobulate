@@ -835,3 +835,33 @@ end
   (combobulate-test-elixir "‸c(b(a(x)))\n"
     (combobulate-elixir-toggle-pipe t)
     (should (equal (buffer-string) "x |> a() |> b() |> c()\n"))))
+
+(ert-deftest combobulate-test-elixir-toggle-heredoc-round-trips ()
+  (combobulate-test-elixir--round-trips combobulate-elixir-toggle-heredoc
+                                        "x = foo(\n  ~SQL\"DELETE ‸FROM t WHERE a = $1\",\n  [1]\n)\n"
+                                        "x = foo(\n  ~SQL\"\"\"\n  DELETE FROM t WHERE a = $1\n  \"\"\",\n  [1]\n)\n")
+  (combobulate-test-elixir--round-trips combobulate-elixir-toggle-heredoc
+                                        "‸~r'a#{b}'i\n" "~r'''\na#{b}\n'''i\n")
+  (combobulate-test-elixir--round-trips combobulate-elixir-toggle-heredoc
+                                        "  x = \"a \\\" ‸#{\"b\"}\"\n" "  x = \"\"\"\n  a \\\" #{\"b\"}\n  \"\"\"\n"))
+
+(ert-deftest combobulate-test-elixir-toggle-heredoc-escapes-plain-quotes-of-a-string ()
+  (combobulate-test-elixir "x = ‸\"\"\"\nsay \"hi\" \\\" #{\"y\"}\n\"\"\"\n"
+    (combobulate-elixir-toggle-heredoc)
+    (should (equal (buffer-string) "x = \"say \\\"hi\\\" \\\" #{\"y\"}\"\n"))))
+
+(ert-deftest combobulate-test-elixir-toggle-heredoc-keeps-the-value-of-escaped-delimiters ()
+  (combobulate-test-elixir "x = ‸~s(a\\)b)\n"
+    (combobulate-elixir-toggle-heredoc)
+    (should (equal (buffer-string) "x = ~s\"\"\"\na)b\n\"\"\"\n")))
+  (combobulate-test-elixir "x = ‸~S\"a\\\"b\"\n"
+    (combobulate-elixir-toggle-heredoc)
+    (should (equal (buffer-string) "x = ~S\"\"\"\na\\\"b\n\"\"\"\n"))
+    (combobulate-elixir-toggle-heredoc)
+    (should (equal (buffer-string) "x = ~S'a\\\"b'\n"))))
+
+(ert-deftest combobulate-test-elixir-toggle-heredoc-refuses-what-it-cannot-convert ()
+  (dolist (source '("x = ‸~S\"\"\"\na\nb\n\"\"\"\n" "x = ‸:a\n"))
+    (combobulate-test-elixir source
+      (should-error (combobulate-elixir-toggle-heredoc) :type 'user-error)
+      (should (equal (buffer-string) (string-replace "‸" "" source))))))

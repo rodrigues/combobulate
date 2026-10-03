@@ -60,6 +60,7 @@
 ;;       (keymap-set map "C-c o j" #'combobulate-elixir-split-or-join)
 ;;       (keymap-set map "C-c o %" #'combobulate-elixir-toggle-keyword-map)
 ;;       (keymap-set map "C-c o k" #'combobulate-elixir-toggle-map-keys)
+;;       (keymap-set map "C-c o \"" #'combobulate-elixir-toggle-heredoc)
 ;;       (keymap-set map "C-c o v" #'combobulate-elixir-extract-variable)
 ;;       (keymap-set map "C-c o i" #'combobulate-elixir-inline-variable)
 ;;       (keymap-set map "C-c o f" #'combobulate-elixir-extract-function)
@@ -1509,6 +1510,73 @@ string that is not a plain atom name becomes a quoted key, such as
                  ((string-match-p (rx bos (any "a-zA-Z_") (* (any "a-zA-Z0-9_@")) (? (any "?!")) eos) name)
                   (format "%s: " name))
                  (t (format "\"%s\": " name))))))
+    (goto-char start)))
+
+(defun combobulate-elixir--escaped-quotes (node start end)
+  "Return the text of the string NODE from START to END, quotes escaped.
+
+Only plain quotes are escaped, so escape sequences and interpolations
+stay as they are."
+  (let ((pos start)
+        (parts nil))
+    (dolist (child (treesit-node-children node t))
+      (let ((child-start (max start (treesit-node-start child)))
+            (child-end (min end (treesit-node-end child))))
+        (when (and (equal (treesit-node-type child) "quoted_content") (< child-start child-end))
+          (push (buffer-substring pos child-start) parts)
+          (push (string-replace "\"" "\\\"" (buffer-substring child-start child-end)) parts)
+          (setq pos child-end))))
+    (push (buffer-substring pos end) parts)
+    (apply #'concat (nreverse parts))))
+
+(defun combobulate-elixir-toggle-heredoc ()
+  "Switch the string or sigil at point between inline and heredoc.
+
+A heredoc ends its content with a newline, so the switch adds or
+drops one.  Only a heredoc with one line of content can become
+inline.  A string then escapes its quotes, and a sigil takes the
+first delimiter that its content lacks."
+  (interactive)
+  (let* ((node (or (treesit-parent-until (combobulate-elixir--node-at (point))
+                                         (lambda (node) (combobulate-elixir--type-p node '("string" "sigil")))
+                                         t)
+                   (user-error "No string or sigil at point")))
+         (sigil (equal (treesit-node-type node) "sigil"))
+         (start (treesit-node-start node))
+         (open (if sigil (treesit-node-end (combobulate-elixir--child-of-type node "sigil_name")) start))
+         (modifiers (combobulate-elixir--child-of-type node "sigil_modifiers"))
+         (end (if modifiers (treesit-node-start modifiers) (treesit-node-end node)))
+         (heredoc (car (member (buffer-substring open (min end (+ open 3))) '("\"\"\"" "'''")))))
+    (if heredoc
+        (let* ((indent (save-excursion (goto-char (- end 3)) (current-column)))
+               (text (if sigil
+                         (buffer-substring (+ open 3) (- end 3))
+                       (combobulate-elixir--escaped-quotes node (+ open 3) (- end 3))))
+               (lines (butlast (cdr (split-string text "\n"))))
+               (content (and (= (length lines) 1)
+                             (replace-regexp-in-string (format "\\`[ \t]\\{0,%d\\}" indent) "" (car lines))))
+               (pairs '("\"\"" "''" "()" "[]" "{}" "<>" "//" "||"))
+               (pair (and content
+                          (if sigil
+                              (seq-find (lambda (pair) (not (seq-intersection pair content)))
+                                        (if (equal heredoc "'''") (cons "''" pairs) pairs))
+                            "\"\""))))
+          (unless pair
+            (user-error "Only a heredoc with one line of content can become inline"))
+          (delete-region open end)
+          (goto-char open)
+          (insert (substring pair 0 1) content (substring pair 1)))
+      (let* ((delimiter (if (eq (char-after open) ?') "'''" "\"\"\""))
+             (close (char-before end))
+             (raw (buffer-substring (1+ open) (1- end)))
+             ;; An escaped quote keeps its backslash in an uppercase sigil, any other escaped delimiter does not.
+             (content (if (memq close '(?\" ?')) raw (string-replace (string ?\\ close) (string close) raw)))
+             (padding (make-string (save-excursion (goto-char start) (current-indentation)) ?\s)))
+        (when (string-search delimiter content)
+          (user-error "The content already holds %s" delimiter))
+        (delete-region open end)
+        (goto-char open)
+        (insert delimiter "\n" (replace-regexp-in-string "^" padding content) "\n" padding delimiter)))
     (goto-char start)))
 
 (defun combobulate-elixir--capture-operator-p (node)
