@@ -37,6 +37,7 @@
 (require 'yaml-ts-mode)
 (require 'json-ts-mode)
 (require 'tuareg)
+(require 'sh-script)
 ;; Bundled with Emacs 30 and later; tests using them are skipped otherwise.
 (require 'elixir-ts-mode nil t)
 (require 'heex-ts-mode nil t)

@@ -291,6 +291,7 @@ doesn't exist."
                                         ("\\.erl\\'" . erlang-ts-mode)
                                         ("\\.md\\'" . markdown-ts-mode)
                                         ("\\.sql\\'" . sql-ts-mode)
+                                        ("\\.sh\\'" . bash-ts-mode)
                                         ("\\.mli\\'" . tuareg-interface-mode)
                                         ("\\.ml\\'" . tuareg-mode))
                                       auto-mode-alist))

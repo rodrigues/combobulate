@@ -98,6 +98,8 @@
 (require 'combobulate-iex)
 ;;;###autoload
 (require 'combobulate-sql)
+;;;###autoload
+(require 'combobulate-bash)
 ;;; end language support
 
 (provide 'combobulate)

@@ -828,3 +828,50 @@
     (combobulate-test-assert-at-marker 4)))
 
 
+(ert-deftest
+    combobulate-test-bash-combobulate-navigate-down--bash-case-3
+    ()
+
+  "Test `combobulate' with `../../tests/fixtures/down/bash-case.sh' in `bash-ts-mode' mode."
+  (combobulate-test
+      (:language bash :mode bash-ts-mode :fixture
+		 "../../tests/fixtures/down/bash-case.sh")
+    :tags '(combobulate bash bash-ts-mode combobulate-navigate-down)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-down)
+    (combobulate-test-assert-at-marker 2)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-down)
+    (combobulate-test-assert-at-marker 3)))
+
+
+(ert-deftest
+    combobulate-test-bash-combobulate-navigate-down--bash-function-4
+    ()
+
+  "Test `combobulate' with `../../tests/fixtures/down/bash-function.sh' in `bash-ts-mode' mode."
+  (combobulate-test
+      (:language bash :mode bash-ts-mode :fixture
+		 "../../tests/fixtures/down/bash-function.sh")
+    :tags '(combobulate bash bash-ts-mode combobulate-navigate-down)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-down)
+    (combobulate-test-assert-at-marker 2)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-down)
+    (combobulate-test-assert-at-marker 3)
+    (combobulate-test-go-to-marker 3) (combobulate-navigate-down)
+    (combobulate-test-assert-at-marker 4)))
+
+
+(ert-deftest
+    combobulate-test-bash-combobulate-navigate-down--bash-loop-3
+    ()
+
+  "Test `combobulate' with `../../tests/fixtures/down/bash-loop.sh' in `bash-ts-mode' mode."
+  (combobulate-test
+      (:language bash :mode bash-ts-mode :fixture
+		 "../../tests/fixtures/down/bash-loop.sh")
+    :tags '(combobulate bash bash-ts-mode combobulate-navigate-down)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-down)
+    (combobulate-test-assert-at-marker 2)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-down)
+    (combobulate-test-assert-at-marker 3)))
+
+
