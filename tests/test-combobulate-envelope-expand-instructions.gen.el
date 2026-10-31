@@ -3,7 +3,6 @@
 (require 'combobulate)
 
 (require 'combobulate-test-prelude)
-
 (ert-deftest combobulate-test-python-combobulate-envelope-expand-instructions-string-basic-blank-1 ()
  "Test `combobulate' with `fixtures/envelope/blank.py' in `python-ts-mode' mode."
 	     (combobulate-test
@@ -25,7 +24,6 @@
 			   (combobulate-test-go-to-marker 1)
 			   (combobulate-envelope-expand-instructions instructions)
 			   (combobulate-compare-action-with-fixture-delta "./fixture-deltas/combobulate-envelope-expand-instructions/blank.py[string-basic@1~after].py")))))))
-
 
 (ert-deftest combobulate-test-python-combobulate-envelope-expand-instructions-string-multiple-blank-1 ()
  "Test `combobulate' with `fixtures/envelope/blank.py' in `python-ts-mode' mode."
@@ -49,7 +47,6 @@
 			   (combobulate-envelope-expand-instructions instructions)
 			   (combobulate-compare-action-with-fixture-delta "./fixture-deltas/combobulate-envelope-expand-instructions/blank.py[string-multiple@1~after].py")))))))
 
-
 (ert-deftest combobulate-test-python-combobulate-envelope-expand-instructions-newline-blank-1 ()
  "Test `combobulate' with `fixtures/envelope/blank.py' in `python-ts-mode' mode."
 	     (combobulate-test
@@ -71,7 +68,6 @@
 			   (combobulate-test-go-to-marker 1)
 			   (combobulate-envelope-expand-instructions instructions)
 			   (combobulate-compare-action-with-fixture-delta "./fixture-deltas/combobulate-envelope-expand-instructions/blank.py[newline@1~after].py")))))))
-
 
 (ert-deftest combobulate-test-python-combobulate-envelope-expand-instructions-newline-and-indent-simple-blank-1 ()
  "Test `combobulate' with `fixtures/envelope/blank.py' in `python-ts-mode' mode."
@@ -95,7 +91,6 @@
 			   (combobulate-envelope-expand-instructions instructions)
 			   (combobulate-compare-action-with-fixture-delta "./fixture-deltas/combobulate-envelope-expand-instructions/blank.py[newline-and-indent-simple@1~after].py")))))))
 
-
 (ert-deftest combobulate-test-python-combobulate-envelope-expand-instructions-newline-and-indent-inside-block-then-outside-blank-1 ()
  "Test `combobulate' with `fixtures/envelope/blank.py' in `python-ts-mode' mode."
 	     (combobulate-test
@@ -118,7 +113,6 @@
 			   (combobulate-envelope-expand-instructions instructions)
 			   (combobulate-compare-action-with-fixture-delta "./fixture-deltas/combobulate-envelope-expand-instructions/blank.py[newline-and-indent-inside-block-then-outside@1~after].py")))))))
 
-
 (ert-deftest combobulate-test-python-combobulate-envelope-expand-instructions-newline-and-indent-inside-block-both-blank-1 ()
  "Test `combobulate' with `fixtures/envelope/blank.py' in `python-ts-mode' mode."
 	     (combobulate-test
@@ -140,7 +134,6 @@
 			   (combobulate-test-go-to-marker 1)
 			   (combobulate-envelope-expand-instructions instructions)
 			   (combobulate-compare-action-with-fixture-delta "./fixture-deltas/combobulate-envelope-expand-instructions/blank.py[newline-and-indent-inside-block-both@1~after].py")))))))
-
 
 (ert-deftest combobulate-test-python-combobulate-envelope-expand-instructions-save-column-blank-1 ()
  "Test `combobulate' with `fixtures/envelope/blank.py' in `python-ts-mode' mode."
@@ -165,7 +158,6 @@
 			   (combobulate-test-go-to-marker 1)
 			   (combobulate-envelope-expand-instructions instructions)
 			   (combobulate-compare-action-with-fixture-delta "./fixture-deltas/combobulate-envelope-expand-instructions/blank.py[save-column@1~after].py")))))))
-
 
 (ert-deftest combobulate-test-python-combobulate-envelope-expand-instructions-save-column-nested-blank-1 ()
  "Test `combobulate' with `fixtures/envelope/blank.py' in `python-ts-mode' mode."
@@ -193,7 +185,6 @@
 			   (combobulate-envelope-expand-instructions instructions)
 			   (combobulate-compare-action-with-fixture-delta "./fixture-deltas/combobulate-envelope-expand-instructions/blank.py[save-column-nested@1~after].py")))))))
 
-
 (ert-deftest combobulate-test-python-combobulate-envelope-expand-instructions-insert-region-register-blank-1 ()
  "Test `combobulate' with `fixtures/envelope/blank.py' in `python-ts-mode' mode."
 	     (combobulate-test
@@ -215,7 +206,6 @@
 			   (combobulate-test-go-to-marker 1)
 			   (combobulate-envelope-expand-instructions instructions)
 			   (combobulate-compare-action-with-fixture-delta "./fixture-deltas/combobulate-envelope-expand-instructions/blank.py[insert-region-register@1~after].py")))))))
-
 
 (ert-deftest combobulate-test-python-combobulate-envelope-expand-instructions-insert-region-register-then-indent-blank-1 ()
  "Test `combobulate' with `fixtures/envelope/blank.py' in `python-ts-mode' mode."
@@ -239,7 +229,6 @@
 			   (combobulate-test-go-to-marker 1)
 			   (combobulate-envelope-expand-instructions instructions)
 			   (combobulate-compare-action-with-fixture-delta "./fixture-deltas/combobulate-envelope-expand-instructions/blank.py[insert-region-register-then-indent@1~after].py")))))))
-
 
 (ert-deftest combobulate-test-python-combobulate-envelope-expand-instructions-insert-region-register-2-then-indent-blank-1 ()
  "Test `combobulate' with `fixtures/envelope/blank.py' in `python-ts-mode' mode."
@@ -265,7 +254,6 @@
 			   (combobulate-envelope-expand-instructions instructions)
 			   (combobulate-compare-action-with-fixture-delta "./fixture-deltas/combobulate-envelope-expand-instructions/blank.py[insert-region-register-2-then-indent@1~after].py")))))))
 
-
 (ert-deftest combobulate-test-python-combobulate-envelope-expand-instructions-insert-missing-register-with-default-blank-1 ()
  "Test `combobulate' with `fixtures/envelope/blank.py' in `python-ts-mode' mode."
 	     (combobulate-test
@@ -288,7 +276,6 @@
 			   (combobulate-test-go-to-marker 1)
 			   (combobulate-envelope-expand-instructions instructions)
 			   (combobulate-compare-action-with-fixture-delta "./fixture-deltas/combobulate-envelope-expand-instructions/blank.py[insert-missing-register-with-default@1~after].py")))))))
-
 
 (ert-deftest combobulate-test-python-combobulate-envelope-expand-instructions-prompt-register-once-blank-1 ()
  "Test `combobulate' with `fixtures/envelope/blank.py' in `python-ts-mode' mode."
@@ -313,7 +300,6 @@
 			   (combobulate-test-go-to-marker 1)
 			   (combobulate-envelope-expand-instructions instructions)
 			   (combobulate-compare-action-with-fixture-delta "./fixture-deltas/combobulate-envelope-expand-instructions/blank.py[prompt-register-once@1~after].py")))))))
-
 
 (ert-deftest combobulate-test-python-combobulate-envelope-expand-instructions-prompt-register-reused-blank-1 ()
  "Test `combobulate' with `fixtures/envelope/blank.py' in `python-ts-mode' mode."
@@ -341,7 +327,6 @@
 			   (combobulate-envelope-expand-instructions instructions)
 			   (combobulate-compare-action-with-fixture-delta "./fixture-deltas/combobulate-envelope-expand-instructions/blank.py[prompt-register-reused@1~after].py")))))))
 
-
 (ert-deftest combobulate-test-python-combobulate-envelope-expand-instructions-prompt-manual-input-once-blank-1 ()
  "Test `combobulate' with `fixtures/envelope/blank.py' in `python-ts-mode' mode."
 	     (combobulate-test
@@ -365,7 +350,6 @@
 			   (combobulate-test-go-to-marker 1)
 			   (combobulate-envelope-expand-instructions instructions)
 			   (combobulate-compare-action-with-fixture-delta "./fixture-deltas/combobulate-envelope-expand-instructions/blank.py[prompt-manual-input-once@1~after].py")))))))
-
 
 (ert-deftest combobulate-test-python-combobulate-envelope-expand-instructions-prompt-manual-input-twice-blank-1 ()
  "Test `combobulate' with `fixtures/envelope/blank.py' in `python-ts-mode' mode."
@@ -393,7 +377,6 @@
 			   (combobulate-envelope-expand-instructions instructions)
 			   (combobulate-compare-action-with-fixture-delta "./fixture-deltas/combobulate-envelope-expand-instructions/blank.py[prompt-manual-input-twice@1~after].py")))))))
 
-
 (ert-deftest combobulate-test-python-combobulate-envelope-expand-instructions-prompt-manual-keyboard-quit-blank-1 ()
  "Test `combobulate' with `fixtures/envelope/blank.py' in `python-ts-mode' mode."
 	     (combobulate-test
@@ -420,7 +403,6 @@
 			   (combobulate-envelope-expand-instructions instructions)
 			   (combobulate-compare-action-with-fixture-delta "./fixture-deltas/combobulate-envelope-expand-instructions/blank.py[prompt-manual-keyboard-quit@1~after].py")))))))
 
-
 (ert-deftest combobulate-test-python-combobulate-envelope-expand-instructions-field-before-prompt-blank-1 ()
  "Test `combobulate' with `fixtures/envelope/blank.py' in `python-ts-mode' mode."
 	     (combobulate-test
@@ -446,7 +428,6 @@
 			   (combobulate-test-go-to-marker 1)
 			   (combobulate-envelope-expand-instructions instructions)
 			   (combobulate-compare-action-with-fixture-delta "./fixture-deltas/combobulate-envelope-expand-instructions/blank.py[field-before-prompt@1~after].py")))))))
-
 
 (ert-deftest combobulate-test-python-combobulate-envelope-expand-instructions-choicestar-with-complex-missing-field-blank-1 ()
  "Test `combobulate' with `fixtures/envelope/blank.py' in `python-ts-mode' mode."
@@ -485,7 +466,6 @@
 			   (combobulate-envelope-expand-instructions instructions)
 			   (combobulate-compare-action-with-fixture-delta "./fixture-deltas/combobulate-envelope-expand-instructions/blank.py[choicestar-with-complex-missing-field@1~after].py")))))))
 
-
 (ert-deftest combobulate-test-python-combobulate-envelope-expand-instructions-choice-simple-0-blank-1 ()
  "Test `combobulate' with `fixtures/envelope/blank.py' in `python-ts-mode' mode."
 	     (combobulate-test
@@ -512,7 +492,6 @@
 			   (combobulate-envelope-expand-instructions instructions)
 			   (combobulate-compare-action-with-fixture-delta "./fixture-deltas/combobulate-envelope-expand-instructions/blank.py[choice-simple-0@1~after].py")))))))
 
-
 (ert-deftest combobulate-test-python-combobulate-envelope-expand-instructions-choice-simple-1-blank-1 ()
  "Test `combobulate' with `fixtures/envelope/blank.py' in `python-ts-mode' mode."
 	     (combobulate-test
@@ -538,5 +517,3 @@
 			   (combobulate-test-go-to-marker 1)
 			   (combobulate-envelope-expand-instructions instructions)
 			   (combobulate-compare-action-with-fixture-delta "./fixture-deltas/combobulate-envelope-expand-instructions/blank.py[choice-simple-1@1~after].py")))))))
-
-

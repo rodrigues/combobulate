@@ -3,7 +3,6 @@
 (require 'combobulate)
 
 (require 'combobulate-test-prelude)
-
 (ert-deftest combobulate-test-ocaml-combobulate-envelope-expand-ocaml-ocaml-begin-end-with-region-blank-1 ()
  "Test `combobulate' with `fixtures/envelope/blank.ml' in `tuareg-mode' mode."
 	     (combobulate-test
@@ -27,7 +26,6 @@
 			   (combobulate-test-go-to-marker 1)
 			   (combobulate-envelope-expand-instructions instructions)
 			   (combobulate-compare-action-with-fixture-delta "./fixture-deltas/combobulate-envelope-expand-ocaml/blank.ml[ocaml-begin-end-with-region@1~after].ml")))))))
-
 
 (ert-deftest combobulate-test-ocaml-combobulate-envelope-expand-ocaml-ocaml-let-binding-blank-1 ()
  "Test `combobulate' with `fixtures/envelope/blank.ml' in `tuareg-mode' mode."
@@ -55,7 +53,6 @@
 			   (combobulate-test-go-to-marker 1)
 			   (combobulate-envelope-expand-instructions instructions)
 			   (combobulate-compare-action-with-fixture-delta "./fixture-deltas/combobulate-envelope-expand-ocaml/blank.ml[ocaml-let-binding@1~after].ml")))))))
-
 
 (ert-deftest combobulate-test-ocaml-combobulate-envelope-expand-ocaml-ocaml-for-loop-blank-1 ()
  "Test `combobulate' with `fixtures/envelope/blank.ml' in `tuareg-mode' mode."
@@ -87,7 +84,6 @@
 			   (combobulate-test-go-to-marker 1)
 			   (combobulate-envelope-expand-instructions instructions)
 			   (combobulate-compare-action-with-fixture-delta "./fixture-deltas/combobulate-envelope-expand-ocaml/blank.ml[ocaml-for-loop@1~after].ml")))))))
-
 
 (ert-deftest combobulate-test-ocaml-combobulate-envelope-expand-ocaml-ocaml-match-statement-single-case-blank-1 ()
  "Test `combobulate' with `fixtures/envelope/blank.ml' in `tuareg-mode' mode."
@@ -123,7 +119,6 @@
 			   (combobulate-envelope-expand-instructions instructions)
 			   (combobulate-compare-action-with-fixture-delta "./fixture-deltas/combobulate-envelope-expand-ocaml/blank.ml[ocaml-match-statement-single-case@1~after].ml")))))))
 
-
 (ert-deftest combobulate-test-ocaml-combobulate-envelope-expand-ocaml-ocaml-match-statement-multiple-cases-blank-1 ()
  "Test `combobulate' with `fixtures/envelope/blank.ml' in `tuareg-mode' mode."
 	     (combobulate-test
@@ -157,5 +152,3 @@
 			   (combobulate-test-go-to-marker 1)
 			   (combobulate-envelope-expand-instructions instructions)
 			   (combobulate-compare-action-with-fixture-delta "./fixture-deltas/combobulate-envelope-expand-ocaml/blank.ml[ocaml-match-statement-multiple-cases@1~after].ml")))))))
-
-

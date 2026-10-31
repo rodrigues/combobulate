@@ -3,7 +3,6 @@
 (require 'combobulate)
 
 (require 'combobulate-test-prelude)
-
 (ert-deftest combobulate-test-json-combobulate-navigate-down--array-4 ()
  "Test `combobulate' with `fixtures/down/array.json' in `json-ts-mode' mode."
 	     (combobulate-test
@@ -19,7 +18,6 @@
 	       (combobulate-test-go-to-marker 3)
 	       (combobulate-navigate-down)
 	       (combobulate-test-assert-at-marker 4)))
-
 
 (ert-deftest combobulate-test-yaml-combobulate-navigate-down--blocks-7 ()
  "Test `combobulate' with `fixtures/down/blocks.yaml' in `yaml-ts-mode' mode."
@@ -46,7 +44,6 @@
 	       (combobulate-navigate-down)
 	       (combobulate-test-assert-at-marker 7)))
 
-
 (ert-deftest combobulate-test-ocaml-combobulate-navigate-down--class_members-4 ()
  "Test `combobulate' with `fixtures/down/class_members.ml' in `tuareg-mode' mode."
 	     (combobulate-test
@@ -62,7 +59,6 @@
 	       (combobulate-test-go-to-marker 3)
 	       (combobulate-navigate-down)
 	       (combobulate-test-assert-at-marker 4)))
-
 
 (ert-deftest combobulate-test-ocaml-combobulate-navigate-down--class_type_members-4 ()
  "Test `combobulate' with `fixtures/down/class_type_members.ml' in `tuareg-mode' mode."
@@ -80,7 +76,6 @@
 	       (combobulate-navigate-down)
 	       (combobulate-test-assert-at-marker 4)))
 
-
 (ert-deftest combobulate-test-ocaml-interface-combobulate-navigate-down--class_type_members-4 ()
  "Test `combobulate' with `fixtures/down/class_type_members.mli' in `tuareg-interface-mode' mode."
 	     (combobulate-test
@@ -97,14 +92,12 @@
 	       (combobulate-navigate-down)
 	       (combobulate-test-assert-at-marker 4)))
 
-
 (ert-deftest combobulate-test-ocaml-combobulate-navigate-down--class_types-1 ()
  "Test `combobulate' with `fixtures/down/class_types.ml' in `tuareg-mode' mode."
 	     (combobulate-test
 		 (:language ocaml :mode tuareg-mode :fixture "fixtures/down/class_types.ml")
 	       :tags
 	       '(combobulate ocaml tuareg-mode combobulate-navigate-down)))
-
 
 (ert-deftest combobulate-test-ocaml-interface-combobulate-navigate-down--class_types-1 ()
  "Test `combobulate' with `fixtures/down/class_types.mli' in `tuareg-interface-mode' mode."
@@ -113,14 +106,12 @@
 	       :tags
 	       '(combobulate ocaml-interface tuareg-interface-mode combobulate-navigate-down)))
 
-
 (ert-deftest combobulate-test-ocaml-combobulate-navigate-down--class_types_b-1 ()
  "Test `combobulate' with `fixtures/down/class_types_b.ml' in `tuareg-mode' mode."
 	     (combobulate-test
 		 (:language ocaml :mode tuareg-mode :fixture "fixtures/down/class_types_b.ml")
 	       :tags
 	       '(combobulate ocaml tuareg-mode combobulate-navigate-down)))
-
 
 (ert-deftest combobulate-test-ocaml-interface-combobulate-navigate-down--class_types_b-4 ()
  "Test `combobulate' with `fixtures/down/class_types_b.mli' in `tuareg-interface-mode' mode."
@@ -138,7 +129,6 @@
 	       (combobulate-navigate-down)
 	       (combobulate-test-assert-at-marker 4)))
 
-
 (ert-deftest combobulate-test-ocaml-combobulate-navigate-down--classes-2 ()
  "Test `combobulate' with `fixtures/down/classes.ml' in `tuareg-mode' mode."
 	     (combobulate-test
@@ -149,7 +139,6 @@
 		(progn
 		  (combobulate-navigate-down)))))
 
-
 (ert-deftest combobulate-test-ocaml-interface-combobulate-navigate-down--classes-2 ()
  "Test `combobulate' with `fixtures/down/classes.mli' in `tuareg-interface-mode' mode."
 	     (combobulate-test
@@ -159,7 +148,6 @@
 	       (combobulate-test-go-to-marker 1)
 	       (combobulate-navigate-down)
 	       (combobulate-test-assert-at-marker 2)))
-
 
 (ert-deftest combobulate-test-css-combobulate-navigate-down--declaration-4 ()
  "Test `combobulate' with `fixtures/down/declaration.css' in `css-ts-mode' mode."
@@ -176,7 +164,6 @@
 	       (combobulate-test-go-to-marker 3)
 	       (combobulate-navigate-down)
 	       (combobulate-test-assert-at-marker 4)))
-
 
 (ert-deftest combobulate-test-python-combobulate-navigate-down--decorator_class-7 ()
  "Test `combobulate' with `fixtures/down/decorator_class.py' in `python-ts-mode' mode."
@@ -203,7 +190,6 @@
 	       (combobulate-navigate-down)
 	       (combobulate-test-assert-at-marker 7)))
 
-
 (ert-deftest combobulate-test-python-combobulate-navigate-down--decorator_function-5 ()
  "Test `combobulate' with `fixtures/down/decorator_function.py' in `python-ts-mode' mode."
 	     (combobulate-test
@@ -223,7 +209,6 @@
 	       (combobulate-navigate-down)
 	       (combobulate-test-assert-at-marker 5)))
 
-
 (ert-deftest combobulate-test-html-combobulate-navigate-down--down-attributes-3 ()
  "Test `combobulate' with `fixtures/down/down-attributes.html' in `html-ts-mode' mode."
 	     (combobulate-test
@@ -237,7 +222,6 @@
 	       (combobulate-navigate-down)
 	       (combobulate-test-assert-at-marker 3)))
 
-
 (ert-deftest combobulate-test-html-combobulate-navigate-down--elements-3 ()
  "Test `combobulate' with `fixtures/down/elements.html' in `html-ts-mode' mode."
 	     (combobulate-test
@@ -250,7 +234,6 @@
 	       (combobulate-test-go-to-marker 2)
 	       (combobulate-navigate-down)
 	       (combobulate-test-assert-at-marker 3)))
-
 
 (ert-deftest combobulate-test-python-combobulate-navigate-down--function-5 ()
  "Test `combobulate' with `fixtures/down/function.py' in `python-ts-mode' mode."
@@ -271,7 +254,6 @@
 	       (combobulate-navigate-down)
 	       (combobulate-test-assert-at-marker 5)))
 
-
 (ert-deftest combobulate-test-ocaml-combobulate-navigate-down--function_body-2 ()
  "Test `combobulate' with `fixtures/down/function_body.ml' in `tuareg-mode' mode."
 	     (combobulate-test
@@ -281,7 +263,6 @@
 	       (combobulate-test-go-to-marker 1)
 	       (combobulate-navigate-down)
 	       (combobulate-test-assert-at-marker 2)))
-
 
 (ert-deftest combobulate-test-ocaml-combobulate-navigate-down--functors-2 ()
  "Test `combobulate' with `fixtures/down/functors.ml' in `tuareg-mode' mode."
@@ -293,7 +274,6 @@
 	       (combobulate-navigate-down)
 	       (combobulate-test-assert-at-marker 2)))
 
-
 (ert-deftest combobulate-test-ocaml-interface-combobulate-navigate-down--functors-2 ()
  "Test `combobulate' with `fixtures/down/functors.mli' in `tuareg-interface-mode' mode."
 	     (combobulate-test
@@ -303,7 +283,6 @@
 	       (combobulate-test-go-to-marker 1)
 	       (combobulate-navigate-down)
 	       (combobulate-test-assert-at-marker 2)))
-
 
 (ert-deftest combobulate-test-tsx-combobulate-navigate-down--if-statements-10 ()
  "Test `combobulate' with `fixtures/down/if-statements.tsx' in `tsx-ts-mode' mode."
@@ -339,7 +318,6 @@
 	       (combobulate-navigate-down)
 	       (combobulate-test-assert-at-marker 10)))
 
-
 (ert-deftest combobulate-test-tsx-combobulate-navigate-down--jsx-with-attributes-6 ()
  "Test `combobulate' with `fixtures/down/jsx-with-attributes.tsx' in `tsx-ts-mode' mode."
 	     (combobulate-test
@@ -362,7 +340,6 @@
 	       (combobulate-navigate-down)
 	       (combobulate-test-assert-at-marker 6)))
 
-
 (ert-deftest combobulate-test-ocaml-combobulate-navigate-down--match_body-2 ()
  "Test `combobulate' with `fixtures/down/match_body.ml' in `tuareg-mode' mode."
 	     (combobulate-test
@@ -373,7 +350,6 @@
 	       (combobulate-navigate-down)
 	       (combobulate-test-assert-at-marker 2)))
 
-
 (ert-deftest combobulate-test-ocaml-combobulate-navigate-down--matches-2 ()
  "Test `combobulate' with `fixtures/down/matches.ml' in `tuareg-mode' mode."
 	     (combobulate-test
@@ -383,7 +359,6 @@
 	       (should-error
 		(progn
 		  (combobulate-navigate-down)))))
-
 
 (ert-deftest combobulate-test-tsx-combobulate-navigate-down--module-statements-7 ()
  "Test `combobulate' with `fixtures/down/module-statements.tsx' in `tsx-ts-mode' mode."
@@ -410,7 +385,6 @@
 	       (combobulate-navigate-down)
 	       (combobulate-test-assert-at-marker 7)))
 
-
 (ert-deftest combobulate-test-ocaml-combobulate-navigate-down--module_sig_a-4 ()
  "Test `combobulate' with `fixtures/down/module_sig_a.ml' in `tuareg-mode' mode."
 	     (combobulate-test
@@ -426,7 +400,6 @@
 	       (should-error
 		(progn
 		  (combobulate-navigate-down)))))
-
 
 (ert-deftest combobulate-test-ocaml-interface-combobulate-navigate-down--module_sig_a-4 ()
  "Test `combobulate' with `fixtures/down/module_sig_a.mli' in `tuareg-interface-mode' mode."
@@ -444,7 +417,6 @@
 		(progn
 		  (combobulate-navigate-down)))))
 
-
 (ert-deftest combobulate-test-ocaml-combobulate-navigate-down--module_sig_b-4 ()
  "Test `combobulate' with `fixtures/down/module_sig_b.ml' in `tuareg-mode' mode."
 	     (combobulate-test
@@ -460,7 +432,6 @@
 	       (should-error
 		(progn
 		  (combobulate-navigate-down)))))
-
 
 (ert-deftest combobulate-test-ocaml-interface-combobulate-navigate-down--module_signature-4 ()
  "Test `combobulate' with `fixtures/down/module_signature.mli' in `tuareg-interface-mode' mode."
@@ -478,14 +449,12 @@
 	       (combobulate-navigate-down)
 	       (combobulate-test-assert-at-marker 4)))
 
-
 (ert-deftest combobulate-test-ocaml-combobulate-navigate-down--module_string-1 ()
  "Test `combobulate' with `fixtures/down/module_string.ml' in `tuareg-mode' mode."
 	     (combobulate-test
 		 (:language ocaml :mode tuareg-mode :fixture "fixtures/down/module_string.ml")
 	       :tags
 	       '(combobulate ocaml tuareg-mode combobulate-navigate-down)))
-
 
 (ert-deftest combobulate-test-tsx-combobulate-navigate-down--nested-jsx-8 ()
  "Test `combobulate' with `fixtures/down/nested-jsx.tsx' in `tsx-ts-mode' mode."
@@ -515,7 +484,6 @@
 	       (combobulate-navigate-down)
 	       (combobulate-test-assert-at-marker 8)))
 
-
 (ert-deftest combobulate-test-ocaml-combobulate-navigate-down--nested_matches-2 ()
  "Test `combobulate' with `fixtures/down/nested_matches.ml' in `tuareg-mode' mode."
 	     (combobulate-test
@@ -525,7 +493,6 @@
 	       (should-error
 		(progn
 		  (combobulate-navigate-down)))))
-
 
 (ert-deftest combobulate-test-json-combobulate-navigate-down--object-9 ()
  "Test `combobulate' with `fixtures/down/object.json' in `json-ts-mode' mode."
@@ -558,7 +525,6 @@
 	       (combobulate-navigate-down)
 	       (combobulate-test-assert-at-marker 9)))
 
-
 (ert-deftest combobulate-test-ocaml-combobulate-navigate-down--oxcaml_modes-2 ()
  "Test `combobulate' with `fixtures/down/oxcaml_modes.ml' in `tuareg-mode' mode."
 	     (combobulate-test
@@ -569,7 +535,6 @@
 	       (combobulate-navigate-down)
 	       (combobulate-test-assert-at-marker 2)))
 
-
 (ert-deftest combobulate-test-ocaml-combobulate-navigate-down--oxcaml_unboxed-2 ()
  "Test `combobulate' with `fixtures/down/oxcaml_unboxed.ml' in `tuareg-mode' mode."
 	     (combobulate-test
@@ -579,7 +544,6 @@
 	       (combobulate-test-go-to-marker 1)
 	       (combobulate-navigate-down)
 	       (combobulate-test-assert-at-marker 2)))
-
 
 (ert-deftest combobulate-test-toml-combobulate-navigate-down--table-3 ()
  "Test `combobulate' with `fixtures/down/table.toml' in `toml-ts-mode' mode."
@@ -594,7 +558,6 @@
 	       (combobulate-navigate-down)
 	       (combobulate-test-assert-at-marker 3)))
 
-
 (ert-deftest combobulate-test-ocaml-combobulate-navigate-down--type_declarations-2 ()
  "Test `combobulate' with `fixtures/down/type_declarations.ml' in `tuareg-mode' mode."
 	     (combobulate-test
@@ -604,7 +567,6 @@
 	       (combobulate-test-go-to-marker 1)
 	       (combobulate-navigate-down)
 	       (combobulate-test-assert-at-marker 2)))
-
 
 (ert-deftest combobulate-test-ocaml-interface-combobulate-navigate-down--type_declarations-5 ()
  "Test `combobulate' with `fixtures/down/type_declarations.mli' in `tuareg-interface-mode' mode."
@@ -625,7 +587,6 @@
 	       (combobulate-navigate-down)
 	       (combobulate-test-assert-at-marker 5)))
 
-
 (ert-deftest combobulate-test-ocaml-interface-combobulate-navigate-down--variant_type-4 ()
  "Test `combobulate' with `fixtures/down/variant_type.mli' in `tuareg-interface-mode' mode."
 	     (combobulate-test
@@ -641,111 +602,3 @@
 	       (combobulate-test-go-to-marker 3)
 	       (combobulate-navigate-down)
 	       (combobulate-test-assert-at-marker 4)))
-
-
-(ert-deftest
-    combobulate-test-bash-combobulate-navigate-down--bash-case-3
-    ()
-
-  "Test `combobulate' with `fixtures/down/bash-case.sh' in `bash-ts-mode' mode."
-  (combobulate-test
-      (:language bash :mode bash-ts-mode :fixture
-		 "fixtures/down/bash-case.sh")
-    :tags '(combobulate bash bash-ts-mode combobulate-navigate-down)
-    combobulate-test-elixir-combobulate-navigate-down--elixir-call-3
-    ()
-
-  "Test `combobulate' with `fixtures/down/elixir-call.ex' in `elixir-ts-mode' mode."
-  (combobulate-test
-      (:language elixir :mode elixir-ts-mode :fixture
-		 "fixtures/down/elixir-call.ex")
-    :tags
-    '(combobulate elixir elixir-ts-mode combobulate-navigate-down)
-    combobulate-test-erlang-combobulate-navigate-down--erlang-call-3
-    ()
-
-  "Test `combobulate' with `fixtures/down/erlang-call.erl' in `erlang-ts-mode' mode."
-  (combobulate-test
-      (:language erlang :mode erlang-ts-mode :fixture
-		 "fixtures/down/erlang-call.erl")
-    :tags
-    '(combobulate erlang erlang-ts-mode combobulate-navigate-down)
-    (combobulate-test-go-to-marker 1) (combobulate-navigate-down)
-    (combobulate-test-assert-at-marker 2)
-    (combobulate-test-go-to-marker 2) (combobulate-navigate-down)
-    (combobulate-test-assert-at-marker 3)))
-
-
-(ert-deftest
-    combobulate-test-bash-combobulate-navigate-down--bash-function-4
-    ()
-
-  "Test `combobulate' with `fixtures/down/bash-function.sh' in `bash-ts-mode' mode."
-  (combobulate-test
-      (:language bash :mode bash-ts-mode :fixture
-		 "fixtures/down/bash-function.sh")
-    :tags '(combobulate bash bash-ts-mode combobulate-navigate-down)
-    combobulate-test-elixir-combobulate-navigate-down--elixir-def-4
-    ()
-
-  "Test `combobulate' with `fixtures/down/elixir-def.ex' in `elixir-ts-mode' mode."
-  (combobulate-test
-      (:language elixir :mode elixir-ts-mode :fixture
-		 "fixtures/down/elixir-def.ex")
-    :tags
-    '(combobulate elixir elixir-ts-mode combobulate-navigate-down)
-    combobulate-test-erlang-combobulate-navigate-down--erlang-function-4
-    ()
-
-  "Test `combobulate' with `fixtures/down/erlang-function.erl' in `erlang-ts-mode' mode."
-  (combobulate-test
-      (:language erlang :mode erlang-ts-mode :fixture
-		 "fixtures/down/erlang-function.erl")
-    :tags
-    '(combobulate erlang erlang-ts-mode combobulate-navigate-down)
-    (combobulate-test-go-to-marker 1) (combobulate-navigate-down)
-    (combobulate-test-assert-at-marker 2)
-    (combobulate-test-go-to-marker 2) (combobulate-navigate-down)
-    (combobulate-test-assert-at-marker 3)
-    (combobulate-test-go-to-marker 3) (combobulate-navigate-down)
-    (combobulate-test-assert-at-marker 4)))
-
-
-(ert-deftest
-    combobulate-test-bash-combobulate-navigate-down--bash-loop-3
-    ()
-
-  "Test `combobulate' with `fixtures/down/bash-loop.sh' in `bash-ts-mode' mode."
-  (combobulate-test
-      (:language bash :mode bash-ts-mode :fixture
-		 "fixtures/down/bash-loop.sh")
-    :tags '(combobulate bash bash-ts-mode combobulate-navigate-down)
-    combobulate-test-elixir-combobulate-navigate-down--elixir-pipeline-3
-    ()
-
-  "Test `combobulate' with `fixtures/down/elixir-pipeline.ex' in `elixir-ts-mode' mode."
-  (combobulate-test
-      (:language elixir :mode elixir-ts-mode :fixture
-		 "fixtures/down/elixir-pipeline.ex")
-    :tags
-    '(combobulate elixir elixir-ts-mode combobulate-navigate-down)
-    (combobulate-test-go-to-marker 1) (combobulate-navigate-down)
-    (combobulate-test-assert-at-marker 2)
-    (combobulate-test-go-to-marker 2) (combobulate-navigate-down)
-    (combobulate-test-assert-at-marker 3)))
-
-
-(ert-deftest
-    combobulate-test-heex-combobulate-navigate-down--heex-tag-3 ()
-
-  "Test `combobulate' with `fixtures/down/heex-tag.heex' in `heex-ts-mode' mode."
-  (combobulate-test
-      (:language heex :mode heex-ts-mode :fixture
-		 "fixtures/down/heex-tag.heex")
-    :tags '(combobulate heex heex-ts-mode combobulate-navigate-down)
-    (combobulate-test-go-to-marker 1) (combobulate-navigate-down)
-    (combobulate-test-assert-at-marker 2)
-    (combobulate-test-go-to-marker 2) (combobulate-navigate-down)
-    (combobulate-test-assert-at-marker 3)))
-
-

@@ -3,7 +3,6 @@
 (require 'combobulate)
 
 (require 'combobulate-test-prelude)
-
 (ert-deftest combobulate-test-html-combobulate-navigate-previous--attributes-1 ()
  "Test `combobulate' with `fixtures/sibling/attributes.html' in `html-ts-mode' mode."
 	     (combobulate-test
@@ -16,7 +15,6 @@
 	       (combobulate-test-go-to-marker 1)
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
-
 
 (ert-deftest combobulate-test-go-combobulate-navigate-previous--block-1 ()
  "Test `combobulate' with `fixtures/sibling/block.go' in `go-ts-mode' mode."
@@ -40,7 +38,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-ocaml-combobulate-navigate-previous--class_type_expressions-1 ()
  "Test `combobulate' with `fixtures/sibling/class_type_expressions.ml' in `tuareg-mode' mode."
 	     (combobulate-test
@@ -53,7 +50,6 @@
 	       (combobulate-test-go-to-marker 1)
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
-
 
 (ert-deftest combobulate-test-ocaml-interface-combobulate-navigate-previous--class_type_expressions-1 ()
  "Test `combobulate' with `fixtures/sibling/class_type_expressions.mli' in `tuareg-interface-mode' mode."
@@ -68,7 +64,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-ocaml-combobulate-navigate-previous--class_value_expressions-1 ()
  "Test `combobulate' with `fixtures/sibling/class_value_expressions.ml' in `tuareg-mode' mode."
 	     (combobulate-test
@@ -82,7 +77,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-ocaml-interface-combobulate-navigate-previous--class_value_expressions-1 ()
  "Test `combobulate' with `fixtures/sibling/class_value_expressions.mli' in `tuareg-interface-mode' mode."
 	     (combobulate-test
@@ -95,7 +89,6 @@
 	       (combobulate-test-go-to-marker 1)
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
-
 
 (ert-deftest combobulate-test-tsx-combobulate-navigate-previous--component-jsx-1 ()
  "Test `combobulate' with `fixtures/sibling/component-jsx.tsx' in `tsx-ts-mode' mode."
@@ -116,7 +109,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-go-combobulate-navigate-previous--const-declaration-1 ()
  "Test `combobulate' with `fixtures/sibling/const-declaration.go' in `go-ts-mode' mode."
 	     (combobulate-test
@@ -126,7 +118,6 @@
 	       (combobulate-test-go-to-marker 1)
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
-
 
 (ert-deftest combobulate-test-css-combobulate-navigate-previous--css-declaration-1 ()
  "Test `combobulate' with `fixtures/sibling/css-declaration.css' in `css-ts-mode' mode."
@@ -144,7 +135,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-css-combobulate-navigate-previous--css-function-arg-1 ()
  "Test `combobulate' with `fixtures/sibling/css-function-arg.css' in `css-ts-mode' mode."
 	     (combobulate-test
@@ -157,7 +147,6 @@
 	       (combobulate-test-go-to-marker 1)
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
-
 
 (ert-deftest combobulate-test-css-combobulate-navigate-previous--css-nested-statements-1 ()
  "Test `combobulate' with `fixtures/sibling/css-nested-statements.css' in `css-ts-mode' mode."
@@ -172,7 +161,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-css-combobulate-navigate-previous--css-property-1 ()
  "Test `combobulate' with `fixtures/sibling/css-property.css' in `css-ts-mode' mode."
 	     (combobulate-test
@@ -185,7 +173,6 @@
 	       (combobulate-test-go-to-marker 1)
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
-
 
 (ert-deftest combobulate-test-python-combobulate-navigate-previous--def-block-1 ()
  "Test `combobulate' with `fixtures/sibling/def-block.py' in `python-ts-mode' mode."
@@ -205,7 +192,6 @@
 	       (combobulate-test-go-to-marker 1)
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
-
 
 (ert-deftest combobulate-test-tsx-combobulate-navigate-previous--def-function-block-1 ()
  "Test `combobulate' with `fixtures/sibling/def-function-block.tsx' in `tsx-ts-mode' mode."
@@ -229,7 +215,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-tsx-combobulate-navigate-previous--def-function-object-args-1 ()
  "Test `combobulate' with `fixtures/sibling/def-function-object-args.tsx' in `tsx-ts-mode' mode."
 	     (combobulate-test
@@ -243,7 +228,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-tsx-combobulate-navigate-previous--def-function-type-args-1 ()
  "Test `combobulate' with `fixtures/sibling/def-function-type-args.tsx' in `tsx-ts-mode' mode."
 	     (combobulate-test
@@ -256,7 +240,6 @@
 	       (combobulate-test-go-to-marker 1)
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
-
 
 (ert-deftest combobulate-test-python-combobulate-navigate-previous--def-parameters-1 ()
  "Test `combobulate' with `fixtures/sibling/def-parameters.py' in `python-ts-mode' mode."
@@ -289,7 +272,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-toml-combobulate-navigate-previous--document-level-1 ()
  "Test `combobulate' with `fixtures/sibling/document-level.toml' in `toml-ts-mode' mode."
 	     (combobulate-test
@@ -314,7 +296,6 @@
 	       (combobulate-test-go-to-marker 1)
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
-
 
 (ert-deftest combobulate-test-html-combobulate-navigate-previous--elements-1 ()
  "Test `combobulate' with `fixtures/sibling/elements.html' in `html-ts-mode' mode."
@@ -341,7 +322,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-go-combobulate-navigate-previous--expr-switch-1 ()
  "Test `combobulate' with `fixtures/sibling/expr-switch.go' in `go-ts-mode' mode."
 	     (combobulate-test
@@ -354,7 +334,6 @@
 	       (combobulate-test-go-to-marker 1)
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
-
 
 (ert-deftest combobulate-test-ocaml-combobulate-navigate-previous--extension_points-1 ()
  "Test `combobulate' with `fixtures/sibling/extension_points.ml' in `tuareg-mode' mode."
@@ -381,7 +360,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-ocaml-interface-combobulate-navigate-previous--extension_points-1 ()
  "Test `combobulate' with `fixtures/sibling/extension_points.mli' in `tuareg-interface-mode' mode."
 	     (combobulate-test
@@ -401,7 +379,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-go-combobulate-navigate-previous--for-loop-1 ()
  "Test `combobulate' with `fixtures/sibling/for-loop.go' in `go-ts-mode' mode."
 	     (combobulate-test
@@ -414,7 +391,6 @@
 	       (combobulate-test-go-to-marker 1)
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
-
 
 (ert-deftest combobulate-test-ocaml-combobulate-navigate-previous--gadt-1 ()
  "Test `combobulate' with `fixtures/sibling/gadt.ml' in `tuareg-mode' mode."
@@ -429,7 +405,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-ocaml-interface-combobulate-navigate-previous--gadt-1 ()
  "Test `combobulate' with `fixtures/sibling/gadt.mli' in `tuareg-interface-mode' mode."
 	     (combobulate-test
@@ -443,7 +418,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-go-combobulate-navigate-previous--import-declaration-1 ()
  "Test `combobulate' with `fixtures/sibling/import-declaration.go' in `go-ts-mode' mode."
 	     (combobulate-test
@@ -454,14 +428,12 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-go-combobulate-navigate-previous--inside-case-1 ()
  "Test `combobulate' with `fixtures/sibling/inside-case.go' in `go-ts-mode' mode."
 	     (combobulate-test
 		 (:language go :mode go-ts-mode :fixture "fixtures/sibling/inside-case.go")
 	       :tags
 	       '(combobulate go go-ts-mode combobulate-navigate-previous)))
-
 
 (ert-deftest combobulate-test-toml-combobulate-navigate-previous--inside-table-1 ()
  "Test `combobulate' with `fixtures/sibling/inside-table.toml' in `toml-ts-mode' mode."
@@ -476,7 +448,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-ocaml-combobulate-navigate-previous--let_and_in-1 ()
  "Test `combobulate' with `fixtures/sibling/let_and_in.ml' in `tuareg-mode' mode."
 	     (combobulate-test
@@ -489,7 +460,6 @@
 	       (combobulate-test-go-to-marker 1)
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
-
 
 (ert-deftest combobulate-test-ocaml-combobulate-navigate-previous--let_bindings-1 ()
  "Test `combobulate' with `fixtures/sibling/let_bindings.ml' in `tuareg-mode' mode."
@@ -528,7 +498,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-go-combobulate-navigate-previous--literal-1 ()
  "Test `combobulate' with `fixtures/sibling/literal.go' in `go-ts-mode' mode."
 	     (combobulate-test
@@ -551,7 +520,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-go-combobulate-navigate-previous--map-1 ()
  "Test `combobulate' with `fixtures/sibling/map.go' in `go-ts-mode' mode."
 	     (combobulate-test
@@ -562,7 +530,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-ocaml-combobulate-navigate-previous--match_in_fun-1 ()
  "Test `combobulate' with `fixtures/sibling/match_in_fun.ml' in `tuareg-mode' mode."
 	     (combobulate-test
@@ -572,7 +539,6 @@
 	       (combobulate-test-go-to-marker 1)
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
-
 
 (ert-deftest combobulate-test-python-combobulate-navigate-previous--module-statements-1 ()
  "Test `combobulate' with `fixtures/sibling/module-statements.py' in `python-ts-mode' mode."
@@ -602,7 +568,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-tsx-combobulate-navigate-previous--module-statements-1 ()
  "Test `combobulate' with `fixtures/sibling/module-statements.tsx' in `tsx-ts-mode' mode."
 	     (combobulate-test
@@ -621,7 +586,6 @@
 	       (combobulate-test-go-to-marker 1)
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
-
 
 (ert-deftest combobulate-test-go-combobulate-navigate-previous--module-1 ()
  "Test `combobulate' with `fixtures/sibling/module.go' in `go-ts-mode' mode."
@@ -645,7 +609,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-ocaml-combobulate-navigate-previous--module_sig_a-1 ()
  "Test `combobulate' with `fixtures/sibling/module_sig_a.ml' in `tuareg-mode' mode."
 	     (combobulate-test
@@ -661,7 +624,6 @@
 	       (combobulate-test-go-to-marker 1)
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
-
 
 (ert-deftest combobulate-test-ocaml-interface-combobulate-navigate-previous--module_sig_a-1 ()
  "Test `combobulate' with `fixtures/sibling/module_sig_a.mli' in `tuareg-interface-mode' mode."
@@ -679,7 +641,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-ocaml-combobulate-navigate-previous--module_sig_b-1 ()
  "Test `combobulate' with `fixtures/sibling/module_sig_b.ml' in `tuareg-mode' mode."
 	     (combobulate-test
@@ -692,7 +653,6 @@
 	       (combobulate-test-go-to-marker 1)
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
-
 
 (ert-deftest combobulate-test-ocaml-interface-combobulate-navigate-previous--module_signatures-1 ()
  "Test `combobulate' with `fixtures/sibling/module_signatures.mli' in `tuareg-interface-mode' mode."
@@ -713,7 +673,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-ocaml-combobulate-navigate-previous--module_string-1 ()
  "Test `combobulate' with `fixtures/sibling/module_string.ml' in `tuareg-mode' mode."
 	     (combobulate-test
@@ -723,7 +682,6 @@
 	       (combobulate-test-go-to-marker 1)
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
-
 
 (ert-deftest combobulate-test-ocaml-combobulate-navigate-previous--module_type_expressions-1 ()
  "Test `combobulate' with `fixtures/sibling/module_type_expressions.ml' in `tuareg-mode' mode."
@@ -747,7 +705,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-ocaml-interface-combobulate-navigate-previous--module_type_expressions-1 ()
  "Test `combobulate' with `fixtures/sibling/module_type_expressions.mli' in `tuareg-interface-mode' mode."
 	     (combobulate-test
@@ -770,7 +727,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-ocaml-combobulate-navigate-previous--module_value_expressions-1 ()
  "Test `combobulate' with `fixtures/sibling/module_value_expressions.ml' in `tuareg-mode' mode."
 	     (combobulate-test
@@ -792,7 +748,6 @@
 	       (combobulate-test-go-to-marker 1)
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
-
 
 (ert-deftest combobulate-test-ocaml-combobulate-navigate-previous--modules-1 ()
  "Test `combobulate' with `fixtures/sibling/modules.ml' in `tuareg-mode' mode."
@@ -831,7 +786,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-ocaml-interface-combobulate-navigate-previous--modules-1 ()
  "Test `combobulate' with `fixtures/sibling/modules.mli' in `tuareg-interface-mode' mode."
 	     (combobulate-test
@@ -866,7 +820,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-python-combobulate-navigate-previous--nested-blocks-1 ()
  "Test `combobulate' with `fixtures/sibling/nested-blocks.py' in `python-ts-mode' mode."
 	     (combobulate-test
@@ -880,7 +833,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-ocaml-combobulate-navigate-previous--nested_type_records-1 ()
  "Test `combobulate' with `fixtures/sibling/nested_type_records.ml' in `tuareg-mode' mode."
 	     (combobulate-test
@@ -891,7 +843,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-ocaml-interface-combobulate-navigate-previous--nested_type_records-1 ()
  "Test `combobulate' with `fixtures/sibling/nested_type_records.mli' in `tuareg-interface-mode' mode."
 	     (combobulate-test
@@ -901,7 +852,6 @@
 	       (combobulate-test-go-to-marker 1)
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
-
 
 (ert-deftest combobulate-test-ocaml-interface-combobulate-navigate-previous--oxcaml_attributes-1 ()
  "Test `combobulate' with `fixtures/sibling/oxcaml_attributes.mli' in `tuareg-interface-mode' mode."
@@ -919,7 +869,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-ocaml-interface-combobulate-navigate-previous--oxcaml_interface-1 ()
  "Test `combobulate' with `fixtures/sibling/oxcaml_interface.mli' in `tuareg-interface-mode' mode."
 	     (combobulate-test
@@ -936,7 +885,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-ocaml-combobulate-navigate-previous--oxcaml_kinds-1 ()
  "Test `combobulate' with `fixtures/sibling/oxcaml_kinds.ml' in `tuareg-mode' mode."
 	     (combobulate-test
@@ -949,7 +897,6 @@
 	       (combobulate-test-go-to-marker 1)
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
-
 
 (ert-deftest combobulate-test-ocaml-combobulate-navigate-previous--oxcaml_modes-1 ()
  "Test `combobulate' with `fixtures/sibling/oxcaml_modes.ml' in `tuareg-mode' mode."
@@ -967,7 +914,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-ocaml-combobulate-navigate-previous--oxcaml_records-1 ()
  "Test `combobulate' with `fixtures/sibling/oxcaml_records.ml' in `tuareg-mode' mode."
 	     (combobulate-test
@@ -977,7 +923,6 @@
 	       (combobulate-test-go-to-marker 1)
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
-
 
 (ert-deftest combobulate-test-ocaml-combobulate-navigate-previous--oxcaml_unboxed-1 ()
  "Test `combobulate' with `fixtures/sibling/oxcaml_unboxed.ml' in `tuareg-mode' mode."
@@ -997,7 +942,6 @@
 	       (combobulate-test-go-to-marker 1)
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
-
 
 (ert-deftest combobulate-test-ocaml-combobulate-navigate-previous--patterns-1 ()
  "Test `combobulate' with `fixtures/sibling/patterns.ml' in `tuareg-mode' mode."
@@ -1057,7 +1001,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-ocaml-interface-combobulate-navigate-previous--patterns-1 ()
  "Test `combobulate' with `fixtures/sibling/patterns.mli' in `tuareg-interface-mode' mode."
 	     (combobulate-test
@@ -1076,7 +1019,6 @@
 	       (combobulate-test-go-to-marker 1)
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
-
 
 (ert-deftest combobulate-test-go-combobulate-navigate-previous--program-1 ()
  "Test `combobulate' with `fixtures/sibling/program.go' in `go-ts-mode' mode."
@@ -1103,7 +1045,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-python-combobulate-navigate-previous--python-dict-1 ()
  "Test `combobulate' with `fixtures/sibling/python-dict.py' in `python-ts-mode' mode."
 	     (combobulate-test
@@ -1129,7 +1070,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-python-combobulate-navigate-previous--python-list-1 ()
  "Test `combobulate' with `fixtures/sibling/python-list.py' in `python-ts-mode' mode."
 	     (combobulate-test
@@ -1149,7 +1089,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-python-combobulate-navigate-previous--python-match-case-1 ()
  "Test `combobulate' with `fixtures/sibling/python-match-case.py' in `python-ts-mode' mode."
 	     (combobulate-test
@@ -1163,7 +1102,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-python-combobulate-navigate-previous--python-set-1 ()
  "Test `combobulate' with `fixtures/sibling/python-set.py' in `python-ts-mode' mode."
 	     (combobulate-test
@@ -1176,7 +1114,6 @@
 	       (combobulate-test-go-to-marker 1)
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
-
 
 (ert-deftest combobulate-test-python-combobulate-navigate-previous--python-string-1 ()
  "Test `combobulate' with `fixtures/sibling/python-string.py' in `python-ts-mode' mode."
@@ -1200,7 +1137,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-python-combobulate-navigate-previous--python-tuple-pattern-1 ()
  "Test `combobulate' with `fixtures/sibling/python-tuple-pattern.py' in `python-ts-mode' mode."
 	     (combobulate-test
@@ -1219,7 +1155,6 @@
 	       (combobulate-test-go-to-marker 1)
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
-
 
 (ert-deftest combobulate-test-python-combobulate-navigate-previous--python-tuple-1 ()
  "Test `combobulate' with `fixtures/sibling/python-tuple.py' in `python-ts-mode' mode."
@@ -1240,7 +1175,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-ocaml-interface-combobulate-navigate-previous--signature_attributes-1 ()
  "Test `combobulate' with `fixtures/sibling/signature_attributes.mli' in `tuareg-interface-mode' mode."
 	     (combobulate-test
@@ -1253,7 +1187,6 @@
 	       (combobulate-test-go-to-marker 1)
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
-
 
 (ert-deftest combobulate-test-go-combobulate-navigate-previous--switch-1 ()
  "Test `combobulate' with `fixtures/sibling/switch.go' in `go-ts-mode' mode."
@@ -1268,7 +1201,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-go-combobulate-navigate-previous--type-declaration-1 ()
  "Test `combobulate' with `fixtures/sibling/type-declaration.go' in `go-ts-mode' mode."
 	     (combobulate-test
@@ -1278,7 +1210,6 @@
 	       (combobulate-test-go-to-marker 1)
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
-
 
 (ert-deftest combobulate-test-ocaml-interface-combobulate-navigate-previous--type_and_bindings-1 ()
  "Test `combobulate' with `fixtures/sibling/type_and_bindings.mli' in `tuareg-interface-mode' mode."
@@ -1292,7 +1223,6 @@
 	       (combobulate-test-go-to-marker 1)
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
-
 
 (ert-deftest combobulate-test-ocaml-combobulate-navigate-previous--type_declarations-1 ()
  "Test `combobulate' with `fixtures/sibling/type_declarations.ml' in `tuareg-mode' mode."
@@ -1346,7 +1276,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-ocaml-interface-combobulate-navigate-previous--type_declarations-1 ()
  "Test `combobulate' with `fixtures/sibling/type_declarations.mli' in `tuareg-interface-mode' mode."
 	     (combobulate-test
@@ -1399,7 +1328,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-ocaml-combobulate-navigate-previous--type_expressions-1 ()
  "Test `combobulate' with `fixtures/sibling/type_expressions.ml' in `tuareg-mode' mode."
 	     (combobulate-test
@@ -1427,7 +1355,6 @@
 	       (combobulate-test-go-to-marker 1)
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
-
 
 (ert-deftest combobulate-test-ocaml-interface-combobulate-navigate-previous--type_expressions-1 ()
  "Test `combobulate' with `fixtures/sibling/type_expressions.mli' in `tuareg-interface-mode' mode."
@@ -1457,7 +1384,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-ocaml-combobulate-navigate-previous--type_records-1 ()
  "Test `combobulate' with `fixtures/sibling/type_records.ml' in `tuareg-mode' mode."
 	     (combobulate-test
@@ -1473,7 +1399,6 @@
 	       (combobulate-test-go-to-marker 1)
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
-
 
 (ert-deftest combobulate-test-ocaml-interface-combobulate-navigate-previous--type_records-1 ()
  "Test `combobulate' with `fixtures/sibling/type_records.mli' in `tuareg-interface-mode' mode."
@@ -1491,7 +1416,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-toml-combobulate-navigate-previous--value-array-1 ()
  "Test `combobulate' with `fixtures/sibling/value-array.toml' in `toml-ts-mode' mode."
 	     (combobulate-test
@@ -1504,7 +1428,6 @@
 	       (combobulate-test-go-to-marker 1)
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
-
 
 (ert-deftest combobulate-test-ocaml-combobulate-navigate-previous--value_expressions-1 ()
  "Test `combobulate' with `fixtures/sibling/value_expressions.ml' in `tuareg-mode' mode."
@@ -1657,7 +1580,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-ocaml-interface-combobulate-navigate-previous--value_expressions-1 ()
  "Test `combobulate' with `fixtures/sibling/value_expressions.mli' in `tuareg-interface-mode' mode."
 	     (combobulate-test
@@ -1788,7 +1710,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-ocaml-interface-combobulate-navigate-previous--value_specification-1 ()
  "Test `combobulate' with `fixtures/sibling/value_specification.mli' in `tuareg-interface-mode' mode."
 	     (combobulate-test
@@ -1826,7 +1747,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-go-combobulate-navigate-previous--var-declaration-1 ()
  "Test `combobulate' with `fixtures/sibling/var-declaration.go' in `go-ts-mode' mode."
 	     (combobulate-test
@@ -1837,7 +1757,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-yaml-combobulate-navigate-previous--yaml-block-mapping-pairs-1 ()
  "Test `combobulate' with `fixtures/sibling/yaml-block-mapping-pairs.yaml' in `yaml-ts-mode' mode."
 	     (combobulate-test
@@ -1847,7 +1766,6 @@
 	       (combobulate-test-go-to-marker 1)
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
-
 
 (ert-deftest combobulate-test-yaml-combobulate-navigate-previous--yaml-block-mapping-1 ()
  "Test `combobulate' with `fixtures/sibling/yaml-block-mapping.yaml' in `yaml-ts-mode' mode."
@@ -1862,7 +1780,6 @@
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
 
-
 (ert-deftest combobulate-test-yaml-combobulate-navigate-previous--yaml-sequence-1 ()
  "Test `combobulate' with `fixtures/sibling/yaml-sequence.yaml' in `yaml-ts-mode' mode."
 	     (combobulate-test
@@ -1872,309 +1789,3 @@
 	       (combobulate-test-go-to-marker 1)
 	       (combobulate-navigate-previous)
 	       (combobulate-test-assert-at-marker 1)))
-
-
-(ert-deftest
-    combobulate-test-bash-combobulate-navigate-previous--bash-arguments-1
-    ()
-
-  "Test `combobulate' with `fixtures/sibling/bash-arguments.sh' in `bash-ts-mode' mode."
-  (combobulate-test
-      (:language bash :mode bash-ts-mode :fixture
-		 "fixtures/sibling/bash-arguments.sh")
-    :tags
-    '(combobulate bash bash-ts-mode combobulate-navigate-previous)
-    combobulate-test-elixir-combobulate-navigate-previous--elixir-args-1
-    ()
-
-  "Test `combobulate' with `fixtures/sibling/elixir-args.ex' in `elixir-ts-mode' mode."
-  (combobulate-test
-      (:language elixir :mode elixir-ts-mode :fixture
-		 "fixtures/sibling/elixir-args.ex")
-    :tags
-    '(combobulate elixir elixir-ts-mode combobulate-navigate-previous)
-    combobulate-test-erlang-combobulate-navigate-previous--erlang-args-1
-    ()
-
-  "Test `combobulate' with `fixtures/sibling/erlang-args.erl' in `erlang-ts-mode' mode."
-  (combobulate-test
-      (:language erlang :mode erlang-ts-mode :fixture
-		 "fixtures/sibling/erlang-args.erl")
-    :tags
-    '(combobulate erlang erlang-ts-mode combobulate-navigate-previous)
-    (combobulate-test-go-to-marker 2) (combobulate-navigate-previous)
-    (combobulate-test-assert-at-marker 1)
-    (combobulate-test-go-to-marker 1) (combobulate-navigate-previous)
-    (combobulate-test-assert-at-marker 1)))
-
-
-(ert-deftest
-    combobulate-test-elixir-combobulate-navigate-previous--elixir-body-1
-    ()
-
-  "Test `combobulate' with `fixtures/sibling/elixir-body.ex' in `elixir-ts-mode' mode."
-  (combobulate-test
-      (:language elixir :mode elixir-ts-mode :fixture
-		 "fixtures/sibling/elixir-body.ex")
-    :tags
-    '(combobulate elixir elixir-ts-mode combobulate-navigate-previous)
-    combobulate-test-erlang-combobulate-navigate-previous--erlang-body-1
-    ()
-
-  "Test `combobulate' with `fixtures/sibling/erlang-body.erl' in `erlang-ts-mode' mode."
-  (combobulate-test
-      (:language erlang :mode erlang-ts-mode :fixture
-		 "fixtures/sibling/erlang-body.erl")
-    :tags
-    '(combobulate erlang erlang-ts-mode combobulate-navigate-previous)
-    (combobulate-test-go-to-marker 2) (combobulate-navigate-previous)
-    (combobulate-test-assert-at-marker 1)
-    (combobulate-test-go-to-marker 1) (combobulate-navigate-previous)
-    (combobulate-test-assert-at-marker 1)))
-
-
-(ert-deftest
-    combobulate-test-elixir-combobulate-navigate-previous--elixir-keywords-1
-    ()
-
-  "Test `combobulate' with `fixtures/sibling/elixir-keywords.ex' in `elixir-ts-mode' mode."
-  (combobulate-test
-      (:language elixir :mode elixir-ts-mode :fixture
-		 "fixtures/sibling/elixir-keywords.ex")
-    :tags
-    '(combobulate elixir elixir-ts-mode combobulate-navigate-previous)
-    combobulate-test-erlang-combobulate-navigate-previous--erlang-clauses-1
-    ()
-
-  "Test `combobulate' with `fixtures/sibling/erlang-clauses.erl' in `erlang-ts-mode' mode."
-  (combobulate-test
-      (:language erlang :mode erlang-ts-mode :fixture
-		 "fixtures/sibling/erlang-clauses.erl")
-    :tags
-    '(combobulate erlang erlang-ts-mode combobulate-navigate-previous)
-    (combobulate-test-go-to-marker 2) (combobulate-navigate-previous)
-    (combobulate-test-assert-at-marker 1)
-    (combobulate-test-go-to-marker 1) (combobulate-navigate-previous)
-    (combobulate-test-assert-at-marker 1)))
-
-
-(ert-deftest
-    combobulate-test-elixir-combobulate-navigate-previous--elixir-list-1
-    ()
-
-  "Test `combobulate' with `fixtures/sibling/elixir-list.ex' in `elixir-ts-mode' mode."
-  (combobulate-test
-      (:language elixir :mode elixir-ts-mode :fixture
-		 "fixtures/sibling/elixir-list.ex")
-    :tags
-    '(combobulate elixir elixir-ts-mode combobulate-navigate-previous)
-    combobulate-test-erlang-combobulate-navigate-previous--erlang-export-1
-    ()
-
-  "Test `combobulate' with `fixtures/sibling/erlang-export.erl' in `erlang-ts-mode' mode."
-  (combobulate-test
-      (:language erlang :mode erlang-ts-mode :fixture
-		 "fixtures/sibling/erlang-export.erl")
-    :tags
-    '(combobulate erlang erlang-ts-mode combobulate-navigate-previous)
-    (combobulate-test-go-to-marker 2) (combobulate-navigate-previous)
-    (combobulate-test-assert-at-marker 1)
-    (combobulate-test-go-to-marker 1) (combobulate-navigate-previous)
-    (combobulate-test-assert-at-marker 1)))
-
-
-(ert-deftest
-    combobulate-test-elixir-combobulate-navigate-previous--elixir-module-1
-    ()
-
-  "Test `combobulate' with `fixtures/sibling/elixir-module.ex' in `elixir-ts-mode' mode."
-  (combobulate-test
-      (:language elixir :mode elixir-ts-mode :fixture
-		 "fixtures/sibling/elixir-module.ex")
-    :tags
-    '(combobulate elixir elixir-ts-mode combobulate-navigate-previous)
-    (combobulate-test-go-to-marker 4) (combobulate-navigate-previous)
-    (combobulate-test-assert-at-marker 3)
-    (combobulate-test-go-to-marker 3) (combobulate-navigate-previous)
-    (combobulate-test-assert-at-marker 2)
-    combobulate-test-erlang-combobulate-navigate-previous--erlang-forms-1
-    ()
-
-  "Test `combobulate' with `fixtures/sibling/erlang-forms.erl' in `erlang-ts-mode' mode."
-  (combobulate-test
-      (:language erlang :mode erlang-ts-mode :fixture
-		 "fixtures/sibling/erlang-forms.erl")
-    :tags
-    '(combobulate erlang erlang-ts-mode combobulate-navigate-previous)
-    (combobulate-test-go-to-marker 2) (combobulate-navigate-previous)
-    (combobulate-test-assert-at-marker 1)
-    (combobulate-test-go-to-marker 1) (combobulate-navigate-previous)
-    (combobulate-test-assert-at-marker 1)))
-
-
-(ert-deftest
-    combobulate-test-bash-combobulate-navigate-previous--bash-array-1
-    ()
-
-  "Test `combobulate' with `fixtures/sibling/bash-array.sh' in `bash-ts-mode' mode."
-  (combobulate-test
-      (:language bash :mode bash-ts-mode :fixture
-		 "fixtures/sibling/bash-array.sh")
-    :tags
-    '(combobulate bash bash-ts-mode combobulate-navigate-previous)
-    combobulate-test-elixir-combobulate-navigate-previous--elixir-test-1
-    ()
-
-  "Test `combobulate' with `fixtures/sibling/elixir-test.exs' in `elixir-ts-mode' mode."
-  (combobulate-test
-      (:language elixir :mode elixir-ts-mode :fixture
-		 "fixtures/sibling/elixir-test.exs")
-    :tags
-    '(combobulate elixir elixir-ts-mode combobulate-navigate-previous)
-    combobulate-test-erlang-combobulate-navigate-previous--erlang-list-1
-    ()
-
-  "Test `combobulate' with `fixtures/sibling/erlang-list.erl' in `erlang-ts-mode' mode."
-  (combobulate-test
-      (:language erlang :mode erlang-ts-mode :fixture
-		 "fixtures/sibling/erlang-list.erl")
-    :tags
-    '(combobulate erlang erlang-ts-mode combobulate-navigate-previous)
-    (combobulate-test-go-to-marker 2) (combobulate-navigate-previous)
-    (combobulate-test-assert-at-marker 1)
-    (combobulate-test-go-to-marker 1) (combobulate-navigate-previous)
-    (combobulate-test-assert-at-marker 1)))
-
-
-(ert-deftest
-    combobulate-test-bash-combobulate-navigate-previous--bash-case-items-1
-    ()
-
-  "Test `combobulate' with `fixtures/sibling/bash-case-items.sh' in `bash-ts-mode' mode."
-  (combobulate-test
-      (:language bash :mode bash-ts-mode :fixture
-		 "fixtures/sibling/bash-case-items.sh")
-    :tags
-    '(combobulate bash bash-ts-mode combobulate-navigate-previous)
-    combobulate-test-elixir-combobulate-navigate-previous--elixir-with-1
-    ()
-
-  "Test `combobulate' with `fixtures/sibling/elixir-with.ex' in `elixir-ts-mode' mode."
-  (combobulate-test
-      (:language elixir :mode elixir-ts-mode :fixture
-		 "fixtures/sibling/elixir-with.ex")
-    :tags
-    '(combobulate elixir elixir-ts-mode combobulate-navigate-previous)
-    (combobulate-test-go-to-marker 2) (combobulate-navigate-previous)
-    (combobulate-test-assert-at-marker 1)
-    (combobulate-test-go-to-marker 1) (combobulate-navigate-previous)
-    (combobulate-test-assert-at-marker 1)))
-
-
-(ert-deftest
-    combobulate-test-bash-combobulate-navigate-previous--bash-elif-body-1
-    ()
-
-  "Test `combobulate' with `fixtures/sibling/bash-elif-body.sh' in `bash-ts-mode' mode."
-  (combobulate-test
-      (:language bash :mode bash-ts-mode :fixture
-		 "fixtures/sibling/bash-elif-body.sh")
-    :tags
-    '(combobulate bash bash-ts-mode combobulate-navigate-previous)
-    (combobulate-test-go-to-marker 1) (combobulate-navigate-previous)
-    (combobulate-test-assert-at-marker 1)))
-
-
-(ert-deftest
-    combobulate-test-bash-combobulate-navigate-previous--bash-function-body-1
-    ()
-
-  "Test `combobulate' with `fixtures/sibling/bash-function-body.sh' in `bash-ts-mode' mode."
-  (combobulate-test
-      (:language bash :mode bash-ts-mode :fixture
-		 "fixtures/sibling/bash-function-body.sh")
-    :tags
-    '(combobulate bash bash-ts-mode combobulate-navigate-previous)
-    combobulate-test-heex-combobulate-navigate-previous--heex-attributes-1
-    ()
-
-  "Test `combobulate' with `fixtures/sibling/heex-attributes.heex' in `heex-ts-mode' mode."
-  (combobulate-test
-      (:language heex :mode heex-ts-mode :fixture
-		 "fixtures/sibling/heex-attributes.heex")
-    :tags
-    '(combobulate heex heex-ts-mode combobulate-navigate-previous)
-    (combobulate-test-go-to-marker 2) (combobulate-navigate-previous)
-    (combobulate-test-assert-at-marker 1)
-    (combobulate-test-go-to-marker 1) (combobulate-navigate-previous)
-    (combobulate-test-assert-at-marker 1)))
-
-
-(ert-deftest
-    combobulate-test-bash-combobulate-navigate-previous--bash-if-body-1
-    ()
-
-  "Test `combobulate' with `fixtures/sibling/bash-if-body.sh' in `bash-ts-mode' mode."
-  (combobulate-test
-      (:language bash :mode bash-ts-mode :fixture
-		 "fixtures/sibling/bash-if-body.sh")
-    :tags
-    '(combobulate bash bash-ts-mode combobulate-navigate-previous)
-    (combobulate-test-go-to-marker 2) (combobulate-navigate-previous)
-    (combobulate-test-assert-at-marker 1)
-    (combobulate-test-go-to-marker 1) (combobulate-navigate-previous)
-    (combobulate-test-assert-at-marker 1)))
-
-
-(ert-deftest
-    combobulate-test-bash-combobulate-navigate-previous--bash-loop-body-1
-    ()
-
-  "Test `combobulate' with `fixtures/sibling/bash-loop-body.sh' in `bash-ts-mode' mode."
-  (combobulate-test
-      (:language bash :mode bash-ts-mode :fixture
-		 "fixtures/sibling/bash-loop-body.sh")
-    :tags
-    '(combobulate bash bash-ts-mode combobulate-navigate-previous)
-    (combobulate-test-go-to-marker 2) (combobulate-navigate-previous)
-    (combobulate-test-assert-at-marker 1)
-    (combobulate-test-go-to-marker 1) (combobulate-navigate-previous)
-    (combobulate-test-assert-at-marker 1)))
-
-
-(ert-deftest
-    combobulate-test-bash-combobulate-navigate-previous--bash-statements-1
-    ()
-
-  "Test `combobulate' with `fixtures/sibling/bash-statements.sh' in `bash-ts-mode' mode."
-  (combobulate-test
-      (:language bash :mode bash-ts-mode :fixture
-		 "fixtures/sibling/bash-statements.sh")
-    :tags
-    '(combobulate bash bash-ts-mode combobulate-navigate-previous)
-    (combobulate-test-go-to-marker 3) (combobulate-navigate-previous)
-    (combobulate-test-assert-at-marker 2)
-    combobulate-test-heex-combobulate-navigate-previous--heex-elements-1
-    ()
-
-  "Test `combobulate' with `fixtures/sibling/heex-elements.heex' in `heex-ts-mode' mode."
-  (combobulate-test
-      (:language heex :mode heex-ts-mode :fixture
-		 "fixtures/sibling/heex-elements.heex")
-    :tags
-    '(combobulate heex heex-ts-mode combobulate-navigate-previous)
-    combobulate-test-erlang-combobulate-navigate-previous--erlang-map-1
-    ()
-
-  "Test `combobulate' with `fixtures/sibling/erlang-map.erl' in `erlang-ts-mode' mode."
-  (combobulate-test
-      (:language erlang :mode erlang-ts-mode :fixture
-		 "fixtures/sibling/erlang-map.erl")
-    :tags
-    '(combobulate erlang erlang-ts-mode combobulate-navigate-previous)
-    (combobulate-test-go-to-marker 2) (combobulate-navigate-previous)
-    (combobulate-test-assert-at-marker 1)
-    (combobulate-test-go-to-marker 1) (combobulate-navigate-previous)
-    (combobulate-test-assert-at-marker 1)))
-
-

@@ -3,7 +3,6 @@
 (require 'combobulate)
 
 (require 'combobulate-test-prelude)
-
 (ert-deftest combobulate-test-tsx-combobulate-envelope-expand-instructions-tsx-choicestar-with-complex-missing-field-consequence-component-1 ()
  "Test `combobulate' with `fixtures/envelope/component.tsx' in `tsx-ts-mode' mode."
 	     (combobulate-test
@@ -39,7 +38,6 @@
 			   (combobulate-test-go-to-marker 1)
 			   (combobulate-envelope-expand-instructions instructions)
 			   (combobulate-compare-action-with-fixture-delta "./fixture-deltas/combobulate-envelope-expand-instructions-tsx/component.tsx[choicestar-with-complex-missing-field-consequence@1~after].tsx")))))))
-
 
 (ert-deftest combobulate-test-tsx-combobulate-envelope-expand-instructions-tsx-choicestar-with-complex-missing-field-alt-component-1 ()
  "Test `combobulate' with `fixtures/envelope/component.tsx' in `tsx-ts-mode' mode."
@@ -78,7 +76,6 @@
 			   (combobulate-envelope-expand-instructions instructions)
 			   (combobulate-compare-action-with-fixture-delta "./fixture-deltas/combobulate-envelope-expand-instructions-tsx/component.tsx[choicestar-with-complex-missing-field-alt@1~after].tsx")))))))
 
-
 (ert-deftest combobulate-test-tsx-combobulate-envelope-expand-instructions-tsx-choice-simple-0-component-1 ()
  "Test `combobulate' with `fixtures/envelope/component.tsx' in `tsx-ts-mode' mode."
 	     (combobulate-test
@@ -105,7 +102,6 @@
 			   (combobulate-envelope-expand-instructions instructions)
 			   (combobulate-compare-action-with-fixture-delta "./fixture-deltas/combobulate-envelope-expand-instructions-tsx/component.tsx[choice-simple-0@1~after].tsx")))))))
 
-
 (ert-deftest combobulate-test-tsx-combobulate-envelope-expand-instructions-tsx-choice-simple-1-component-1 ()
  "Test `combobulate' with `fixtures/envelope/component.tsx' in `tsx-ts-mode' mode."
 	     (combobulate-test
@@ -131,7 +127,6 @@
 			   (combobulate-test-go-to-marker 1)
 			   (combobulate-envelope-expand-instructions instructions)
 			   (combobulate-compare-action-with-fixture-delta "./fixture-deltas/combobulate-envelope-expand-instructions-tsx/component.tsx[choice-simple-1@1~after].tsx")))))))
-
 
 (ert-deftest combobulate-test-tsx-combobulate-envelope-expand-instructions-tsx-choice-has-choice-0-component-1 ()
  "Test `combobulate' with `fixtures/envelope/component.tsx' in `tsx-ts-mode' mode."
@@ -161,7 +156,6 @@
 			   (combobulate-envelope-expand-instructions instructions)
 			   (combobulate-compare-action-with-fixture-delta "./fixture-deltas/combobulate-envelope-expand-instructions-tsx/component.tsx[choice-has-choice-0@1~after].tsx")))))))
 
-
 (ert-deftest combobulate-test-tsx-combobulate-envelope-expand-instructions-tsx-choice-has-choice-1-component-1 ()
  "Test `combobulate' with `fixtures/envelope/component.tsx' in `tsx-ts-mode' mode."
 	     (combobulate-test
@@ -189,7 +183,6 @@
 			   (combobulate-test-go-to-marker 1)
 			   (combobulate-envelope-expand-instructions instructions)
 			   (combobulate-compare-action-with-fixture-delta "./fixture-deltas/combobulate-envelope-expand-instructions-tsx/component.tsx[choice-has-choice-1@1~after].tsx")))))))
-
 
 (ert-deftest combobulate-test-tsx-combobulate-envelope-expand-instructions-tsx-choice-has-choice-2-component-1 ()
  "Test `combobulate' with `fixtures/envelope/component.tsx' in `tsx-ts-mode' mode."
@@ -219,7 +212,6 @@
 			   (combobulate-envelope-expand-instructions instructions)
 			   (combobulate-compare-action-with-fixture-delta "./fixture-deltas/combobulate-envelope-expand-instructions-tsx/component.tsx[choice-has-choice-2@1~after].tsx")))))))
 
-
 (ert-deftest combobulate-test-tsx-combobulate-envelope-expand-instructions-tsx-choice-has-choice-3-component-1 ()
  "Test `combobulate' with `fixtures/envelope/component.tsx' in `tsx-ts-mode' mode."
 	     (combobulate-test
@@ -247,5 +239,3 @@
 			   (combobulate-test-go-to-marker 1)
 			   (combobulate-envelope-expand-instructions instructions)
 			   (combobulate-compare-action-with-fixture-delta "./fixture-deltas/combobulate-envelope-expand-instructions-tsx/component.tsx[choice-has-choice-3@1~after].tsx")))))))
-
-

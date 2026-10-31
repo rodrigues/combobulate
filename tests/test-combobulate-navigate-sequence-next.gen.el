@@ -3,7 +3,6 @@
 (require 'combobulate)
 
 (require 'combobulate-test-prelude)
-
 (ert-deftest combobulate-test-html-combobulate-navigate-sequence-next--element-2 ()
  "Test `combobulate' with `fixtures/sequence/element.html' in `html-ts-mode' mode."
 	     (combobulate-test
@@ -14,7 +13,6 @@
 		(progn
 		  (combobulate-navigate-sequence-next)))))
 
-
 (ert-deftest combobulate-test-tsx-combobulate-navigate-sequence-next--jsx-2 ()
  "Test `combobulate' with `fixtures/sequence/jsx.tsx' in `tsx-ts-mode' mode."
 	     (combobulate-test
@@ -24,5 +22,3 @@
 	       (should-error
 		(progn
 		  (combobulate-navigate-sequence-next)))))
-
-

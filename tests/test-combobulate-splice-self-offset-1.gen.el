@@ -3,7 +3,6 @@
 (require 'combobulate)
 
 (require 'combobulate-test-prelude)
-
 (ert-deftest combobulate-test-go-combobulate-splice-self-offset-1--choice-1-for-loop-body-1 ()
  "Test `combobulate' with `fixtures/splice/choice-1-for-loop-body.go' in `go-ts-mode' mode."
 	     (combobulate-test
@@ -16,7 +15,6 @@
 		    '(1 1 1 1 1 1 1))
 		 (combobulate-splice-self))
 	       (combobulate-compare-action-with-fixture-delta "./fixture-deltas/combobulate-splice-self-offset-1/choice-1-for-loop-body.go[@1~after].go")))
-
 
 (ert-deftest combobulate-test-go-combobulate-splice-self-offset-1--choice-1-inside-case-1 ()
  "Test `combobulate' with `fixtures/splice/choice-1-inside-case.go' in `go-ts-mode' mode."
@@ -31,7 +29,6 @@
 		 (combobulate-splice-self))
 	       (combobulate-compare-action-with-fixture-delta "./fixture-deltas/combobulate-splice-self-offset-1/choice-1-inside-case.go[@1~after].go")))
 
-
 (ert-deftest combobulate-test-go-combobulate-splice-self-offset-1--choice-1-switch-1 ()
  "Test `combobulate' with `fixtures/splice/choice-1-switch.go' in `go-ts-mode' mode."
 	     (combobulate-test
@@ -44,5 +41,3 @@
 		    '(1 1 1 1 1 1 1))
 		 (combobulate-splice-self))
 	       (combobulate-compare-action-with-fixture-delta "./fixture-deltas/combobulate-splice-self-offset-1/choice-1-switch.go[@1~after].go")))
-
-
