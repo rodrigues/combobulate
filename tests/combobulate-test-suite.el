@@ -289,6 +289,7 @@ doesn't exist."
                                         ("\\.sh\\'" . bash-ts-mode)
                                         ("\\.exs?\\'" . elixir-ts-mode)
                                         ("\\.heex\\'" . heex-ts-mode)
+                                        ("\\.erl\\'" . erlang-ts-mode)
                                         ("\\.mli\\'" . tuareg-interface-mode)
                                         ("\\.ml\\'" . tuareg-mode))
                                       auto-mode-alist))

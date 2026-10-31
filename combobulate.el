@@ -92,6 +92,8 @@
 (require 'combobulate-elixir)
 ;;;###autoload
 (require 'combobulate-heex)
+;;;###autoload
+(require 'combobulate-erlang)
 ;;; end language support
 
 (provide 'combobulate)

@@ -5585,6 +5585,39 @@
       (:language elixir :mode elixir-ts-mode :fixture
 		 "fixtures/sibling/elixir-args.ex")
     :tags '(combobulate elixir elixir-ts-mode combobulate-drag-up)
+    combobulate-test-erlang-combobulate-drag-up--erlang-args-3 ()
+
+  "Test `combobulate' with `fixtures/sibling/erlang-args.erl' in `erlang-ts-mode' mode."
+  (combobulate-test
+      (:language erlang :mode erlang-ts-mode :fixture
+		 "fixtures/sibling/erlang-args.erl")
+    :tags '(combobulate erlang erlang-ts-mode combobulate-drag-up)
+    (combobulate-test-go-to-marker 3) (combobulate-drag-up)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-up/erlang-args.erl[@3~after].erl")))
+
+
+(ert-deftest
+    combobulate-test-erlang-combobulate-drag-up--erlang-args-2 ()
+
+  "Test `combobulate' with `fixtures/sibling/erlang-args.erl' in `erlang-ts-mode' mode."
+  (combobulate-test
+      (:language erlang :mode erlang-ts-mode :fixture
+		 "fixtures/sibling/erlang-args.erl")
+    :tags '(combobulate erlang erlang-ts-mode combobulate-drag-up)
+    (combobulate-test-go-to-marker 2) (combobulate-drag-up)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-up/erlang-args.erl[@2~after].erl")))
+
+
+(ert-deftest
+    combobulate-test-erlang-combobulate-drag-up--erlang-args-1 ()
+
+  "Test `combobulate' with `fixtures/sibling/erlang-args.erl' in `erlang-ts-mode' mode."
+  (combobulate-test
+      (:language erlang :mode erlang-ts-mode :fixture
+		 "fixtures/sibling/erlang-args.erl")
+    :tags '(combobulate erlang erlang-ts-mode combobulate-drag-up)
     (should-error
      (progn
        (combobulate-test-go-to-marker 1) (combobulate-drag-up)
@@ -5626,6 +5659,43 @@
       (:language elixir :mode elixir-ts-mode :fixture
 		 "fixtures/sibling/elixir-body.ex")
     :tags '(combobulate elixir elixir-ts-mode combobulate-drag-up)
+	"./fixture-deltas/combobulate-drag-up/erlang-args.erl[@1~after].erl")))))
+
+
+(ert-deftest
+    combobulate-test-erlang-combobulate-drag-up--erlang-body-3 ()
+
+  "Test `combobulate' with `fixtures/sibling/erlang-body.erl' in `erlang-ts-mode' mode."
+  (combobulate-test
+      (:language erlang :mode erlang-ts-mode :fixture
+		 "fixtures/sibling/erlang-body.erl")
+    :tags '(combobulate erlang erlang-ts-mode combobulate-drag-up)
+    (combobulate-test-go-to-marker 3) (combobulate-drag-up)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-up/erlang-body.erl[@3~after].erl")))
+
+
+(ert-deftest
+    combobulate-test-erlang-combobulate-drag-up--erlang-body-2 ()
+
+  "Test `combobulate' with `fixtures/sibling/erlang-body.erl' in `erlang-ts-mode' mode."
+  (combobulate-test
+      (:language erlang :mode erlang-ts-mode :fixture
+		 "fixtures/sibling/erlang-body.erl")
+    :tags '(combobulate erlang erlang-ts-mode combobulate-drag-up)
+    (combobulate-test-go-to-marker 2) (combobulate-drag-up)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-up/erlang-body.erl[@2~after].erl")))
+
+
+(ert-deftest
+    combobulate-test-erlang-combobulate-drag-up--erlang-body-1 ()
+
+  "Test `combobulate' with `fixtures/sibling/erlang-body.erl' in `erlang-ts-mode' mode."
+  (combobulate-test
+      (:language erlang :mode erlang-ts-mode :fixture
+		 "fixtures/sibling/erlang-body.erl")
+    :tags '(combobulate erlang erlang-ts-mode combobulate-drag-up)
     (should-error
      (progn
        (combobulate-test-go-to-marker 1) (combobulate-drag-up)
@@ -5670,6 +5740,46 @@
       (:language elixir :mode elixir-ts-mode :fixture
 		 "fixtures/sibling/elixir-keywords.ex")
     :tags '(combobulate elixir elixir-ts-mode combobulate-drag-up)
+	"./fixture-deltas/combobulate-drag-up/erlang-body.erl[@1~after].erl")))))
+
+
+(ert-deftest
+    combobulate-test-erlang-combobulate-drag-up--erlang-clauses-3
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/erlang-clauses.erl' in `erlang-ts-mode' mode."
+  (combobulate-test
+      (:language erlang :mode erlang-ts-mode :fixture
+		 "fixtures/sibling/erlang-clauses.erl")
+    :tags '(combobulate erlang erlang-ts-mode combobulate-drag-up)
+    (combobulate-test-go-to-marker 3) (combobulate-drag-up)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-up/erlang-clauses.erl[@3~after].erl")))
+
+
+(ert-deftest
+    combobulate-test-erlang-combobulate-drag-up--erlang-clauses-2
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/erlang-clauses.erl' in `erlang-ts-mode' mode."
+  (combobulate-test
+      (:language erlang :mode erlang-ts-mode :fixture
+		 "fixtures/sibling/erlang-clauses.erl")
+    :tags '(combobulate erlang erlang-ts-mode combobulate-drag-up)
+    (combobulate-test-go-to-marker 2) (combobulate-drag-up)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-up/erlang-clauses.erl[@2~after].erl")))
+
+
+(ert-deftest
+    combobulate-test-erlang-combobulate-drag-up--erlang-clauses-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/erlang-clauses.erl' in `erlang-ts-mode' mode."
+  (combobulate-test
+      (:language erlang :mode erlang-ts-mode :fixture
+		 "fixtures/sibling/erlang-clauses.erl")
+    :tags '(combobulate erlang erlang-ts-mode combobulate-drag-up)
     (should-error
      (progn
        (combobulate-test-go-to-marker 1) (combobulate-drag-up)
@@ -5711,6 +5821,46 @@
       (:language elixir :mode elixir-ts-mode :fixture
 		 "fixtures/sibling/elixir-list.ex")
     :tags '(combobulate elixir elixir-ts-mode combobulate-drag-up)
+	"./fixture-deltas/combobulate-drag-up/erlang-clauses.erl[@1~after].erl")))))
+
+
+(ert-deftest
+    combobulate-test-erlang-combobulate-drag-up--erlang-export-3
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/erlang-export.erl' in `erlang-ts-mode' mode."
+  (combobulate-test
+      (:language erlang :mode erlang-ts-mode :fixture
+		 "fixtures/sibling/erlang-export.erl")
+    :tags '(combobulate erlang erlang-ts-mode combobulate-drag-up)
+    (combobulate-test-go-to-marker 3) (combobulate-drag-up)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-up/erlang-export.erl[@3~after].erl")))
+
+
+(ert-deftest
+    combobulate-test-erlang-combobulate-drag-up--erlang-export-2
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/erlang-export.erl' in `erlang-ts-mode' mode."
+  (combobulate-test
+      (:language erlang :mode erlang-ts-mode :fixture
+		 "fixtures/sibling/erlang-export.erl")
+    :tags '(combobulate erlang erlang-ts-mode combobulate-drag-up)
+    (combobulate-test-go-to-marker 2) (combobulate-drag-up)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-up/erlang-export.erl[@2~after].erl")))
+
+
+(ert-deftest
+    combobulate-test-erlang-combobulate-drag-up--erlang-export-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/erlang-export.erl' in `erlang-ts-mode' mode."
+  (combobulate-test
+      (:language erlang :mode erlang-ts-mode :fixture
+		 "fixtures/sibling/erlang-export.erl")
+    :tags '(combobulate erlang erlang-ts-mode combobulate-drag-up)
     (should-error
      (progn
        (combobulate-test-go-to-marker 1) (combobulate-drag-up)
@@ -5783,6 +5933,43 @@
       (:language elixir :mode elixir-ts-mode :fixture
 		 "fixtures/sibling/elixir-module.ex")
     :tags '(combobulate elixir elixir-ts-mode combobulate-drag-up)
+	"./fixture-deltas/combobulate-drag-up/erlang-export.erl[@1~after].erl")))))
+
+
+(ert-deftest
+    combobulate-test-erlang-combobulate-drag-up--erlang-forms-3 ()
+
+  "Test `combobulate' with `fixtures/sibling/erlang-forms.erl' in `erlang-ts-mode' mode."
+  (combobulate-test
+      (:language erlang :mode erlang-ts-mode :fixture
+		 "fixtures/sibling/erlang-forms.erl")
+    :tags '(combobulate erlang erlang-ts-mode combobulate-drag-up)
+    (combobulate-test-go-to-marker 3) (combobulate-drag-up)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-up/erlang-forms.erl[@3~after].erl")))
+
+
+(ert-deftest
+    combobulate-test-erlang-combobulate-drag-up--erlang-forms-2 ()
+
+  "Test `combobulate' with `fixtures/sibling/erlang-forms.erl' in `erlang-ts-mode' mode."
+  (combobulate-test
+      (:language erlang :mode erlang-ts-mode :fixture
+		 "fixtures/sibling/erlang-forms.erl")
+    :tags '(combobulate erlang erlang-ts-mode combobulate-drag-up)
+    (combobulate-test-go-to-marker 2) (combobulate-drag-up)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-up/erlang-forms.erl[@2~after].erl")))
+
+
+(ert-deftest
+    combobulate-test-erlang-combobulate-drag-up--erlang-forms-1 ()
+
+  "Test `combobulate' with `fixtures/sibling/erlang-forms.erl' in `erlang-ts-mode' mode."
+  (combobulate-test
+      (:language erlang :mode erlang-ts-mode :fixture
+		 "fixtures/sibling/erlang-forms.erl")
+    :tags '(combobulate erlang erlang-ts-mode combobulate-drag-up)
     (should-error
      (progn
        (combobulate-test-go-to-marker 1) (combobulate-drag-up)
@@ -5861,6 +6048,43 @@
       (:language elixir :mode elixir-ts-mode :fixture
 		 "fixtures/sibling/elixir-test.exs")
     :tags '(combobulate elixir elixir-ts-mode combobulate-drag-up)
+	"./fixture-deltas/combobulate-drag-up/erlang-forms.erl[@1~after].erl")))))
+
+
+(ert-deftest
+    combobulate-test-erlang-combobulate-drag-up--erlang-list-3 ()
+
+  "Test `combobulate' with `fixtures/sibling/erlang-list.erl' in `erlang-ts-mode' mode."
+  (combobulate-test
+      (:language erlang :mode erlang-ts-mode :fixture
+		 "fixtures/sibling/erlang-list.erl")
+    :tags '(combobulate erlang erlang-ts-mode combobulate-drag-up)
+    (combobulate-test-go-to-marker 3) (combobulate-drag-up)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-up/erlang-list.erl[@3~after].erl")))
+
+
+(ert-deftest
+    combobulate-test-erlang-combobulate-drag-up--erlang-list-2 ()
+
+  "Test `combobulate' with `fixtures/sibling/erlang-list.erl' in `erlang-ts-mode' mode."
+  (combobulate-test
+      (:language erlang :mode erlang-ts-mode :fixture
+		 "fixtures/sibling/erlang-list.erl")
+    :tags '(combobulate erlang erlang-ts-mode combobulate-drag-up)
+    (combobulate-test-go-to-marker 2) (combobulate-drag-up)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-up/erlang-list.erl[@2~after].erl")))
+
+
+(ert-deftest
+    combobulate-test-erlang-combobulate-drag-up--erlang-list-1 ()
+
+  "Test `combobulate' with `fixtures/sibling/erlang-list.erl' in `erlang-ts-mode' mode."
+  (combobulate-test
+      (:language erlang :mode erlang-ts-mode :fixture
+		 "fixtures/sibling/erlang-list.erl")
+    :tags '(combobulate erlang erlang-ts-mode combobulate-drag-up)
     (should-error
      (progn
        (combobulate-test-go-to-marker 1) (combobulate-drag-up)
@@ -5942,6 +6166,43 @@
       (:language elixir :mode elixir-ts-mode :fixture
 		 "fixtures/sibling/elixir-with.ex")
     :tags '(combobulate elixir elixir-ts-mode combobulate-drag-up)
+	"./fixture-deltas/combobulate-drag-up/erlang-list.erl[@1~after].erl")))))
+
+
+(ert-deftest combobulate-test-erlang-combobulate-drag-up--erlang-map-3
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/erlang-map.erl' in `erlang-ts-mode' mode."
+  (combobulate-test
+      (:language erlang :mode erlang-ts-mode :fixture
+		 "fixtures/sibling/erlang-map.erl")
+    :tags '(combobulate erlang erlang-ts-mode combobulate-drag-up)
+    (combobulate-test-go-to-marker 3) (combobulate-drag-up)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-up/erlang-map.erl[@3~after].erl")))
+
+
+(ert-deftest combobulate-test-erlang-combobulate-drag-up--erlang-map-2
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/erlang-map.erl' in `erlang-ts-mode' mode."
+  (combobulate-test
+      (:language erlang :mode erlang-ts-mode :fixture
+		 "fixtures/sibling/erlang-map.erl")
+    :tags '(combobulate erlang erlang-ts-mode combobulate-drag-up)
+    (combobulate-test-go-to-marker 2) (combobulate-drag-up)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-up/erlang-map.erl[@2~after].erl")))
+
+
+(ert-deftest combobulate-test-erlang-combobulate-drag-up--erlang-map-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/erlang-map.erl' in `erlang-ts-mode' mode."
+  (combobulate-test
+      (:language erlang :mode erlang-ts-mode :fixture
+		 "fixtures/sibling/erlang-map.erl")
+    :tags '(combobulate erlang erlang-ts-mode combobulate-drag-up)
     (should-error
      (progn
        (combobulate-test-go-to-marker 1) (combobulate-drag-up)
@@ -6237,5 +6498,6 @@
        (combobulate-compare-action-with-fixture-delta
 	"./fixture-deltas/combobulate-drag-up/bash-statements.sh[@1~after].sh")))))
 	"./fixture-deltas/combobulate-drag-up/heex-elements.heex[@1~after].heex")))))
+	"./fixture-deltas/combobulate-drag-up/erlang-map.erl[@1~after].erl")))))
 
 
