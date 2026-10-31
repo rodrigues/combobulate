@@ -1883,6 +1883,79 @@
       (:language bash :mode bash-ts-mode :fixture
 		 "fixtures/sibling/bash-arguments.sh")
     :tags '(combobulate bash bash-ts-mode combobulate-navigate-next)
+    combobulate-test-elixir-combobulate-navigate-next--elixir-args-3
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/elixir-args.ex' in `elixir-ts-mode' mode."
+  (combobulate-test
+      (:language elixir :mode elixir-ts-mode :fixture
+		 "fixtures/sibling/elixir-args.ex")
+    :tags
+    '(combobulate elixir elixir-ts-mode combobulate-navigate-next)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 2)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 3)))
+
+
+(ert-deftest
+    combobulate-test-elixir-combobulate-navigate-next--elixir-body-3
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/elixir-body.ex' in `elixir-ts-mode' mode."
+  (combobulate-test
+      (:language elixir :mode elixir-ts-mode :fixture
+		 "fixtures/sibling/elixir-body.ex")
+    :tags
+    '(combobulate elixir elixir-ts-mode combobulate-navigate-next)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 2)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 3)))
+
+
+(ert-deftest
+    combobulate-test-elixir-combobulate-navigate-next--elixir-keywords-3
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/elixir-keywords.ex' in `elixir-ts-mode' mode."
+  (combobulate-test
+      (:language elixir :mode elixir-ts-mode :fixture
+		 "fixtures/sibling/elixir-keywords.ex")
+    :tags
+    '(combobulate elixir elixir-ts-mode combobulate-navigate-next)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 2)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 3)))
+
+
+(ert-deftest
+    combobulate-test-elixir-combobulate-navigate-next--elixir-list-3
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/elixir-list.ex' in `elixir-ts-mode' mode."
+  (combobulate-test
+      (:language elixir :mode elixir-ts-mode :fixture
+		 "fixtures/sibling/elixir-list.ex")
+    :tags
+    '(combobulate elixir elixir-ts-mode combobulate-navigate-next)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 2)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 3)))
+
+
+(ert-deftest
+    combobulate-test-elixir-combobulate-navigate-next--elixir-module-5
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/elixir-module.ex' in `elixir-ts-mode' mode."
+  (combobulate-test
+      (:language elixir :mode elixir-ts-mode :fixture
+		 "fixtures/sibling/elixir-module.ex")
+    :tags
+    '(combobulate elixir elixir-ts-mode combobulate-navigate-next)
     (combobulate-test-go-to-marker 1) (combobulate-navigate-next)
     (combobulate-test-assert-at-marker 2)
     (combobulate-test-go-to-marker 2) (combobulate-navigate-next)
@@ -1900,6 +1973,21 @@
       (:language bash :mode bash-ts-mode :fixture
 		 "fixtures/sibling/bash-array.sh")
     :tags '(combobulate bash bash-ts-mode combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 4)
+    (combobulate-test-go-to-marker 4) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 5)))
+
+
+(ert-deftest
+    combobulate-test-elixir-combobulate-navigate-next--elixir-test-3
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/elixir-test.exs' in `elixir-ts-mode' mode."
+  (combobulate-test
+      (:language elixir :mode elixir-ts-mode :fixture
+		 "fixtures/sibling/elixir-test.exs")
+    :tags
+    '(combobulate elixir elixir-ts-mode combobulate-navigate-next)
     (combobulate-test-go-to-marker 1) (combobulate-navigate-next)
     (combobulate-test-assert-at-marker 2)
     (combobulate-test-go-to-marker 2) (combobulate-navigate-next)
@@ -1915,6 +2003,15 @@
       (:language bash :mode bash-ts-mode :fixture
 		 "fixtures/sibling/bash-case-items.sh")
     :tags '(combobulate bash bash-ts-mode combobulate-navigate-next)
+    combobulate-test-elixir-combobulate-navigate-next--elixir-with-3
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/elixir-with.ex' in `elixir-ts-mode' mode."
+  (combobulate-test
+      (:language elixir :mode elixir-ts-mode :fixture
+		 "fixtures/sibling/elixir-with.ex")
+    :tags
+    '(combobulate elixir elixir-ts-mode combobulate-navigate-next)
     (combobulate-test-go-to-marker 1) (combobulate-navigate-next)
     (combobulate-test-assert-at-marker 2)
     (combobulate-test-go-to-marker 2) (combobulate-navigate-next)
@@ -1943,6 +2040,14 @@
       (:language bash :mode bash-ts-mode :fixture
 		 "fixtures/sibling/bash-function-body.sh")
     :tags '(combobulate bash bash-ts-mode combobulate-navigate-next)
+    combobulate-test-heex-combobulate-navigate-next--heex-attributes-3
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/heex-attributes.heex' in `heex-ts-mode' mode."
+  (combobulate-test
+      (:language heex :mode heex-ts-mode :fixture
+		 "fixtures/sibling/heex-attributes.heex")
+    :tags '(combobulate heex heex-ts-mode combobulate-navigate-next)
     (combobulate-test-go-to-marker 1) (combobulate-navigate-next)
     (combobulate-test-assert-at-marker 2)
     (combobulate-test-go-to-marker 2) (combobulate-navigate-next)
@@ -1958,6 +2063,14 @@
       (:language bash :mode bash-ts-mode :fixture
 		 "fixtures/sibling/bash-if-body.sh")
     :tags '(combobulate bash bash-ts-mode combobulate-navigate-next)
+    combobulate-test-heex-combobulate-navigate-next--heex-elements-3
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/heex-elements.heex' in `heex-ts-mode' mode."
+  (combobulate-test
+      (:language heex :mode heex-ts-mode :fixture
+		 "fixtures/sibling/heex-elements.heex")
+    :tags '(combobulate heex heex-ts-mode combobulate-navigate-next)
     (combobulate-test-go-to-marker 1) (combobulate-navigate-next)
     (combobulate-test-assert-at-marker 2)
     (combobulate-test-go-to-marker 2) (combobulate-navigate-next)

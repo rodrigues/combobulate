@@ -88,6 +88,10 @@
 (require 'combobulate-ocaml)
 ;;;###autoload
 (require 'combobulate-bash)
+;;;###autoload
+(require 'combobulate-elixir)
+;;;###autoload
+(require 'combobulate-heex)
 ;;; end language support
 
 (provide 'combobulate)

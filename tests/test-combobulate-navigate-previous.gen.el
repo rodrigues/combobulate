@@ -1884,6 +1884,81 @@
 		 "fixtures/sibling/bash-arguments.sh")
     :tags
     '(combobulate bash bash-ts-mode combobulate-navigate-previous)
+    combobulate-test-elixir-combobulate-navigate-previous--elixir-args-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/elixir-args.ex' in `elixir-ts-mode' mode."
+  (combobulate-test
+      (:language elixir :mode elixir-ts-mode :fixture
+		 "fixtures/sibling/elixir-args.ex")
+    :tags
+    '(combobulate elixir elixir-ts-mode combobulate-navigate-previous)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-previous)
+    (combobulate-test-assert-at-marker 1)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-previous)
+    (combobulate-test-assert-at-marker 1)))
+
+
+(ert-deftest
+    combobulate-test-elixir-combobulate-navigate-previous--elixir-body-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/elixir-body.ex' in `elixir-ts-mode' mode."
+  (combobulate-test
+      (:language elixir :mode elixir-ts-mode :fixture
+		 "fixtures/sibling/elixir-body.ex")
+    :tags
+    '(combobulate elixir elixir-ts-mode combobulate-navigate-previous)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-previous)
+    (combobulate-test-assert-at-marker 1)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-previous)
+    (combobulate-test-assert-at-marker 1)))
+
+
+(ert-deftest
+    combobulate-test-elixir-combobulate-navigate-previous--elixir-keywords-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/elixir-keywords.ex' in `elixir-ts-mode' mode."
+  (combobulate-test
+      (:language elixir :mode elixir-ts-mode :fixture
+		 "fixtures/sibling/elixir-keywords.ex")
+    :tags
+    '(combobulate elixir elixir-ts-mode combobulate-navigate-previous)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-previous)
+    (combobulate-test-assert-at-marker 1)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-previous)
+    (combobulate-test-assert-at-marker 1)))
+
+
+(ert-deftest
+    combobulate-test-elixir-combobulate-navigate-previous--elixir-list-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/elixir-list.ex' in `elixir-ts-mode' mode."
+  (combobulate-test
+      (:language elixir :mode elixir-ts-mode :fixture
+		 "fixtures/sibling/elixir-list.ex")
+    :tags
+    '(combobulate elixir elixir-ts-mode combobulate-navigate-previous)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-previous)
+    (combobulate-test-assert-at-marker 1)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-previous)
+    (combobulate-test-assert-at-marker 1)))
+
+
+(ert-deftest
+    combobulate-test-elixir-combobulate-navigate-previous--elixir-module-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/elixir-module.ex' in `elixir-ts-mode' mode."
+  (combobulate-test
+      (:language elixir :mode elixir-ts-mode :fixture
+		 "fixtures/sibling/elixir-module.ex")
+    :tags
+    '(combobulate elixir elixir-ts-mode combobulate-navigate-previous)
+    (combobulate-test-go-to-marker 4) (combobulate-navigate-previous)
+    (combobulate-test-assert-at-marker 3)
     (combobulate-test-go-to-marker 3) (combobulate-navigate-previous)
     (combobulate-test-assert-at-marker 2)
     (combobulate-test-go-to-marker 2) (combobulate-navigate-previous)
@@ -1902,6 +1977,15 @@
 		 "fixtures/sibling/bash-array.sh")
     :tags
     '(combobulate bash bash-ts-mode combobulate-navigate-previous)
+    combobulate-test-elixir-combobulate-navigate-previous--elixir-test-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/elixir-test.exs' in `elixir-ts-mode' mode."
+  (combobulate-test
+      (:language elixir :mode elixir-ts-mode :fixture
+		 "fixtures/sibling/elixir-test.exs")
+    :tags
+    '(combobulate elixir elixir-ts-mode combobulate-navigate-previous)
     (combobulate-test-go-to-marker 2) (combobulate-navigate-previous)
     (combobulate-test-assert-at-marker 1)
     (combobulate-test-go-to-marker 1) (combobulate-navigate-previous)
@@ -1918,6 +2002,15 @@
 		 "fixtures/sibling/bash-case-items.sh")
     :tags
     '(combobulate bash bash-ts-mode combobulate-navigate-previous)
+    combobulate-test-elixir-combobulate-navigate-previous--elixir-with-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/elixir-with.ex' in `elixir-ts-mode' mode."
+  (combobulate-test
+      (:language elixir :mode elixir-ts-mode :fixture
+		 "fixtures/sibling/elixir-with.ex")
+    :tags
+    '(combobulate elixir elixir-ts-mode combobulate-navigate-previous)
     (combobulate-test-go-to-marker 2) (combobulate-navigate-previous)
     (combobulate-test-assert-at-marker 1)
     (combobulate-test-go-to-marker 1) (combobulate-navigate-previous)
@@ -1948,6 +2041,15 @@
 		 "fixtures/sibling/bash-function-body.sh")
     :tags
     '(combobulate bash bash-ts-mode combobulate-navigate-previous)
+    combobulate-test-heex-combobulate-navigate-previous--heex-attributes-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/heex-attributes.heex' in `heex-ts-mode' mode."
+  (combobulate-test
+      (:language heex :mode heex-ts-mode :fixture
+		 "fixtures/sibling/heex-attributes.heex")
+    :tags
+    '(combobulate heex heex-ts-mode combobulate-navigate-previous)
     (combobulate-test-go-to-marker 2) (combobulate-navigate-previous)
     (combobulate-test-assert-at-marker 1)
     (combobulate-test-go-to-marker 1) (combobulate-navigate-previous)
@@ -1998,6 +2100,15 @@
     '(combobulate bash bash-ts-mode combobulate-navigate-previous)
     (combobulate-test-go-to-marker 3) (combobulate-navigate-previous)
     (combobulate-test-assert-at-marker 2)
+    combobulate-test-heex-combobulate-navigate-previous--heex-elements-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/heex-elements.heex' in `heex-ts-mode' mode."
+  (combobulate-test
+      (:language heex :mode heex-ts-mode :fixture
+		 "fixtures/sibling/heex-elements.heex")
+    :tags
+    '(combobulate heex heex-ts-mode combobulate-navigate-previous)
     (combobulate-test-go-to-marker 2) (combobulate-navigate-previous)
     (combobulate-test-assert-at-marker 1)
     (combobulate-test-go-to-marker 1) (combobulate-navigate-previous)
