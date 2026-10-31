@@ -290,6 +290,7 @@ doesn't exist."
                                         ("\\.exs?\\'" . elixir-ts-mode)
                                         ("\\.heex\\'" . heex-ts-mode)
                                         ("\\.erl\\'" . erlang-ts-mode)
+                                        ("\\.gleam\\'" . gleam-ts-mode)
                                         ("\\.mli\\'" . tuareg-interface-mode)
                                         ("\\.ml\\'" . tuareg-mode))
                                       auto-mode-alist))

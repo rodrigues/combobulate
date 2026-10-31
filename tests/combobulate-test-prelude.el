@@ -43,6 +43,7 @@
 (require 'heex-ts-mode nil t)
 ;; From MELPA; tests using it are skipped when it is not installed.
 (require 'erlang-ts nil t)
+(require 'gleam-ts-mode nil t)
 
 ;;; Helpers for writing procedures
 

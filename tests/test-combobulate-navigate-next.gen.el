@@ -1789,3 +1789,97 @@
 	       (combobulate-test-go-to-marker 1)
 	       (combobulate-navigate-next)
 	       (combobulate-test-assert-at-marker 2)))
+
+
+(ert-deftest
+    combobulate-test-gleam-combobulate-navigate-next--gleam-args-3
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/gleam-args.gleam' in `gleam-ts-mode' mode."
+  (combobulate-test
+      (:language gleam :mode gleam-ts-mode :fixture
+		 "fixtures/sibling/gleam-args.gleam")
+    :tags '(combobulate gleam gleam-ts-mode combobulate-navigate-next)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 2)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 3)))
+
+
+(ert-deftest
+    combobulate-test-gleam-combobulate-navigate-next--gleam-clauses-3
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/gleam-clauses.gleam' in `gleam-ts-mode' mode."
+  (combobulate-test
+      (:language gleam :mode gleam-ts-mode :fixture
+		 "fixtures/sibling/gleam-clauses.gleam")
+    :tags '(combobulate gleam gleam-ts-mode combobulate-navigate-next)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 2)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 3)))
+
+
+(ert-deftest
+    combobulate-test-gleam-combobulate-navigate-next--gleam-constructors-3
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/gleam-constructors.gleam' in `gleam-ts-mode' mode."
+  (combobulate-test
+      (:language gleam :mode gleam-ts-mode :fixture
+		 "fixtures/sibling/gleam-constructors.gleam")
+    :tags '(combobulate gleam gleam-ts-mode combobulate-navigate-next)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 2)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 3)))
+
+
+(ert-deftest
+    combobulate-test-gleam-combobulate-navigate-next--gleam-forms-4
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/gleam-forms.gleam' in `gleam-ts-mode' mode."
+  (combobulate-test
+      (:language gleam :mode gleam-ts-mode :fixture
+		 "fixtures/sibling/gleam-forms.gleam")
+    :tags '(combobulate gleam gleam-ts-mode combobulate-navigate-next)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 2)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 3)
+    (combobulate-test-go-to-marker 3) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 4)))
+
+
+(ert-deftest
+    combobulate-test-gleam-combobulate-navigate-next--gleam-list-3
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/gleam-list.gleam' in `gleam-ts-mode' mode."
+  (combobulate-test
+      (:language gleam :mode gleam-ts-mode :fixture
+		 "fixtures/sibling/gleam-list.gleam")
+    :tags '(combobulate gleam gleam-ts-mode combobulate-navigate-next)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 2)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 3)))
+
+
+(ert-deftest
+    combobulate-test-gleam-combobulate-navigate-next--gleam-statements-3
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/gleam-statements.gleam' in `gleam-ts-mode' mode."
+  (combobulate-test
+      (:language gleam :mode gleam-ts-mode :fixture
+		 "fixtures/sibling/gleam-statements.gleam")
+    :tags '(combobulate gleam gleam-ts-mode combobulate-navigate-next)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 2)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-next)
+    (combobulate-test-assert-at-marker 3)))
+
+

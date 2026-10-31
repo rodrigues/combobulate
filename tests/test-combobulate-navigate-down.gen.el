@@ -602,3 +602,33 @@
 	       (combobulate-test-go-to-marker 3)
 	       (combobulate-navigate-down)
 	       (combobulate-test-assert-at-marker 4)))
+
+
+(ert-deftest
+    combobulate-test-gleam-combobulate-navigate-down--gleam-call-2
+    ()
+
+  "Test `combobulate' with `fixtures/down/gleam-call.gleam' in `gleam-ts-mode' mode."
+  (combobulate-test
+      (:language gleam :mode gleam-ts-mode :fixture
+		 "fixtures/down/gleam-call.gleam")
+    :tags '(combobulate gleam gleam-ts-mode combobulate-navigate-down)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-down)
+    (combobulate-test-assert-at-marker 2)))
+
+
+(ert-deftest
+    combobulate-test-gleam-combobulate-navigate-down--gleam-function-3
+    ()
+
+  "Test `combobulate' with `fixtures/down/gleam-function.gleam' in `gleam-ts-mode' mode."
+  (combobulate-test
+      (:language gleam :mode gleam-ts-mode :fixture
+		 "fixtures/down/gleam-function.gleam")
+    :tags '(combobulate gleam gleam-ts-mode combobulate-navigate-down)
+    (combobulate-test-go-to-marker 1) (combobulate-navigate-down)
+    (combobulate-test-assert-at-marker 2)
+    (combobulate-test-go-to-marker 2) (combobulate-navigate-down)
+    (combobulate-test-assert-at-marker 3)))
+
+

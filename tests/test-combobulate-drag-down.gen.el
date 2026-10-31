@@ -5315,3 +5315,273 @@
        (combobulate-test-go-to-marker 4) (combobulate-drag-down)
        (combobulate-compare-action-with-fixture-delta
 	"./fixture-deltas/combobulate-drag-down/bash-statements.sh[@4~after].sh")))))
+
+
+(ert-deftest
+    combobulate-test-gleam-combobulate-drag-down--gleam-args-1 ()
+
+  "Test `combobulate' with `fixtures/sibling/gleam-args.gleam' in `gleam-ts-mode' mode."
+  (combobulate-test
+      (:language gleam :mode gleam-ts-mode :fixture
+		 "fixtures/sibling/gleam-args.gleam")
+    :tags '(combobulate gleam gleam-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 1) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/gleam-args.gleam[@1~after].gleam")))
+
+
+(ert-deftest
+    combobulate-test-gleam-combobulate-drag-down--gleam-args-2 ()
+
+  "Test `combobulate' with `fixtures/sibling/gleam-args.gleam' in `gleam-ts-mode' mode."
+  (combobulate-test
+      (:language gleam :mode gleam-ts-mode :fixture
+		 "fixtures/sibling/gleam-args.gleam")
+    :tags '(combobulate gleam gleam-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 2) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/gleam-args.gleam[@2~after].gleam")))
+
+
+(ert-deftest
+    combobulate-test-gleam-combobulate-drag-down--gleam-args-3 ()
+
+  "Test `combobulate' with `fixtures/sibling/gleam-args.gleam' in `gleam-ts-mode' mode."
+  (combobulate-test
+      (:language gleam :mode gleam-ts-mode :fixture
+		 "fixtures/sibling/gleam-args.gleam")
+    :tags '(combobulate gleam gleam-ts-mode combobulate-drag-down)
+    (should-error
+     (progn
+       (combobulate-test-go-to-marker 3) (combobulate-drag-down)
+       (combobulate-compare-action-with-fixture-delta
+	"./fixture-deltas/combobulate-drag-down/gleam-args.gleam[@3~after].gleam")))))
+
+
+(ert-deftest
+    combobulate-test-gleam-combobulate-drag-down--gleam-clauses-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/gleam-clauses.gleam' in `gleam-ts-mode' mode."
+  (combobulate-test
+      (:language gleam :mode gleam-ts-mode :fixture
+		 "fixtures/sibling/gleam-clauses.gleam")
+    :tags '(combobulate gleam gleam-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 1) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/gleam-clauses.gleam[@1~after].gleam")))
+
+
+(ert-deftest
+    combobulate-test-gleam-combobulate-drag-down--gleam-clauses-2
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/gleam-clauses.gleam' in `gleam-ts-mode' mode."
+  (combobulate-test
+      (:language gleam :mode gleam-ts-mode :fixture
+		 "fixtures/sibling/gleam-clauses.gleam")
+    :tags '(combobulate gleam gleam-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 2) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/gleam-clauses.gleam[@2~after].gleam")))
+
+
+(ert-deftest
+    combobulate-test-gleam-combobulate-drag-down--gleam-clauses-3
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/gleam-clauses.gleam' in `gleam-ts-mode' mode."
+  (combobulate-test
+      (:language gleam :mode gleam-ts-mode :fixture
+		 "fixtures/sibling/gleam-clauses.gleam")
+    :tags '(combobulate gleam gleam-ts-mode combobulate-drag-down)
+    (should-error
+     (progn
+       (combobulate-test-go-to-marker 3) (combobulate-drag-down)
+       (combobulate-compare-action-with-fixture-delta
+	"./fixture-deltas/combobulate-drag-down/gleam-clauses.gleam[@3~after].gleam")))))
+
+
+(ert-deftest
+    combobulate-test-gleam-combobulate-drag-down--gleam-constructors-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/gleam-constructors.gleam' in `gleam-ts-mode' mode."
+  (combobulate-test
+      (:language gleam :mode gleam-ts-mode :fixture
+		 "fixtures/sibling/gleam-constructors.gleam")
+    :tags '(combobulate gleam gleam-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 1) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/gleam-constructors.gleam[@1~after].gleam")))
+
+
+(ert-deftest
+    combobulate-test-gleam-combobulate-drag-down--gleam-constructors-2
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/gleam-constructors.gleam' in `gleam-ts-mode' mode."
+  (combobulate-test
+      (:language gleam :mode gleam-ts-mode :fixture
+		 "fixtures/sibling/gleam-constructors.gleam")
+    :tags '(combobulate gleam gleam-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 2) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/gleam-constructors.gleam[@2~after].gleam")))
+
+
+(ert-deftest
+    combobulate-test-gleam-combobulate-drag-down--gleam-constructors-3
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/gleam-constructors.gleam' in `gleam-ts-mode' mode."
+  (combobulate-test
+      (:language gleam :mode gleam-ts-mode :fixture
+		 "fixtures/sibling/gleam-constructors.gleam")
+    :tags '(combobulate gleam gleam-ts-mode combobulate-drag-down)
+    (should-error
+     (progn
+       (combobulate-test-go-to-marker 3) (combobulate-drag-down)
+       (combobulate-compare-action-with-fixture-delta
+	"./fixture-deltas/combobulate-drag-down/gleam-constructors.gleam[@3~after].gleam")))))
+
+
+(ert-deftest
+    combobulate-test-gleam-combobulate-drag-down--gleam-forms-1 ()
+
+  "Test `combobulate' with `fixtures/sibling/gleam-forms.gleam' in `gleam-ts-mode' mode."
+  (combobulate-test
+      (:language gleam :mode gleam-ts-mode :fixture
+		 "fixtures/sibling/gleam-forms.gleam")
+    :tags '(combobulate gleam gleam-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 1) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/gleam-forms.gleam[@1~after].gleam")))
+
+
+(ert-deftest
+    combobulate-test-gleam-combobulate-drag-down--gleam-forms-2 ()
+
+  "Test `combobulate' with `fixtures/sibling/gleam-forms.gleam' in `gleam-ts-mode' mode."
+  (combobulate-test
+      (:language gleam :mode gleam-ts-mode :fixture
+		 "fixtures/sibling/gleam-forms.gleam")
+    :tags '(combobulate gleam gleam-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 2) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/gleam-forms.gleam[@2~after].gleam")))
+
+
+(ert-deftest
+    combobulate-test-gleam-combobulate-drag-down--gleam-forms-3 ()
+
+  "Test `combobulate' with `fixtures/sibling/gleam-forms.gleam' in `gleam-ts-mode' mode."
+  (combobulate-test
+      (:language gleam :mode gleam-ts-mode :fixture
+		 "fixtures/sibling/gleam-forms.gleam")
+    :tags '(combobulate gleam gleam-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 3) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/gleam-forms.gleam[@3~after].gleam")))
+
+
+(ert-deftest
+    combobulate-test-gleam-combobulate-drag-down--gleam-forms-4 ()
+
+  "Test `combobulate' with `fixtures/sibling/gleam-forms.gleam' in `gleam-ts-mode' mode."
+  (combobulate-test
+      (:language gleam :mode gleam-ts-mode :fixture
+		 "fixtures/sibling/gleam-forms.gleam")
+    :tags '(combobulate gleam gleam-ts-mode combobulate-drag-down)
+    (should-error
+     (progn
+       (combobulate-test-go-to-marker 4) (combobulate-drag-down)
+       (combobulate-compare-action-with-fixture-delta
+	"./fixture-deltas/combobulate-drag-down/gleam-forms.gleam[@4~after].gleam")))))
+
+
+(ert-deftest
+    combobulate-test-gleam-combobulate-drag-down--gleam-list-1 ()
+
+  "Test `combobulate' with `fixtures/sibling/gleam-list.gleam' in `gleam-ts-mode' mode."
+  (combobulate-test
+      (:language gleam :mode gleam-ts-mode :fixture
+		 "fixtures/sibling/gleam-list.gleam")
+    :tags '(combobulate gleam gleam-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 1) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/gleam-list.gleam[@1~after].gleam")))
+
+
+(ert-deftest
+    combobulate-test-gleam-combobulate-drag-down--gleam-list-2 ()
+
+  "Test `combobulate' with `fixtures/sibling/gleam-list.gleam' in `gleam-ts-mode' mode."
+  (combobulate-test
+      (:language gleam :mode gleam-ts-mode :fixture
+		 "fixtures/sibling/gleam-list.gleam")
+    :tags '(combobulate gleam gleam-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 2) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/gleam-list.gleam[@2~after].gleam")))
+
+
+(ert-deftest
+    combobulate-test-gleam-combobulate-drag-down--gleam-list-3 ()
+
+  "Test `combobulate' with `fixtures/sibling/gleam-list.gleam' in `gleam-ts-mode' mode."
+  (combobulate-test
+      (:language gleam :mode gleam-ts-mode :fixture
+		 "fixtures/sibling/gleam-list.gleam")
+    :tags '(combobulate gleam gleam-ts-mode combobulate-drag-down)
+    (should-error
+     (progn
+       (combobulate-test-go-to-marker 3) (combobulate-drag-down)
+       (combobulate-compare-action-with-fixture-delta
+	"./fixture-deltas/combobulate-drag-down/gleam-list.gleam[@3~after].gleam")))))
+
+
+(ert-deftest
+    combobulate-test-gleam-combobulate-drag-down--gleam-statements-1
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/gleam-statements.gleam' in `gleam-ts-mode' mode."
+  (combobulate-test
+      (:language gleam :mode gleam-ts-mode :fixture
+		 "fixtures/sibling/gleam-statements.gleam")
+    :tags '(combobulate gleam gleam-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 1) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/gleam-statements.gleam[@1~after].gleam")))
+
+
+(ert-deftest
+    combobulate-test-gleam-combobulate-drag-down--gleam-statements-2
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/gleam-statements.gleam' in `gleam-ts-mode' mode."
+  (combobulate-test
+      (:language gleam :mode gleam-ts-mode :fixture
+		 "fixtures/sibling/gleam-statements.gleam")
+    :tags '(combobulate gleam gleam-ts-mode combobulate-drag-down)
+    (combobulate-test-go-to-marker 2) (combobulate-drag-down)
+    (combobulate-compare-action-with-fixture-delta
+     "./fixture-deltas/combobulate-drag-down/gleam-statements.gleam[@2~after].gleam")))
+
+
+(ert-deftest
+    combobulate-test-gleam-combobulate-drag-down--gleam-statements-3
+    ()
+
+  "Test `combobulate' with `fixtures/sibling/gleam-statements.gleam' in `gleam-ts-mode' mode."
+  (combobulate-test
+      (:language gleam :mode gleam-ts-mode :fixture
+		 "fixtures/sibling/gleam-statements.gleam")
+    :tags '(combobulate gleam gleam-ts-mode combobulate-drag-down)
+    (should-error
+     (progn
+       (combobulate-test-go-to-marker 3) (combobulate-drag-down)
+       (combobulate-compare-action-with-fixture-delta
+	"./fixture-deltas/combobulate-drag-down/gleam-statements.gleam[@3~after].gleam")))))
+
+
