@@ -253,19 +253,21 @@ first; followed by the node type of each grouped label."
 (defun combobulate--swap-node-regions (node-a node-b)
   "Swaps the region substring in NODE-A with NODE-B.
 
-If only one of the nodes ends with a newline, as the last clause of a
-block does in some grammars, the newline stays where it is."
-  (cl-flet ((range (node trim)
-              (save-excursion
-                (goto-char (combobulate-node-end node))
-                (when trim
-                  (skip-chars-backward " \t\n" (combobulate-node-start node)))
-                (cons (combobulate-node-start node) (point))))
-            (ends-with-newline-p (node)
-              (string-suffix-p "\n" (combobulate-node-text node))))
-    (let ((trim (not (eq (ends-with-newline-p node-a)
-                         (ends-with-newline-p node-b)))))
-      (transpose-subr-1 (range node-a trim) (range node-b trim)))))
+If the nodes end with different line breaks, as when one owns the
+blank line after it or the newline that ends a block, the line
+breaks stay where they are."
+  (cl-flet ((layout-tail (node)
+              (let ((text (combobulate-node-text node)))
+                (if (string-match "\n[ \t\n]*\\'" text)
+                    (match-string 0 text)
+                  ""))))
+    (let* ((tail-a (layout-tail node-a))
+           (tail-b (layout-tail node-b))
+           (trim (not (equal tail-a tail-b))))
+      (cl-flet ((range (node tail)
+                  (cons (combobulate-node-start node)
+                        (- (combobulate-node-end node) (if trim (length tail) 0)))))
+        (transpose-subr-1 (range node-a tail-a) (range node-b tail-b))))))
 
 (defun combobulate-transpose-sexps-1 (backward)
   "Capture a transposable node, either forward or BACKWARD."
