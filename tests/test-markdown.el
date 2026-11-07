@@ -409,16 +409,21 @@ MARKER is a string, or a list of the string and N."
   (combobulate-test-iex "3\n\n"
     (should (eq (combobulate-primary-language) 'elixir))))
 
+(ert-deftest combobulate-test-iex-elixir-commands-in-an-expression ()
+  (combobulate-test-iex "1, 2)"
+    (combobulate-navigate-next)
+    (should (looking-at-p "2)"))))
+
 (ert-deftest combobulate-test-iex-next-doctest ()
   (combobulate-test-iex "iex>"
-    (combobulate-elixir-navigate-next)
+    (combobulate-navigate-next)
     (should (looking-at-p "iex> M.add(\n"))
-    (combobulate-elixir-navigate-previous)
+    (combobulate-navigate-previous)
     (should (looking-at-p "iex> M.add(1, 2)"))))
 
 (ert-deftest combobulate-test-iex-drag-doctest-down ()
   (combobulate-test-iex "iex>"
-    (combobulate-elixir-drag-down)
+    (combobulate-drag-down)
     (should (string-search
              "  Adds.\n\n      iex> M.add(\n      ...>   1,\n      ...>   2\n      ...> )\n      3\n\n      iex> M.add(1, 2)\n      3\n  \"\"\""
              (buffer-string)))))
