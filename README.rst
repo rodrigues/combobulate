@@ -111,6 +111,8 @@ Here is a list of the languages currently supported.
 +--------------------+--------------------------------------------------------------+------------------------------+
 |Go                  |go-mode, go-ts-mode                                           |v0.20.0                       |
 +--------------------+--------------------------------------------------------------+------------------------------+
+|iex [4]             |none; embedded by another mode                                |39f20bb (main)                |
++--------------------+--------------------------------------------------------------+------------------------------+
 |Markdown            |markdown-ts-mode                                              |v0.5.3                        |
 +--------------------+--------------------------------------------------------------+------------------------------+
 |OCaml [2]           |tuareg-mode [3], tuareg-interface-mode [3], neocaml-mode, neocaml-interface-mode   | v0.25.0 |
@@ -134,6 +136,8 @@ Furthermore, Combobulate ships with a Magit-like transient UI that you can acces
  [2] OCaml support written by `Pixie Dust <https://github.com/PizieDust>`__, `Tim McGilchrist <https://github.com/tmcgilchrist>`__ & `Xavier Van de Woestyne <https://github.com/xvw>`__.
 
  [3] To use combobulate with tuareg, you need to use the release version as from [3.1.0](https://github.com/ocaml/tuareg/releases/tag/3.1.0) which has support for `tuareg-mode` and `tuareg-interface-mode`.
+
+ [4] iex applies only where another mode embeds the tree-sitter-iex grammar, such as in the doctests of Elixir doc strings that a configuration parses as Markdown.
 
 Recent Changes / What's New
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
