@@ -100,6 +100,8 @@
 (require 'combobulate-markdown)
 ;;;###autoload
 (require 'combobulate-iex)
+;;;###autoload
+(require 'combobulate-sql)
 ;;; end language support
 
 (provide 'combobulate)

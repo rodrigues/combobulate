@@ -292,6 +292,7 @@ doesn't exist."
                                         ("\\.erl\\'" . erlang-ts-mode)
                                         ("\\.gleam\\'" . gleam-ts-mode)
                                         ("\\.md\\'" . markdown-ts-mode)
+                                        ("\\.sql\\'" . sql-ts-mode)
                                         ("\\.mli\\'" . tuareg-interface-mode)
                                         ("\\.ml\\'" . tuareg-mode))
                                       auto-mode-alist))
