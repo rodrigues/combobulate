@@ -88,6 +88,8 @@
 (require 'combobulate-ocaml)
 ;;;###autoload
 (require 'combobulate-markdown)
+;;;###autoload
+(require 'combobulate-iex)
 ;;; end language support
 
 (provide 'combobulate)
