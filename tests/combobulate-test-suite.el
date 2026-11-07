@@ -291,6 +291,7 @@ doesn't exist."
                                         ("\\.heex\\'" . heex-ts-mode)
                                         ("\\.erl\\'" . erlang-ts-mode)
                                         ("\\.gleam\\'" . gleam-ts-mode)
+                                        ("\\.md\\'" . markdown-ts-mode)
                                         ("\\.mli\\'" . tuareg-interface-mode)
                                         ("\\.ml\\'" . tuareg-mode))
                                       auto-mode-alist))

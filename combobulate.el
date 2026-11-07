@@ -96,6 +96,8 @@
 (require 'combobulate-erlang)
 ;;;###autoload
 (require 'combobulate-gleam)
+;;;###autoload
+(require 'combobulate-markdown)
 ;;; end language support
 
 (provide 'combobulate)
