@@ -113,6 +113,8 @@ Here is a list of the languages currently supported.
 +--------------------+--------------------------------------------------------------+------------------------------+
 |OCaml [2]           |tuareg-mode [3], tuareg-interface-mode [3], neocaml-mode, neocaml-interface-mode   | v0.25.0 |
 +--------------------+--------------------------------------------------------------+------------------------------+
+|SQL [4]             |sql-ts-mode                                                   |v0.3.11                       |
++--------------------+--------------------------------------------------------------+------------------------------+
 
 
 *Don't see your language? If you want your favourite language added, then why not try it yourself? Have a look at ``combobulate-json.el`` for an example.*
@@ -132,6 +134,8 @@ Furthermore, Combobulate ships with a Magit-like transient UI that you can acces
  [2] OCaml support written by `Pixie Dust <https://github.com/PizieDust>`__, `Tim McGilchrist <https://github.com/tmcgilchrist>`__ & `Xavier Van de Woestyne <https://github.com/xvw>`__.
 
  [3] To use combobulate with tuareg, you need to use the release version as from [3.1.0](https://github.com/ocaml/tuareg/releases/tag/3.1.0) which has support for `tuareg-mode` and `tuareg-interface-mode`.
+
+ [4] Emacs ships no tree-sitter mode for SQL, so sql-ts-mode is whatever mode a configuration defines on DerekStride's tree-sitter-sql grammar.
 
 Recent Changes / What's New
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
