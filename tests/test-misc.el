@@ -37,6 +37,24 @@
     (should combobulate-python-minor-mode)
     (should-not (bound-and-true-p combobulate-json-minor-mode))))
 
+;; `js-ts-mode' parses doc comments with a local `jsdoc' parser, a
+;; language Combobulate does not support.
+(ert-deftest combobulate-test-combobulate-commands-work-in-a-local-unsupported-parser ()
+  :tags '(combobulate)
+  (skip-unless (and (fboundp 'treesit-parsers-at)
+                    (treesit-language-available-p 'jsdoc)))
+  (with-temp-buffer
+    (insert "/** @param {string} a */\nlet a = 1;\nlet b = 2;\n")
+    (js-ts-mode)
+    (combobulate-mode)
+    (goto-char (point-min))
+    (search-forward "@param")
+    (treesit-update-ranges)
+    (should (eq (treesit-language-at (point)) 'jsdoc))
+    (should (eq (combobulate-primary-language) 'javascript))
+    (let ((combobulate-flash-node nil))
+      (combobulate-navigate-next))))
+
 (ert-deftest combobulate-test-combobulate-refactor-raise-uncommitted-error ()
   :tags '(refactor combobulate)
   (combobulate-test (:language python :mode python-ts-mode :fixture "fixtures/envelope/blank.py")

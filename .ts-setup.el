@@ -8,6 +8,7 @@
          (erlang . ("https://github.com/WhatsApp/tree-sitter-erlang" "0.20"))
          (html . ("https://github.com/tree-sitter/tree-sitter-html" "v0.20.1"))
          (javascript . ("https://github.com/tree-sitter/tree-sitter-javascript" "v0.20.1" "src"))
+         (jsdoc . ("https://github.com/tree-sitter/tree-sitter-jsdoc" "v0.23.2"))
          (json . ("https://github.com/tree-sitter/tree-sitter-json" "v0.20.2"))
          (gleam . ("https://github.com/gleam-lang/tree-sitter-gleam" "main"))
          (go . ("https://github.com/tree-sitter/tree-sitter-go" "v0.20.0"))
