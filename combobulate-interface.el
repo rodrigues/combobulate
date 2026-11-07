@@ -54,17 +54,17 @@ parser, which looking a parser up by language alone does not find."
       language))
 
 (defsubst combobulate-buffer-root-node (&optional language)
-  (let ((parser (combobulate--parser-at-point (or language (combobulate-primary-language)))))
+  (let ((parser (or language (combobulate--parser-at-point (combobulate-primary-language)))))
     (if (treesit-parser-p parser)
         (treesit-parser-root-node parser)
       (treesit-buffer-root-node parser))))
 
 (defsubst combobulate-node-on (beg end &optional parser-or-lang named)
-  (treesit-node-on beg end (combobulate--parser-at-point (or parser-or-lang (combobulate-primary-language)))
+  (treesit-node-on beg end (or parser-or-lang (combobulate--parser-at-point (combobulate-primary-language)))
                    named))
 
 (defsubst combobulate-node-at (pos &optional parser-or-lang named)
-  (treesit-node-at pos (combobulate--parser-at-point (or parser-or-lang (combobulate-primary-language)))
+  (treesit-node-at pos (or parser-or-lang (combobulate--parser-at-point (combobulate-primary-language)))
                    named))
 
 (defsubst combobulate-induce-sparse-tree (root predicate &optional process-fn limit)
