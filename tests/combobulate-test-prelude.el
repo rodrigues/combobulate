@@ -37,6 +37,11 @@
 (require 'yaml-ts-mode)
 (require 'json-ts-mode)
 (require 'tuareg)
+;; The test `html-ts-mode' predates the one `markdown-ts-mode' reads these from.
+(defvar html-ts-mode--font-lock-settings nil)
+(defvar html-ts-mode--treesit-font-lock-feature-list nil)
+;; Bundled with Emacs 31 and later; tests using it are skipped otherwise.
+(require 'markdown-ts-mode nil t)
 
 ;;; Helpers for writing procedures
 
