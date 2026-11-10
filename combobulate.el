@@ -102,6 +102,8 @@
 (require 'combobulate-iex)
 ;;;###autoload
 (require 'combobulate-sql)
+;;;###autoload
+(require 'combobulate-rust)
 ;;; end language support
 
 (provide 'combobulate)
