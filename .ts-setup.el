@@ -10,6 +10,7 @@
          (ocaml-interface . ("https://github.com/tree-sitter/tree-sitter-ocaml" "v0.26.0" "grammars/interface/src"))
          (ocaml_type . ("https://github.com/tree-sitter/tree-sitter-ocaml" "v0.26.0" "grammars/type/src"))
          (python . ("https://github.com/tree-sitter/tree-sitter-python" "v0.20.4"))
+         (rust . ("https://github.com/tree-sitter/tree-sitter-rust" "v0.24.0"))
          (toml . ("https://github.com/tree-sitter/tree-sitter-toml" "v0.5.1"))
          (tsx . ("https://github.com/tree-sitter/tree-sitter-typescript" "v0.20.3" "tsx/src"))
          (typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" "v0.20.3" "typescript/src"))
